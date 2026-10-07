@@ -1,0 +1,92 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'admin@nalaro.digital';
+    }
+
+    function bounded(value, maximum) {
+      return value is string && value.size() <= maximum;
+    }
+
+    function publicOrder(data, id) {
+      return id.matches('^[a-f0-9]{32}$')
+        && data.source == 'public_order' && data.orderId == id
+        && data.createdAt == request.time && data.updatedAt == request.time;
+    }
+
+    function newOrderClient(id) {
+      let c = request.resource.data;
+      let p = getAfter(/databases/$(database)/documents/projects/$(id)).data;
+      return c.keys().hasAll(['source', 'orderId', 'createdAt', 'updatedAt', 'name', 'picName', 'email', 'whatsapp', 'address', 'status', 'notes', 'clientCode', 'projectId'])
+        && c.keys().hasOnly(['source', 'orderId', 'createdAt', 'updatedAt', 'name', 'picName', 'email', 'whatsapp', 'address', 'status', 'notes', 'clientCode', 'projectId'])
+        && publicOrder(c, id)
+        && bounded(c.name, 120) && c.name.matches('.*[^ ].*')
+        && bounded(c.picName, 120) && c.picName.matches('.*[^ ].*')
+        && bounded(c.email, 254) && c.email.matches('^[^\\s@]+@[^\\s@]+[.][^\\s@]+$')
+        && bounded(c.whatsapp, 24) && c.whatsapp.matches('^[+0-9 ()-]{8,24}$')
+        && bounded(c.address, 500)
+        && c.status == 'active' && c.notes == ''
+        && c.clientCode == 'CLI-' + id[0:8].upper() && c.projectId == id
+        && !exists(/databases/$(database)/documents/projects/$(id))
+        && p.source == 'public_order' && p.orderId == id
+        && p.clientId == id && p.clientName == c.name;
+    }
+
+    function newOrderProject(id) {
+      let p = request.resource.data;
+      let c = getAfter(/databases/$(database)/documents/clients/$(id)).data;
+      return p.keys().hasAll(['source', 'orderId', 'createdAt', 'updatedAt', 'name', 'clientId', 'clientName', 'serviceType', 'receivedDate', 'deadline', 'status', 'value', 'description', 'projectNumber'])
+        && p.keys().hasOnly(['source', 'orderId', 'createdAt', 'updatedAt', 'name', 'clientId', 'clientName', 'serviceType', 'receivedDate', 'deadline', 'status', 'value', 'description', 'projectNumber'])
+        && publicOrder(p, id)
+        && bounded(p.name, 160) && p.name.matches('.*[^ ].*')
+        && p.clientId == id && p.clientName == c.name
+        && p.serviceType in ['Website Development', 'Landing Page', 'Custom Information System', 'Maintenance', 'Hosting', 'Domain', 'Nalaro Product', 'Other']
+        && p.receivedDate is string && p.receivedDate.matches('^20[0-9]{2}-[0-9]{2}-[0-9]{2}$')
+        && p.deadline is string && (p.deadline == '' || (p.deadline.matches('^20[0-9]{2}-[0-9]{2}-[0-9]{2}$') && p.deadline >= p.receivedDate))
+        && p.status == 'planning' && p.value == 0 && p.description == ''
+        && p.projectNumber == 'NAL/PRJ/' + p.receivedDate[0:4] + '/' + id[0:8].upper()
+        && !exists(/databases/$(database)/documents/clients/$(id))
+        && c.source == 'public_order' && c.orderId == id && c.projectId == id;
+    }
+
+    // QR verification may fetch a known token, but public listing/querying is blocked.
+    match /public_documents/{token} {
+      allow get: if true;
+      allow list: if false;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /clients/{id} {
+      allow read, update, delete: if isAdmin();
+      allow create: if isAdmin() || newOrderClient(id);
+    }
+
+    match /projects/{id} {
+      allow read, update, delete: if isAdmin();
+      allow create: if isAdmin() || newOrderProject(id);
+    }
+
+    match /invoices/{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+    match /payments/{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+    match /receipts/{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+    match /settings/{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cloudflare/workers-sdk/main/packages/wrangler/config-schema.json",
+  "name": "nalaro-trans",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-10-07",
+  "vars": {
+    "PUBLIC_MAILBOX_API_URL": "https://nalaro-mailbox.uniquefactuhl.workers.dev"
+  }
+}

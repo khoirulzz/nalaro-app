@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="420" height="260" viewBox="0 0 420 260" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated ghost mascot for Nalaro, thinner stroke version">
+  <defs>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="0.8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <style>
+      :root{
+        --stroke: rgba(255,255,255,.78);
+        --stroke-soft: rgba(255,255,255,.20);
+        --fill: rgba(255,255,255,.02);
+        --eye: rgba(255,255,255,.9);
+      }
+
+      .floaty{
+        transform-origin: 210px 148px;
+        animation: floaty 7s ease-in-out infinite;
+      }
+
+      .body-main{
+        fill: var(--fill);
+        stroke: var(--stroke);
+        stroke-width: 2.1;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        filter: url(#softGlow);
+      }
+
+      .body-detail{
+        stroke: var(--stroke-soft);
+        stroke-width: 1.35;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .face{ opacity: 0; }
+      .face-front{ animation: faceFront 7s linear infinite; }
+      .face-left{ animation: faceLeft 7s linear infinite; }
+      .face-right{ animation: faceRight 7s linear infinite; }
+
+      .blink-left{ transform-origin: 186px 114px; animation: blinkA 7s linear infinite; }
+      .blink-right{ transform-origin: 234px 114px; animation: blinkA 7s linear infinite; }
+
+      @keyframes floaty{
+        0%,71.43%{ transform: translateY(0px); }
+        50%{ transform: translateY(-4px); }
+      }
+
+      @keyframes faceFront{
+        0%,12.86%{ opacity: 1; }
+        19%,39%{ opacity: 0; }
+        40%,59%{ opacity: 1; }
+        60%,81%{ opacity: 0; }
+        82%,100%{ opacity: 1; }
+      }
+
+      @keyframes faceLeft{
+        0%,12.86%{ opacity: 0; }
+        19%,39%{ opacity: 1; }
+        40%,100%{ opacity: 0; }
+      }
+
+      @keyframes faceRight{
+        0%,42.14%{ opacity: 0; }
+        60%,81%{ opacity: 1; }
+        82%,100%{ opacity: 0; }
+      }
+
+      @keyframes blinkA{
+        0%,5.71%,10.71%,31.43%,37.14%,61.43%,67.14%,71.43%{ transform: scaleY(1); }
+        9%,14%,45%,51%,87%,93%{ transform: scaleY(.08); }
+      }
+    </style>
+  </defs>
+
+  <g class="floaty">
+    <!-- body -->
+    <path class="body-main" d="M127 225
+      C128 209, 128 184, 127 158
+      C126 103, 157 63, 206 54
+      C260 44, 298 77, 306 132
+      C311 164, 314 188, 319 212
+      C307 204, 296 201, 284 204
+      C272 207, 263 213, 254 223
+      C243 207, 227 201, 210 202
+      C190 203, 175 212, 164 225
+      C155 214, 145 207, 133 205
+      C130 204, 128 204, 127 225 Z"/>
+
+    <!-- folds -->
+    <path class="body-detail" d="M185 70 C168 100, 164 137, 168 191"/>
+    <path class="body-detail" d="M250 80 C264 106, 271 141, 274 188"/>
+    <path class="body-detail" d="M198 177 C188 184, 180 193, 176 205"/>
+    <path class="body-detail" d="M241 176 C252 183, 260 193, 266 206"/>
+    <path class="body-detail" d="M205 207 C200 211, 195 217, 191 223"/>
+    <path class="body-detail" d="M219 207 C224 211, 229 217, 233 223"/>
+
+    <!-- front face: ekspresi baru = senyum malu/polos, mata lebih lembut -->
+    <g class="face face-front">
+      <path class="body-detail" d="M175 96 C180 92, 186 91, 191 93"/>
+      <path class="body-detail" d="M228 93 C234 91, 241 92, 246 96"/>
+
+      <g class="blink-left">
+        <ellipse cx="186" cy="114" rx="13" ry="16" stroke="var(--stroke)" stroke-width="1.8"/>
+      </g>
+      <g class="blink-right">
+        <ellipse cx="234" cy="114" rx="13" ry="16" stroke="var(--stroke)" stroke-width="1.8"/>
+      </g>
+
+      <circle cx="189" cy="118" r="3.5" fill="var(--eye)"/>
+      <circle cx="237" cy="118" r="3.5" fill="var(--eye)"/>
+
+      <!-- blush / cheek hints -->
+      <path class="body-detail" d="M164 135 C168 133, 172 133, 176 135"/>
+      <path class="body-detail" d="M244 135 C248 133, 252 133, 256 135"/>
+
+      <!-- shy smile -->
+      <path d="M197 139 C205 145, 216 145, 223 139" stroke="var(--stroke)" stroke-width="1.9" stroke-linecap="round"/>
+      <path d="M209 146 C212 148, 215 148, 218 146" stroke="var(--stroke-soft)" stroke-width="1.35" stroke-linecap="round"/>
+    </g>
+
+    <!-- left face: looking left, curious cute -->
+    <g class="face face-left">
+      <path class="body-detail" d="M172 95 C177 92, 184 91, 189 93"/>
+      <path class="body-detail" d="M217 94 C226 90, 238 90, 246 95"/>
+
+      <ellipse cx="182" cy="114" rx="12" ry="16" stroke="var(--stroke)" stroke-width="1.8"/>
+      <ellipse cx="231" cy="111" rx="15" ry="18" stroke="var(--stroke)" stroke-width="1.8"/>
+
+      <circle cx="177" cy="118" r="3.6" fill="var(--eye)"/>
+      <circle cx="224" cy="116" r="3.7" fill="var(--eye)"/>
+
+      <path class="body-detail" d="M162 136 C166 134, 170 134, 174 136"/>
+      <path d="M196 140 C202 145, 213 145, 220 141" stroke="var(--stroke)" stroke-width="1.9" stroke-linecap="round"/>
+    </g>
+
+    <!-- right face: looking right, same family expression -->
+    <g class="face face-right">
+      <path class="body-detail" d="M175 95 C183 91, 194 91, 202 94"/>
+      <path class="body-detail" d="M230 93 C236 91, 242 92, 247 95"/>
+
+      <ellipse cx="188" cy="111" rx="15" ry="18" stroke="var(--stroke)" stroke-width="1.8"/>
+      <ellipse cx="237" cy="114" rx="12" ry="16" stroke="var(--stroke)" stroke-width="1.8"/>
+
+      <circle cx="195" cy="116" r="3.7" fill="var(--eye)"/>
+      <circle cx="242" cy="118" r="3.6" fill="var(--eye)"/>
+
+      <path class="body-detail" d="M246 136 C250 134, 254 134, 258 136"/>
+      <path d="M200 141 C207 145, 218 145, 225 140" stroke="var(--stroke)" stroke-width="1.9" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>

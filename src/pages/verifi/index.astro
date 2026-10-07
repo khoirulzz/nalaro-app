@@ -1,0 +1,7 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import VerificationApp from '../../components/react/VerificationApp';
+---
+<Layout title="Verifikasi Dokumen | Nalaro" description="Verifikasi invoice dan payment receipt yang diterbitkan oleh Nalaro.">
+  <VerificationApp client:only="react" />
+</Layout>

@@ -1,0 +1,30 @@
+---
+import { site, nav } from "../../data/site";
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="https://nalaro.digital/#index" class="brand" aria-label="Nalaro, beranda">
+      <img src={site.logo} width="40" height="40" alt="" fetchpriority="high" />
+      <span>nalaro</span>
+    </a>
+    <nav class="desktop-nav" aria-label="Navigasi utama">
+      {nav.map(item => <a href={`https://nalaro.digital/#${item.id}`}>{item.label}</a>)}
+    </nav>
+    <a class="header-contact" href="https://nalaro.digital/#contact">Mari ngobrol <span aria-hidden="true">↗</span></a>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-nav">Menu <span aria-hidden="true">+</span></button>
+  </div>
+  <nav id="mobile-nav" class="mobile-nav container" aria-label="Navigasi mobile" hidden>
+    {nav.map(item => <a href={`https://nalaro.digital/#${item.id}`}><span>{item.number}</span>{item.label}<span aria-hidden="true">↗</span></a>)}
+    <a href="https://nalaro.digital/#contact"><span>06</span>Mari ngobrol<span aria-hidden="true">↗</span></a>
+  </nav>
+</header>
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle")!;
+  const menu = document.querySelector<HTMLElement>("#mobile-nav")!;
+  function closeMenu() { menu.hidden = true; toggle.setAttribute("aria-expanded", "false"); }
+  toggle.addEventListener("click", () => { menu.hidden = !menu.hidden; toggle.setAttribute("aria-expanded", String(!menu.hidden)); });
+  menu.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMenu));
+  document.addEventListener("keydown", event => { if (event.key === "Escape" && !menu.hidden) { closeMenu(); toggle.focus(); } });
+  document.addEventListener("click", event => { if (!(event.target as Element).closest(".site-header")) closeMenu(); });
+  matchMedia("(min-width: 761px)").addEventListener("change", event => { if (event.matches) closeMenu(); });
+</script>

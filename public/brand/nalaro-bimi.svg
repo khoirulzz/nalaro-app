@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny-ps" viewBox="0 0 512 512">
+  <title>Nalaro</title>
+  <rect width="512" height="512" fill="#0B0C0A"/>
+  <path d="M128 384V128h51.2L336 307.2V128h48v256h-51.2L176 204.8V384z" fill="#FF5B2E"/>
+  <rect x="400" y="80" width="48" height="48" fill="#FF5B2E"/>
+</svg>

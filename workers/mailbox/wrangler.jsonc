@@ -1,0 +1,15 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cloudflare/workers-sdk/main/packages/wrangler/config-schema.json",
+  "name": "nalaro-mailbox",
+  "account_id": "fa9e4b5cc90250f132b17fb7c067490b",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-10-07",
+  "r2_buckets": [{ "binding": "MAIL_BUCKET", "bucket_name": "nalaro-mailbox" }],
+  "vars": {
+    "FIREBASE_PROJECT_ID": "nalaro",
+    "ADMIN_EMAIL": "admin@nalaro.digital",
+    "MAILBOX_ADDRESSES": "hello@nalaro.digital,admin@nalaro.digital,billing@nalaro.digital,business@nalaro.digital,khoirululum@nalaro.digital",
+    "MAIL_FROM_NAME": "Nalaro",
+    "ALLOWED_ORIGINS": "https://order.nalaro.digital,https://nalaro-trans.pages.dev"
+  }
+}

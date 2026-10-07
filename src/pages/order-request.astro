@@ -1,0 +1,8 @@
+---
+import Layout from '../layouts/Layout.astro';
+import OrderForm from '../components/react/OrderForm';
+import '../styles/order.css';
+---
+<Layout title="Mulai Proyek | Nalaro" description="Isi informasi klien dan proyek untuk memulai kerja sama dengan Nalaro.">
+  <OrderForm client:only="react" />
+</Layout>

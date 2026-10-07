@@ -1,0 +1,4 @@
+/admin/*  /desk/  200
+/verifi/*  /document/  200
+/verif/*  /document/  200
+/form/*  /order-request/  200

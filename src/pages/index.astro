@@ -1,0 +1,8 @@
+---
+import Layout from '../layouts/Layout.astro';
+import EntryApp from '../components/react/EntryApp';
+import '../styles/order.css';
+---
+<Layout title="Nalaro Project Desk">
+  <EntryApp client:only="react" />
+</Layout>

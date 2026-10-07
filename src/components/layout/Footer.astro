@@ -1,0 +1,27 @@
+---
+import { site, nav } from "../../data/site.ts";
+import { products } from "../../data/products.ts";
+const year = new Date().getFullYear();
+---
+<footer class="site-footer container">
+  <div class="footer-top"><div><a href="https://nalaro.digital/#index" class="brand" aria-label="Nalaro, beranda"><img src={site.logo} width="40" height="40" alt="" loading="lazy"/><span>nalaro</span></a><p>{site.tagline}</p></div>
+    <nav aria-label="Navigasi footer">{nav.map(item => <a href={`https://nalaro.digital/#${item.id}`}>{item.label}</a>)}<a href="https://nalaro.digital/#lab">Lab</a><a href="https://nalaro.digital/#contact">Kontak</a></nav>
+    <div class="footer-products">{products.filter(p => !p.isSlot).map((product, i) => <a href={product.url || `/#product-${["skripzy", "class", "enveely"][i]}`} target={product.url ? "_blank" : undefined} rel={product.url ? "noopener noreferrer" : undefined}>{product.name}<span aria-hidden="true">↗</span></a>)}</div>
+  </div>
+  <div class="footer-wordmark" aria-hidden="true">
+    <div style="display: block; white-space: nowrap;">NALARO<span style="font-size: .25em; -webkit-text-stroke: 0; color: var(--color-flare); vertical-align: top; margin-left: 20px; line-height: 1.7;">✳</span></div>
+    <img src="/brand/nalaro-ghost-mascot.svg" alt="" />
+  </div>
+  <div class="footer-bottom">
+    <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+      <span>© {year} Nalaro</span>
+      <a href="https://nalaro.digital/faq">FAQ</a>
+      <a href="https://nalaro.digital/privacy-policy">Privacy Policy</a>
+      <a href="https://nalaro.digital/terms-of-use">Terms of Use</a>
+    </div>
+    <div style="display: flex; gap: 20px; align-items: center;">
+      <span class="desktop-only">{site.closing}</span>
+      <a href="https://nalaro.digital/#index">Kembali ke atas <span aria-hidden="true">↑</span></a>
+    </div>
+  </div>
+</footer>

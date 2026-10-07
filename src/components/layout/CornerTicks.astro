@@ -1,0 +1,62 @@
+---
+// CornerTicks — four L-shaped corner marks per Desain.md §5.4
+// Used on: hero canvas, product preview panel, contact form panel, OG image
+interface Props {
+  color?: string;
+  class?: string;
+}
+
+const { color = "var(--color-mute)", class: className = "" } = Astro.props;
+---
+
+<div class:list={["corner-ticks", className]} style={`--tick-color: ${color};`} aria-hidden="true">
+  <span class="corner-tick corner-tick--tl"></span>
+  <span class="corner-tick corner-tick--tr"></span>
+  <span class="corner-tick corner-tick--bl"></span>
+  <span class="corner-tick corner-tick--br"></span>
+</div>
+
+<style>
+  .corner-ticks {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .corner-tick {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-color: var(--tick-color);
+    border-style: solid;
+    border-width: 0;
+  }
+
+  .corner-tick--tl {
+    top: 0;
+    left: 0;
+    border-top-width: 1px;
+    border-left-width: 1px;
+  }
+
+  .corner-tick--tr {
+    top: 0;
+    right: 0;
+    border-top-width: 1px;
+    border-right-width: 1px;
+  }
+
+  .corner-tick--bl {
+    bottom: 0;
+    left: 0;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+  }
+
+  .corner-tick--br {
+    bottom: 0;
+    right: 0;
+    border-bottom-width: 1px;
+    border-right-width: 1px;
+  }
+</style>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="420" height="260" viewBox="0 0 420 260" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated ghost mascot for Nalaro">
+  <defs>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <style>
+      :root{
+        --stroke: rgba(255,255,255,.82);
+        --stroke-soft: rgba(255,255,255,.26);
+        --fill: rgba(255,255,255,.03);
+        --eye: rgba(255,255,255,.9);
+      }
+
+      .floaty{
+        transform-origin: 210px 148px;
+        animation: floaty 6.8s ease-in-out infinite;
+      }
+
+      .body-main{
+        fill: var(--fill);
+        stroke: var(--stroke);
+        stroke-width: 3.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        filter: url(#softGlow);
+      }
+
+      .body-detail{
+        stroke: var(--stroke-soft);
+        stroke-width: 2.4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .face{ opacity: 0; }
+      .face-front{ animation: faceFront 6.8s linear infinite; }
+      .face-left{ animation: faceLeft 6.8s linear infinite; }
+      .face-right{ animation: faceRight 6.8s linear infinite; }
+
+      .blink1{ transform-origin: 184px 112px; animation: blinkA 6.8s linear infinite; }
+      .blink2{ transform-origin: 234px 112px; animation: blinkA 6.8s linear infinite; }
+
+      .pupil-left{ animation: pupilLeft 6.8s linear infinite; }
+      .pupil-right{ animation: pupilRight 6.8s linear infinite; }
+
+      .mouth-bob{ animation: mouthBob 6.8s ease-in-out infinite; transform-origin: 210px 138px; }
+
+      @keyframes floaty{
+        0%,70.59%{ transform: translateY(0px); }
+        50%{ transform: translateY(-5px); }
+      }
+
+      @keyframes faceFront{
+        0%,12.71%{ opacity: 1; }
+        19%,39%{ opacity: 0; }
+        40%,59%{ opacity: 1; }
+        60%,81%{ opacity: 0; }
+        82%,100%{ opacity: 1; }
+      }
+
+      @keyframes faceLeft{
+        0%,12.71%{ opacity: 0; }
+        19%,39%{ opacity: 1; }
+        40%,100%{ opacity: 0; }
+      }
+
+      @keyframes faceRight{
+        0%,41.65%{ opacity: 0; }
+        60%,81%{ opacity: 1; }
+        82%,100%{ opacity: 0; }
+      }
+
+      @keyframes blinkA{
+        0%,4.94%,9.88%,31.76%,36.71%,60.71%,65.65%,70.59%{ transform: scaleY(1); }
+        8%,13%,46%,51%,87%,92%{ transform: scaleY(.08); }
+      }
+
+      @keyframes pupilLeft{
+        0%,12.71%,28.24%,41.65%,57.88%,70.59%{ transform: translateX(0px); }
+        19%,39%{ transform: translateX(-8px); }
+        60%,81%{ transform: translateX(8px); }
+      }
+
+      @keyframes pupilRight{
+        0%,12.71%,28.24%,41.65%,57.88%,70.59%{ transform: translateX(0px); }
+        19%,39%{ transform: translateX(-8px); }
+        60%,81%{ transform: translateX(8px); }
+      }
+
+      @keyframes mouthBob{
+        0%,12.71%,28.24%,41.65%,57.88%,70.59%{ transform: translateX(0px) translateY(0px); }
+        19%,39%{ transform: translateX(-5px) translateY(1px); }
+        60%,81%{ transform: translateX(5px) translateY(1px); }
+      }
+    </style>
+  </defs>
+
+  <g class="floaty">
+    <path class="body-main" d="M127 225
+      C128 209, 128 184, 127 158
+      C126 103, 157 63, 206 54
+      C260 44, 298 77, 306 132
+      C311 164, 314 188, 319 212
+      C307 204, 296 201, 284 204
+      C272 207, 263 213, 254 223
+      C243 207, 227 201, 210 202
+      C190 203, 175 212, 164 225
+      C155 214, 145 207, 133 205
+      C130 204, 128 204, 127 225 Z"/>
+
+    <path class="body-detail" d="M185 70 C167 101, 164 139, 167 193"/>
+    <path class="body-detail" d="M250 79 C265 108, 272 142, 275 191"/>
+    <path class="body-detail" d="M200 176 C188 183, 181 193, 176 206"/>
+    <path class="body-detail" d="M242 175 C253 184, 261 195, 267 208"/>
+    <path class="body-detail" d="M205 206 C199 211, 194 217, 191 223"/>
+    <path class="body-detail" d="M219 206 C225 211, 231 217, 234 223"/>
+
+    <g class="face face-front">
+      <path class="body-detail" d="M173 93 C180 89, 188 89, 194 93"/>
+      <path class="body-detail" d="M228 93 C235 89, 243 89, 249 93"/>
+
+      <g class="blink1">
+        <ellipse cx="184" cy="112" rx="16" ry="21" stroke="var(--stroke)" stroke-width="2.4"/>
+      </g>
+      <g class="blink2">
+        <ellipse cx="234" cy="112" rx="16" ry="21" stroke="var(--stroke)" stroke-width="2.4"/>
+      </g>
+
+      <g class="pupil-left">
+        <circle cx="188" cy="118" r="4.6" fill="var(--eye)"/>
+      </g>
+      <g class="pupil-right">
+        <circle cx="238" cy="118" r="4.6" fill="var(--eye)"/>
+      </g>
+
+      <g class="mouth-bob">
+        <path d="M194 139 C201 149, 218 149, 226 139" stroke="var(--stroke)" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M203 148 C208 151, 213 151, 218 148" stroke="var(--stroke-soft)" stroke-width="2.2" stroke-linecap="round"/>
+      </g>
+    </g>
+
+    <g class="face face-left">
+      <path class="body-detail" d="M170 93 C176 90, 183 90, 188 93"/>
+      <path class="body-detail" d="M215 92 C227 88, 241 90, 249 95"/>
+
+      <ellipse cx="180" cy="113" rx="14" ry="20" stroke="var(--stroke)" stroke-width="2.4"/>
+      <ellipse cx="230" cy="110" rx="18" ry="22" stroke="var(--stroke)" stroke-width="2.4"/>
+
+      <circle cx="175" cy="118" r="4.6" fill="var(--eye)"/>
+      <circle cx="223" cy="116" r="4.8" fill="var(--eye)"/>
+
+      <path d="M191 140 C199 146, 212 146, 220 142" stroke="var(--stroke)" stroke-width="2.6" stroke-linecap="round"/>
+    </g>
+
+    <g class="face face-right">
+      <path class="body-detail" d="M172 95 C180 90, 194 88, 205 92"/>
+      <path class="body-detail" d="M229 93 C235 90, 242 90, 248 93"/>
+
+      <ellipse cx="187" cy="110" rx="18" ry="22" stroke="var(--stroke)" stroke-width="2.4"/>
+      <ellipse cx="238" cy="113" rx="14" ry="20" stroke="var(--stroke)" stroke-width="2.4"/>
+
+      <circle cx="195" cy="116" r="4.8" fill="var(--eye)"/>
+      <circle cx="243" cy="118" r="4.6" fill="var(--eye)"/>
+
+      <path d="M199 142 C208 146, 221 146, 229 140" stroke="var(--stroke)" stroke-width="2.6" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>
