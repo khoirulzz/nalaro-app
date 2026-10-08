@@ -20,6 +20,12 @@ jobs:
         with:
           node-version: 22
 
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
       - name: Install Dependencies
         run: npm ci
 
@@ -34,11 +40,10 @@ jobs:
 
       - name: Run Tests
         run: |
+          npm install -g wait-on
           npm run preview -- --port 4322 --host 127.0.0.1 &
-          npx wait-on http://127.0.0.1:4322 || sleep 5
-          npm run test:ui
-          npm run test:pdf
-          npm run test:orders
+          wait-on http://127.0.0.1:4322 -t 15000 || sleep 5
+          npx firebase-tools emulators:exec --only firestore 'npm run test:ui && npm run test:pdf && npm run test:orders'
 
       - name: Sync Capacitor
         run: |

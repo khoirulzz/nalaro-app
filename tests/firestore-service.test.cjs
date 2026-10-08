@@ -42,7 +42,7 @@ const { resolve } = require('node:path');
       add('admin can ' + method + ' ' + collection, 'ALLOW', collection, method, {}, undefined, { uid: 'admin', token: { email: 'admin@nalaro.digital' } });
     }
   }
-  add('old email denied', 'DENY', 'clients', 'list', {}, undefined, { uid: 'old-admin', token: { email: 'admin@nalaro.digital' } });
+  add('old email denied', 'DENY', 'clients', 'list', {}, undefined, { uid: 'old-admin', token: { email: 'old-admin@nalaro.digital' } });
   add('public verification get', 'ALLOW', 'public_documents', 'get');
   add('public verification list denied', 'DENY', 'public_documents', 'list');
   add('public verification write denied', 'DENY', 'public_documents', 'create', { valid: true });

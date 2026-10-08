@@ -12,7 +12,7 @@ import { chromium } from 'playwright';
 const env = await initializeTestEnvironment({ projectId: 'demo-nalaro-orders', firestore: { host: '127.0.0.1', port: 8085, rules: await readFile('firestore.rules', 'utf8') } });
 const publicDb = env.unauthenticatedContext().firestore();
 const adminDb = env.authenticatedContext('admin', { email: 'admin@nalaro.digital' }).firestore();
-const oldAdminDb = env.authenticatedContext('old', { email: 'admin@nalaro.digital' }).firestore();
+const oldAdminDb = env.authenticatedContext('old', { email: 'old-admin@nalaro.digital' }).firestore();
 const input = { ...EMPTY_ORDER, name: 'Klien Contoh', picName: 'PIC Contoh', email: 'client@example.com', whatsapp: '081234567890', projectName: 'Website Contoh' };
 let counter = 0;
 function order() { const id = (++counter).toString(16).padStart(32, 'a'); return { id, ...orderRecords(input, id, serverTimestamp(), localDate()) }; }
