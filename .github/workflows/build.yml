@@ -29,6 +29,9 @@ jobs:
       - name: Build Astro
         run: npm run build
 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
       - name: Run Tests
         run: |
           npm run test:ui
