@@ -34,6 +34,8 @@ jobs:
 
       - name: Run Tests
         run: |
+          npm run preview -- --port 4322 --host 127.0.0.1 &
+          npx wait-on http://127.0.0.1:4322 || sleep 5
           npm run test:ui
           npm run test:pdf
           npm run test:orders
