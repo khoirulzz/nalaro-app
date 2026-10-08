@@ -17,6 +17,13 @@ import { auth, db } from '../../lib/firebase';
 import { PAYMENT_METHODS, paymentInformation } from '../../lib/payment';
 import { verificationBaseUrl } from '../../lib/verification';
 import { brandContact, NALARO_EMAIL, NALARO_WEBSITE } from '../../lib/brand';
+import { Capacitor } from '@capacitor/core';
+import { CapacitorUpdater } from '@capgo/capacitor-updater';
+import { PushNotifications } from '@capacitor/push-notifications';
+import { Network } from '@capacitor/network';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import BottomNav from './mobile/BottomNav';
+import MobileFinance, { MobileMore } from './mobile/MobileViews';
 
 import { ADMIN_EMAIL } from '../../lib/admin';
 const Mailbox = React.lazy(() => import('./Mailbox'));
@@ -1185,6 +1192,7 @@ function Settings() {
 function AdminLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const isMobileApp = typeof window !== 'undefined' && Capacitor.isNativePlatform();
   const navigation = [
     ['01', 'Overview', '/'],
     ['02', 'Projects', '/projects'],
@@ -1203,15 +1211,18 @@ function AdminLayout() {
   };
 
   return (
-    <div className="admin-shell">
-      <header className="admin-mobilebar">
-        <a href="https://nalaro.digital" className="admin-brand"><img src="/brand/nalaro.png" alt="" /><span>nalaro</span></a>
-        <button onClick={() => setMenuOpen((value) => !value)}>{menuOpen ? 'Tutup' : 'Menu'} <span>+</span></button>
-      </header>
+    <div className={`admin-shell ${isMobileApp ? 'mobile-app' : ''}`}>
+      {!isMobileApp && (
+        <header className="admin-mobilebar">
+          <a href="https://nalaro.digital" className="admin-brand"><img src="/brand/nalaro.png" alt="" /><span>nalaro</span></a>
+          <button onClick={() => setMenuOpen((value) => !value)}>{menuOpen ? 'Tutup' : 'Menu'} <span>+</span></button>
+        </header>
+      )}
 
-      {menuOpen && <button className="sidebar-scrim" aria-label="Tutup menu" onClick={() => setMenuOpen(false)} />}
+      {menuOpen && !isMobileApp && <button className="sidebar-scrim" aria-label="Tutup menu" onClick={() => setMenuOpen(false)} />}
 
-      <aside className={'admin-sidebar ' + (menuOpen ? 'is-open' : '')}>
+      {!isMobileApp && (
+        <aside className={'admin-sidebar ' + (menuOpen ? 'is-open' : '')}>
         <div className="sidebar-head">
           <a href="https://nalaro.digital" className="admin-brand"><img src="/brand/nalaro.png" alt="" /><span>nalaro</span></a>
           <p>PROJECT DESK / INTERNAL</p>
@@ -1236,6 +1247,7 @@ function AdminLayout() {
           <small>order.nalaro.digital</small>
         </div>
       </aside>
+      )}
 
       <main className="admin-main">
         <Routes>
@@ -1247,14 +1259,37 @@ function AdminLayout() {
           <Route path="/archive" element={<Archive />} />
           <Route path="/email" element={<React.Suspense fallback={<div className="admin-boot">Memuat Mail Desk…</div>}><Mailbox /></React.Suspense>} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/finance" element={<MobileFinance />} />
+          <Route path="/more" element={<MobileMore logout={logout} />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
+      
+      {isMobileApp && <BottomNav />}
     </div>
   );
 }
 
 export default function AdminApp() {
+  useEffect(() => {
+    if (typeof window !== 'undefined' && Capacitor.isNativePlatform()) {
+      CapacitorUpdater.notifyAppReady().catch(console.error);
+      
+      PushNotifications.requestPermissions().then(result => {
+        if (result.receive === 'granted') {
+          PushNotifications.register().catch(console.error);
+        }
+      }).catch(console.error);
+
+      Network.addListener('networkStatusChange', status => {
+        console.log('Network status changed', status);
+        if (!status.connected) {
+          Haptics.notification({ type: 'warning' }).catch(() => {});
+        }
+      });
+    }
+  }, []);
+
   return (
     <BrowserRouter basename="/admin">
       <ProtectedRoute>

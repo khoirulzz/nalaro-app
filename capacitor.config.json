@@ -1,0 +1,11 @@
+{
+  "appId": "nalaro.projectdesk",
+  "appName": "Nalaro",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "CapacitorUpdater": {
+      "autoUpdate": false
+    }
+  }
+}

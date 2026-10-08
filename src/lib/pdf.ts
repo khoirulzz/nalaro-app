@@ -3,6 +3,8 @@ import QRCode from 'qrcode';
 import { documentPaymentInformation } from './payment';
 import { verificationUrl } from './verification';
 import { brandContact, NALARO_WEBSITE } from './brand';
+import { saveDocument, shareDocument } from '../platform/files';
+import { Capacitor } from '@capacitor/core';
 
 const INK: [number, number, number] = [28, 29, 27];
 const MUTED: [number, number, number] = [117, 118, 114];
@@ -504,10 +506,18 @@ export async function buildInvoicePDF(invoice: any, client: any, project: any, s
 
 export async function generateInvoicePDF(invoice: any, client: any, project: any, settings: any) {
   const doc = await buildInvoicePDF(invoice, client, project, settings);
-  await doc.save(safeFileName(invoice.invoiceNumber || 'Nalaro-Invoice') + '.pdf', { returnPromise: true });
+  const filename = safeFileName(invoice.invoiceNumber || 'Nalaro-Invoice') + '.pdf';
+  const uri = await saveDocument(filename, doc.output('blob'));
+  if (typeof window !== 'undefined' && Capacitor.isNativePlatform()) {
+    await shareDocument('Invoice Nalaro', uri);
+  }
 }
 
 export async function generateReceiptPDF(receipt: any, client: any, project: any, settings: any) {
   const doc = await buildReceiptPDF(receipt, client, project, settings);
-  await doc.save(safeFileName(receipt.receiptNumber || 'Nalaro-Receipt') + '.pdf', { returnPromise: true });
+  const filename = safeFileName(receipt.receiptNumber || 'Nalaro-Receipt') + '.pdf';
+  const uri = await saveDocument(filename, doc.output('blob'));
+  if (typeof window !== 'undefined' && Capacitor.isNativePlatform()) {
+    await shareDocument('Receipt Nalaro', uri);
+  }
 }

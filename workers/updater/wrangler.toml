@@ -1,0 +1,11 @@
+name = "nalaro-ota-updater"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[[r2_buckets]]
+binding = "UPDATES_BUCKET"
+bucket_name = "nalaro-mobile-updates"
+
+[route]
+pattern = "updates.nalaro.digital/*"
+zone_name = "nalaro.digital"
