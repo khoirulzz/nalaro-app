@@ -29,3 +29,6 @@ pnpm-debug.log*
 artifacts/
 firebase-debug.log
 firestore-debug.log
+
+# Android Firebase project config supplied by CI secret (not committed)
+android/app/google-services.json

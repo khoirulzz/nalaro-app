@@ -15,3 +15,9 @@ Do not mark this APK production ready without device login, file/share, Mail Des
 QR scanner: More → Pindai QR Verifikasi; accepts Nalaro HTTPS verification links or a raw 20–64 character token, then performs in-app Firestore verification. It does not open untrusted scanned URLs.
 
 The mailbox Worker source also recognizes the fixed Android Capacitor origin `http://localhost`. This Worker change must be deployed separately; a GitHub source commit does not automatically update the Cloudflare Worker.
+
+## Permissions and background features
+
+Push notifications need Firebase's Android app configuration. Register package `nalaro.projectdesk` with Firebase, set the GitHub Actions secret `FIREBASE_ANDROID_CONFIG_BASE64` to the base64-encoded `google-services.json`, and deploy the receiving token backend. The Android app no longer prompts for notification permission immediately upon login while this feature is unfinished. Notifications and self-hosted OTA require end-to-end device/rollback validation.
+
+PDF sharing now supplies an Android file attachment rather than a URL to the Share Sheet.

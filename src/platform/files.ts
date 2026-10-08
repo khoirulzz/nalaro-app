@@ -38,7 +38,7 @@ export async function shareDocument(title: string, uri: string) {
   if (typeof window !== 'undefined' && Capacitor.isNativePlatform()) {
     await Share.share({
       title,
-      url: uri,
+      files: [uri],
       dialogTitle: 'Share Document'
     });
   }

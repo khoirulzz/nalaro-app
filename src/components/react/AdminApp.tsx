@@ -21,8 +21,6 @@ import { brandContact, NALARO_EMAIL, NALARO_WEBSITE } from '../../lib/brand';
 import { ADMIN_EMAIL } from '../../lib/admin';
 import { Capacitor } from '@capacitor/core';
 import { App as NativeApp } from '@capacitor/app';
-import { CapacitorUpdater } from '@capgo/capacitor-updater';
-import { PushNotifications } from '@capacitor/push-notifications';
 import { Network } from '@capacitor/network';
 import { Haptics, NotificationType } from '@capacitor/haptics';
 import BottomNav from './mobile/BottomNav';
@@ -1374,13 +1372,8 @@ function AdminLayout() {
 export default function AdminApp() {
   useEffect(() => {
     if (typeof window !== 'undefined' && Capacitor.isNativePlatform()) {
-      CapacitorUpdater.notifyAppReady().catch(console.error);
-      
-      PushNotifications.requestPermissions().then(result => {
-        if (result.receive === 'granted') {
-          PushNotifications.register().catch(console.error);
-        }
-      }).catch(console.error);
+      // Push registration requires google-services.json and a user-initiated opt-in.
+      // Do not request a permission on every authenticated app startup.
 
       let disposed = false;
       let networkListener: { remove: () => Promise<void> } | undefined;

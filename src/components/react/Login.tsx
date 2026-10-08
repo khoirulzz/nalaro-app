@@ -40,7 +40,7 @@ export default function Login() {
     <main className="auth-shell">
       <section className="auth-panel">
         <div className="auth-brand-row">
-          <a href="https://nalaro.digital" className="admin-brand"><img src="/brand/nalaro.png" alt="" /><span>nalaro</span></a>
+          <a href="https://nalaro.digital" target="_blank" rel="noopener noreferrer" className="admin-brand"><img src="/brand/nalaro.png" alt="" /><span>nalaro</span></a>
           <span className="auth-tag"><i /> INTERNAL</span>
         </div>
         <div className="auth-copy">
@@ -54,7 +54,7 @@ export default function Login() {
           {error && <p className="auth-error"><i />{error}</p>}
           <button className="primary-button auth-submit" disabled={loading}>{loading ? 'Memverifikasi…' : 'Masuk ke Project Desk'} <span>↗</span></button>
         </form>
-        <footer><span>order.nalaro.digital</span><a href="https://nalaro.digital">Kembali ke Nalaro ↗</a></footer>
+        <footer><span>order.nalaro.digital</span><a href="https://nalaro.digital" target="_blank" rel="noopener noreferrer">Kembali ke Nalaro ↗</a></footer>
       </section>
       <aside className="auth-aside" aria-hidden="true"><span>01</span><div><small>NALARO SYSTEM</small><strong>CLIENT<br/>PROJECT<br/><em>INVOICE</em><br/>RECEIPT.</strong></div><p>Useful systems for useful work.</p></aside>
     </main>

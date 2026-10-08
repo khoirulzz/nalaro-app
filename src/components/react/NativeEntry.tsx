@@ -1,6 +1,8 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { SplashScreen } from '@capacitor/splash-screen';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { CapacitorUpdater } from '@capgo/capacitor-updater';
 import { auth } from '../../lib/firebase';
 import { ADMIN_EMAIL } from '../../lib/admin';
 
@@ -19,7 +21,12 @@ export default function NativeEntry() {
   useEffect(() => {
     if (state === 'checking') return;
     const frame = requestAnimationFrame(() => {
-      requestAnimationFrame(() => { void SplashScreen.hide().catch(console.error); });
+      requestAnimationFrame(() => {
+        void StatusBar.setBackgroundColor({ color: '#0d0e0c' }).catch(console.error);
+        void StatusBar.setStyle({ style: Style.Dark }).catch(console.error);
+        void SplashScreen.hide().catch(console.error);
+        void CapacitorUpdater.notifyAppReady().catch(console.error);
+      });
     });
     return () => cancelAnimationFrame(frame);
   }, [state]);
