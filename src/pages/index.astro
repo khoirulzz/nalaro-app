@@ -1,8 +1,17 @@
 ---
+import AdminBaseLayout from '../layouts/AdminBaseLayout.astro';
 import Layout from '../layouts/Layout.astro';
 import EntryApp from '../components/react/EntryApp';
+import NativeEntry from '../components/react/NativeEntry';
 import '../styles/order.css';
+const nativeBuild = import.meta.env.PUBLIC_NATIVE_APP === 'true';
 ---
-<Layout title="Nalaro Project Desk">
-  <EntryApp client:only="react" />
-</Layout>
+{nativeBuild ? (
+  <AdminBaseLayout title="Nalaro Project Desk">
+    <NativeEntry client:only="react" />
+  </AdminBaseLayout>
+) : (
+  <Layout title="Nalaro Project Desk">
+    <EntryApp client:only="react" />
+  </Layout>
+)}

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Capacitor } from '@capacitor/core';
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
 
@@ -13,7 +14,7 @@ export default function Login() {
   useEffect(() => {
     return onAuthStateChanged(auth, async (user) => {
       if (!user) return;
-      if (user.email === ADMIN_EMAIL) window.location.replace('/admin');
+      if (user.email === ADMIN_EMAIL) if (!Capacitor.isNativePlatform()) window.location.replace('/admin');
       else await signOut(auth);
     });
   }, []);
@@ -28,7 +29,7 @@ export default function Login() {
         await signOut(auth);
         throw new Error('unauthorized');
       }
-      window.location.replace('/admin');
+      if (!Capacitor.isNativePlatform()) window.location.replace('/admin');
     } catch {
       setError('Akses ditolak. Periksa email dan password admin.');
       setLoading(false);

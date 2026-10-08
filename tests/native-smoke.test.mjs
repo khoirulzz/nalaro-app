@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+const index = await readFile('dist/index.html', 'utf8');
+assert.match(index, /NativeEntry/, 'Native build must hydrate NativeEntry');
+assert.doesNotMatch(index, /site-header|site-footer|Digital Product Studio/, 'Native entry must not include public website');
+const admin = await readFile('src/components/react/AdminApp.tsx', 'utf8');
+assert.match(admin, /HashRouter/, 'Native internal paths must use a local router');
+assert.match(admin, /runTransaction\(db, async \(transaction\)/, 'Finance operations must use transactions');
+assert.doesNotMatch(admin, /Date\.now\(\)\.toString\(\)\.slice/, 'Document numbering cannot use Date.now');
+console.log('PASS: native startup structure and financial transaction checks');

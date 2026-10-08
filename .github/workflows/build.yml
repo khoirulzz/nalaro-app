@@ -10,6 +10,8 @@ jobs:
   build:
     name: Build Web and Mobile
     runs-on: ubuntu-latest
+    env:
+      PUBLIC_NATIVE_APP: 'true'
 
     steps:
       - name: Checkout Repository
@@ -36,9 +38,10 @@ jobs:
         run: npm run build
 
       - name: Sync Capacitor
-        run: |
-          npm run build
-          npx cap sync android
+        run: npx cap sync android
+
+      - name: Verify native shell
+        run: node tests/native-smoke.test.mjs
 
       - name: Build Android APK
         working-directory: ./android
@@ -49,5 +52,5 @@ jobs:
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: nalaro-app-production
+          name: nalaro-app-development-debug-signed
           path: android/app/build/outputs/apk/release/app-release.apk

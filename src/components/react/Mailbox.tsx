@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core';
 import React, { useEffect, useRef, useState } from 'react';
 import DOMPurify from 'dompurify';
 import { EMAIL_ASSET_ORIGIN, isBrandedMailbox, renderOutgoingEmail } from '../../lib/email-template';
@@ -114,11 +115,11 @@ export default function Mailbox({ service = mailboxService, configured = MAILBOX
   };
   useEffect(() => {
     if (!mailbox || deepLink.current) return;
-    const params = new URLSearchParams(window.location.search); const id = params.get('draft'); const address = params.get('mailbox');
+    const params = new URLSearchParams(Capacitor.isNativePlatform() ? window.location.hash.split('?')[1] || '' : window.location.search); const id = params.get('draft'); const address = params.get('mailbox');
     deepLink.current = true;
     if (id && (!address || config?.mailboxes.includes(address))) {
       service.get(address || mailbox, id).then(async (message) => { setMailbox(message.mailbox); setFolder('drafts'); await editDraft(message); }).catch((problem) => setError(errorText(problem)));
-      window.history.replaceState(null, '', window.location.pathname);
+      window.history.replaceState(null, '', Capacitor.isNativePlatform() ? window.location.pathname + '#/email' : window.location.pathname);
     }
   }, [mailbox]);
   const closeCompose = () => {
