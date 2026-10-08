@@ -1,7 +1,7 @@
 import React, { lazy, Suspense, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Capacitor } from '@capacitor/core';
-import { BarcodeScanner, Html5QrcodeSupportedFormats } from '@capacitor/barcode-scanner';
+import { CapacitorBarcodeScanner, CapacitorBarcodeScannerTypeHint } from '@capacitor/barcode-scanner';
 
 const VerificationApp = lazy(() => import('../VerificationApp'));
 const ALLOWED_HOSTS = new Set(['order.nalaro.digital', 'nalaro.digital', 'www.nalaro.digital', 'e-invoice.nalaro.digital']);
@@ -40,8 +40,8 @@ export function MobileMore({ logout }: { logout: () => void }) {
     if (!Capacitor.isNativePlatform()) { setError('Pemindai hanya tersedia pada aplikasi Android.'); return; }
     setBusy(true); setError('');
     try {
-      const result = await BarcodeScanner.scanBarcode({
-        hint: Html5QrcodeSupportedFormats.QR_CODE,
+      const result = await CapacitorBarcodeScanner.scanBarcode({
+        hint: CapacitorBarcodeScannerTypeHint.ALL,
         scanInstructions: 'Arahkan kamera ke QR verifikasi Nalaro',
         scanButton: true,
         scanText: 'Pindai QR',
