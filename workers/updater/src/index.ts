@@ -1,3 +1,11 @@
+interface R2Object {
+  json(): Promise<any>;
+}
+
+interface R2Bucket {
+  get(key: string): Promise<R2Object | null>;
+}
+
 export interface Env {
   UPDATES_BUCKET: R2Bucket;
 }

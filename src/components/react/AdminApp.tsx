@@ -21,7 +21,7 @@ import { Capacitor } from '@capacitor/core';
 import { CapacitorUpdater } from '@capgo/capacitor-updater';
 import { PushNotifications } from '@capacitor/push-notifications';
 import { Network } from '@capacitor/network';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 import BottomNav from './mobile/BottomNav';
 import MobileFinance, { MobileMore } from './mobile/MobileViews';
 
@@ -1284,7 +1284,7 @@ export default function AdminApp() {
       Network.addListener('networkStatusChange', status => {
         console.log('Network status changed', status);
         if (!status.connected) {
-          Haptics.notification({ type: 'warning' }).catch(() => {});
+          Haptics.notification({ type: NotificationType.Warning }).catch(() => {});
         }
       });
     }
