@@ -1,0 +1,1019 @@
+﻿2026-10-08T14:05:58.9967263Z Current runner version: '2.337.0'
+2026-10-08T14:05:58.9993321Z ##[group]Runner Image Provisioner
+2026-10-08T14:05:58.9994272Z Hosted Compute Agent
+2026-10-08T14:05:58.9995162Z Version: 20261002.596
+2026-10-08T14:05:58.9996136Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-08T14:05:58.9996947Z Build Date: 2026-10-02T22:28:27Z
+2026-10-08T14:05:58.9997747Z Worker ID: {d9f81131-9ebf-4232-9ba8-5e0593138a11}
+2026-10-08T14:05:58.9998528Z Region: westus
+2026-10-08T14:05:58.9999169Z Cloud: Azure
+2026-10-08T14:05:58.9999760Z ##[endgroup]
+2026-10-08T14:05:59.0001579Z ##[group]Operating System
+2026-10-08T14:05:59.0002229Z Ubuntu
+2026-10-08T14:05:59.0002851Z 24.04.5
+2026-10-08T14:05:59.0003372Z LTS
+2026-10-08T14:05:59.0003928Z ##[endgroup]
+2026-10-08T14:05:59.0004615Z ##[group]Runner Image
+2026-10-08T14:05:59.0005464Z Image: ubuntu-24.04
+2026-10-08T14:05:59.0006118Z Version: 20261004.327.1
+2026-10-08T14:05:59.0007365Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-08T14:05:59.0009024Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+2026-10-08T14:05:59.0009999Z ##[endgroup]
+2026-10-08T14:05:59.0011662Z ##[group]GITHUB_TOKEN Permissions
+2026-10-08T14:05:59.0013833Z Contents: read
+2026-10-08T14:05:59.0014652Z Metadata: read
+2026-10-08T14:05:59.0015631Z Packages: read
+2026-10-08T14:05:59.0016250Z ##[endgroup]
+2026-10-08T14:05:59.0018536Z Secret source: Actions
+2026-10-08T14:05:59.0019580Z Cache mode: write
+2026-10-08T14:05:59.0020342Z Prepare workflow directory
+2026-10-08T14:05:59.0367343Z Prepare all required actions
+2026-10-08T14:05:59.0417608Z Getting action download info
+2026-10-08T14:05:59.4656448Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-08T14:05:59.5542927Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-08T14:05:59.6385686Z Download action repository 'actions/setup-java@v4' (SHA:cf277c60eb25467037889841efdb72551f06f6c3)
+2026-10-08T14:06:00.1434124Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-08T14:06:00.4051870Z Complete job name: Build Web and Mobile
+2026-10-08T14:06:00.5040309Z ##[group]Run actions/checkout@v4
+2026-10-08T14:06:00.5041679Z with:
+2026-10-08T14:06:00.5042483Z   repository: khoirulzz/nalaro-app
+2026-10-08T14:06:00.5052283Z   token: ***
+2026-10-08T14:06:00.5053053Z   ssh-strict: true
+2026-10-08T14:06:00.5053831Z   ssh-user: git
+2026-10-08T14:06:00.5054617Z   persist-credentials: true
+2026-10-08T14:06:00.5055654Z   clean: true
+2026-10-08T14:06:00.5056455Z   sparse-checkout-cone-mode: true
+2026-10-08T14:06:00.5057438Z   fetch-depth: 1
+2026-10-08T14:06:00.5058202Z   fetch-tags: false
+2026-10-08T14:06:00.5058987Z   show-progress: true
+2026-10-08T14:06:00.5059776Z   lfs: false
+2026-10-08T14:06:00.5060508Z   submodules: false
+2026-10-08T14:06:00.5061324Z   set-safe-directory: true
+2026-10-08T14:06:00.5062291Z   allow-unsafe-pr-checkout: false
+2026-10-08T14:06:00.5063731Z ##[endgroup]
+2026-10-08T14:06:00.6129728Z Syncing repository: khoirulzz/nalaro-app
+2026-10-08T14:06:00.6133751Z ##[group]Getting Git version info
+2026-10-08T14:06:00.6136323Z Working directory is '/home/runner/work/nalaro-app/nalaro-app'
+2026-10-08T14:06:00.6139435Z [command]/usr/bin/git version
+2026-10-08T14:06:00.6191774Z git version 2.55.0
+2026-10-08T14:06:00.6217632Z ##[endgroup]
+2026-10-08T14:06:00.6245546Z Temporarily overriding HOME='/home/runner/work/_temp/485335de-5f36-4b1a-99c5-a226f4c58be1' before making global git config changes
+2026-10-08T14:06:00.6249297Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-08T14:06:00.6254434Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/nalaro-app/nalaro-app
+2026-10-08T14:06:00.6302338Z Deleting the contents of '/home/runner/work/nalaro-app/nalaro-app'
+2026-10-08T14:06:00.6307547Z ##[group]Initializing the repository
+2026-10-08T14:06:00.6311790Z [command]/usr/bin/git init /home/runner/work/nalaro-app/nalaro-app
+2026-10-08T14:06:00.6452077Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-08T14:06:00.6458287Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-08T14:06:00.6461632Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-08T14:06:00.6468230Z hint: call:
+2026-10-08T14:06:00.6470164Z hint:
+2026-10-08T14:06:00.6472254Z hint: 	git config --global init.defaultBranch <name>
+2026-10-08T14:06:00.6474769Z hint:
+2026-10-08T14:06:00.6477215Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-08T14:06:00.6480577Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-08T14:06:00.6483501Z hint:
+2026-10-08T14:06:00.6485242Z hint: 	git branch -m <name>
+2026-10-08T14:06:00.6486859Z hint:
+2026-10-08T14:06:00.6489001Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-08T14:06:00.6492322Z Initialized empty Git repository in /home/runner/work/nalaro-app/nalaro-app/.git/
+2026-10-08T14:06:00.6499107Z [command]/usr/bin/git remote add origin https://github.com/khoirulzz/nalaro-app
+2026-10-08T14:06:00.6537928Z ##[endgroup]
+2026-10-08T14:06:00.6540124Z ##[group]Disabling automatic garbage collection
+2026-10-08T14:06:00.6542445Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-08T14:06:00.6580855Z ##[endgroup]
+2026-10-08T14:06:00.6583211Z ##[group]Setting up auth
+2026-10-08T14:06:00.6587664Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-08T14:06:00.6630210Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-08T14:06:00.7102513Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-08T14:06:00.7142088Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-08T14:06:00.7373496Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-08T14:06:00.7412295Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-08T14:06:00.7643224Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-08T14:06:00.7687022Z ##[endgroup]
+2026-10-08T14:06:00.7689512Z ##[group]Fetching the repository
+2026-10-08T14:06:00.7700761Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +a401bc82d4c78c1110590b5e46f6dc03df2d7196:refs/remotes/origin/main
+2026-10-08T14:06:01.3620935Z From https://github.com/khoirulzz/nalaro-app
+2026-10-08T14:06:01.3622813Z  * [new ref]         a401bc82d4c78c1110590b5e46f6dc03df2d7196 -> origin/main
+2026-10-08T14:06:01.3627422Z ##[endgroup]
+2026-10-08T14:06:01.3629334Z ##[group]Determining the checkout info
+2026-10-08T14:06:01.3630961Z ##[endgroup]
+2026-10-08T14:06:01.3635696Z [command]/usr/bin/git sparse-checkout disable
+2026-10-08T14:06:01.3779772Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-08T14:06:01.3786793Z ##[group]Checking out the ref
+2026-10-08T14:06:01.3789056Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-08T14:06:01.3956484Z Switched to a new branch 'main'
+2026-10-08T14:06:01.3963868Z branch 'main' set up to track 'origin/main'.
+2026-10-08T14:06:01.3970103Z ##[endgroup]
+2026-10-08T14:06:01.4018779Z [command]/usr/bin/git log -1 --format=%H
+2026-10-08T14:06:01.4047332Z a401bc82d4c78c1110590b5e46f6dc03df2d7196
+2026-10-08T14:06:01.4412196Z ##[group]Run actions/setup-node@v4
+2026-10-08T14:06:01.4413253Z with:
+2026-10-08T14:06:01.4414191Z   node-version: 22
+2026-10-08T14:06:01.4415221Z   always-auth: false
+2026-10-08T14:06:01.4416032Z   check-latest: false
+2026-10-08T14:06:01.4425311Z   token: ***
+2026-10-08T14:06:01.4426052Z ##[endgroup]
+2026-10-08T14:06:01.5922051Z Found in cache @ /opt/hostedtoolcache/node/22.23.3/x64
+2026-10-08T14:06:01.5927551Z (node:2324) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-08T14:06:01.5930553Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-08T14:06:01.5932560Z ##[group]Environment details
+2026-10-08T14:06:02.0416933Z node: v22.23.3
+2026-10-08T14:06:02.0417700Z npm: 10.9.9
+2026-10-08T14:06:02.0418223Z yarn: 1.22.22
+2026-10-08T14:06:02.0419812Z ##[endgroup]
+2026-10-08T14:06:02.0646045Z ##[group]Run actions/setup-java@v4
+2026-10-08T14:06:02.0646584Z with:
+2026-10-08T14:06:02.0646989Z   distribution: temurin
+2026-10-08T14:06:02.0647402Z   java-version: 21
+2026-10-08T14:06:02.0647795Z   java-package: jdk
+2026-10-08T14:06:02.0648222Z   check-latest: false
+2026-10-08T14:06:02.0648627Z   server-id: github
+2026-10-08T14:06:02.0649037Z   server-username: GITHUB_ACTOR
+2026-10-08T14:06:02.0649500Z   server-password: GITHUB_TOKEN
+2026-10-08T14:06:02.0649950Z   overwrite-settings: true
+2026-10-08T14:06:02.0650373Z   job-status: success
+2026-10-08T14:06:02.0653498Z   token: ***
+2026-10-08T14:06:02.0653893Z ##[endgroup]
+2026-10-08T14:06:02.2432028Z ##[warning]setup-java v4 is deprecated and will no longer receive updates. Please migrate to actions/setup-java@v5.
+2026-10-08T14:06:02.2440366Z ##[group]Installed distributions
+2026-10-08T14:06:02.2478767Z Resolved Java 21.0.12+1 from tool-cache
+2026-10-08T14:06:02.2479495Z Setting Java 21.0.12+1 as the default
+2026-10-08T14:06:02.2485508Z (node:2355) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-08T14:06:02.2486669Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-08T14:06:02.2489474Z Creating toolchains.xml for JDK version 21 from temurin
+2026-10-08T14:06:02.2570196Z Writing to /home/runner/.m2/toolchains.xml
+2026-10-08T14:06:02.2570881Z 
+2026-10-08T14:06:02.2571287Z Java configuration:
+2026-10-08T14:06:02.2572192Z   Distribution: temurin
+2026-10-08T14:06:02.2573098Z   Version: 21.0.12+1
+2026-10-08T14:06:02.2574301Z   Path: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T14:06:02.2575399Z 
+2026-10-08T14:06:02.2576315Z ##[endgroup]
+2026-10-08T14:06:02.2580969Z Creating settings.xml with server-id: github
+2026-10-08T14:06:02.2624022Z Writing to /home/runner/.m2/settings.xml
+2026-10-08T14:06:02.2829323Z ##[group]Run npm ci
+2026-10-08T14:06:02.2830177Z [36;1mnpm ci[0m
+2026-10-08T14:06:02.3176016Z shell: /usr/bin/bash -e {0}
+2026-10-08T14:06:02.3176646Z env:
+2026-10-08T14:06:02.3177256Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T14:06:02.3178057Z   JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T14:06:02.3179007Z ##[endgroup]
+2026-10-08T14:06:09.4374680Z npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+2026-10-08T14:06:10.4068470Z npm warn deprecated uuid@7.0.3: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+2026-10-08T14:06:11.0842939Z npm warn deprecated json-ptr@3.1.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+2026-10-08T14:06:13.6727470Z npm warn deprecated uuid@9.0.1: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+2026-10-08T14:06:13.9258829Z npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+2026-10-08T14:06:13.9747499Z npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+2026-10-08T14:06:13.9928071Z npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+2026-10-08T14:06:14.0234692Z npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+2026-10-08T14:07:36.9285942Z 
+2026-10-08T14:07:36.9289195Z added 1112 packages, and audited 1113 packages in 2m
+2026-10-08T14:07:36.9289963Z 
+2026-10-08T14:07:36.9290519Z 194 packages are looking for funding
+2026-10-08T14:07:36.9291150Z   run `npm fund` for details
+2026-10-08T14:07:37.7291874Z 
+2026-10-08T14:07:37.7292986Z 34 vulnerabilities (16 moderate, 17 high, 1 critical)
+2026-10-08T14:07:37.7293389Z 
+2026-10-08T14:07:37.7293842Z To address issues that do not require attention, run:
+2026-10-08T14:07:37.7294270Z   npm audit fix
+2026-10-08T14:07:37.7294450Z 
+2026-10-08T14:07:37.7294791Z To address all issues (including breaking changes), run:
+2026-10-08T14:07:37.7295897Z   npm audit fix --force
+2026-10-08T14:07:37.7296107Z 
+2026-10-08T14:07:37.7296282Z Run `npm audit` for details.
+2026-10-08T14:07:37.8519766Z ##[group]Run npm run check
+2026-10-08T14:07:37.8520115Z [36;1mnpm run check[0m
+2026-10-08T14:07:37.8602288Z shell: /usr/bin/bash -e {0}
+2026-10-08T14:07:37.8602573Z env:
+2026-10-08T14:07:37.8602920Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T14:07:37.8603467Z   JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T14:07:37.8603914Z ##[endgroup]
+2026-10-08T14:07:37.9630515Z 
+2026-10-08T14:07:37.9631079Z > nalaro-trans@1.0.0 check
+2026-10-08T14:07:37.9631591Z > tsc --noEmit
+2026-10-08T14:07:37.9631772Z 
+2026-10-08T14:07:38.4922728Z ##[group]Run npm run build
+2026-10-08T14:07:38.4923057Z [36;1mnpm run build[0m
+2026-10-08T14:07:38.4987681Z shell: /usr/bin/bash -e {0}
+2026-10-08T14:07:38.4987955Z env:
+2026-10-08T14:07:38.4988297Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T14:07:38.4988831Z   JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T14:07:38.4989242Z ##[endgroup]
+2026-10-08T14:07:38.5987377Z 
+2026-10-08T14:07:38.5987996Z > nalaro-trans@1.0.0 build
+2026-10-08T14:07:38.5988484Z > astro build
+2026-10-08T14:07:38.5988662Z 
+2026-10-08T14:07:39.8313335Z [2m14:07:39[22m [34m[types][39m Generated [2m145ms[22m
+2026-10-08T14:07:39.8315859Z [2m14:07:39[22m [34m[build][39m output: [34m"static"[39m
+2026-10-08T14:07:39.8316877Z [2m14:07:39[22m [34m[build][39m mode: [34m"static"[39m
+2026-10-08T14:07:39.8317804Z [2m14:07:39[22m [34m[build][39m directory: [34m/home/runner/work/nalaro-app/nalaro-app/dist/[39m
+2026-10-08T14:07:39.8318804Z [2m14:07:39[22m [34m[build][39m Collecting build info...
+2026-10-08T14:07:39.8323159Z [2m14:07:39[22m [34m[build][39m [32m✓ Completed in 212ms.[39m
+2026-10-08T14:07:39.8336165Z [2m14:07:39[22m [34m[build][39m Building static entrypoints...
+2026-10-08T14:07:40.3022269Z [2m14:07:40[22m [34m[vite][39m [32m✓ built in 442ms[39m
+2026-10-08T14:07:40.6793391Z [2m14:07:40[22m [34m[vite][39m [32m✓ built in 375ms[39m
+2026-10-08T14:07:40.6854505Z [2m14:07:40[22m [34m[build][39m Rearranging server assets...
+2026-10-08T14:07:40.7048298Z 
+2026-10-08T14:07:40.7049226Z [42m[30m generating static routes [39m[49m
+2026-10-08T14:07:40.7182279Z [2m14:07:40[22m   [34m├─[39m [2m/admin/index.html[22m [2m(+13ms)[22m 
+2026-10-08T14:07:40.7250183Z [2m14:07:40[22m   [34m├─[39m [2m/desk/index.html[22m [2m(+7ms)[22m 
+2026-10-08T14:07:40.7337993Z [2m14:07:40[22m   [34m├─[39m [2m/document/index.html[22m [2m(+9ms)[22m 
+2026-10-08T14:07:40.7369369Z [2m14:07:40[22m   [34m├─[39m [2m/form/order/index.html[22m [2m(+3ms)[22m 
+2026-10-08T14:07:40.7393139Z [2m14:07:40[22m   [34m├─[39m [2m/form/index.html[22m [2m(+2ms)[22m 
+2026-10-08T14:07:40.7413898Z [2m14:07:40[22m   [34m├─[39m [2m/login/index.html[22m [2m(+2ms)[22m 
+2026-10-08T14:07:40.7436946Z [2m14:07:40[22m   [34m├─[39m [2m/order-request/index.html[22m [2m(+2ms)[22m 
+2026-10-08T14:07:40.7463041Z [2m14:07:40[22m   [34m├─[39m [2m/verif/index.html[22m [2m(+3ms)[22m 
+2026-10-08T14:07:40.7500412Z [2m14:07:40[22m   [34m├─[39m [2m/verifi/index.html[22m [2m(+4ms)[22m 
+2026-10-08T14:07:40.7527720Z [2m14:07:40[22m   [34m├─[39m [2m/index.html[22m [2m(+3ms)[22m 
+2026-10-08T14:07:40.7528798Z [2m14:07:40[22m [32m✓ Completed in 67ms.
+2026-10-08T14:07:40.7529409Z [39m
+2026-10-08T14:07:40.7545877Z [2m14:07:40[22m [34m[build][39m [32m✓ Completed in 921ms.[39m
+2026-10-08T14:07:40.7549432Z [2m14:07:40[22m [34m[build][39m 10 page(s) built in [1m1.13s[22m
+2026-10-08T14:07:40.7550523Z [2m14:07:40[22m [34m[build][39m [1mComplete![22m
+2026-10-08T14:07:40.7863317Z ##[group]Run npm run build
+2026-10-08T14:07:40.7863651Z [36;1mnpm run build[0m
+2026-10-08T14:07:40.7863896Z [36;1mnpx cap sync android[0m
+2026-10-08T14:07:40.7927410Z shell: /usr/bin/bash -e {0}
+2026-10-08T14:07:40.7927676Z env:
+2026-10-08T14:07:40.7927999Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T14:07:40.7928509Z   JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T14:07:40.7928900Z ##[endgroup]
+2026-10-08T14:07:40.8973628Z 
+2026-10-08T14:07:40.8974297Z > nalaro-trans@1.0.0 build
+2026-10-08T14:07:40.8975115Z > astro build
+2026-10-08T14:07:40.8975384Z 
+2026-10-08T14:07:41.9912201Z [2m14:07:41[22m [34m[types][39m Generated [2m53ms[22m
+2026-10-08T14:07:41.9915196Z [2m14:07:41[22m [34m[build][39m output: [34m"static"[39m
+2026-10-08T14:07:41.9916289Z [2m14:07:41[22m [34m[build][39m mode: [34m"static"[39m
+2026-10-08T14:07:41.9917771Z [2m14:07:41[22m [34m[build][39m directory: [34m/home/runner/work/nalaro-app/nalaro-app/dist/[39m
+2026-10-08T14:07:41.9919023Z [2m14:07:41[22m [34m[build][39m Collecting build info...
+2026-10-08T14:07:41.9922212Z [2m14:07:41[22m [34m[build][39m [32m✓ Completed in 121ms.[39m
+2026-10-08T14:07:41.9991557Z [2m14:07:41[22m [34m[build][39m Building static entrypoints...
+2026-10-08T14:07:42.4677005Z [2m14:07:42[22m [34m[vite][39m [32m✓ built in 436ms[39m
+2026-10-08T14:07:42.8282618Z [2m14:07:42[22m [34m[vite][39m [32m✓ built in 358ms[39m
+2026-10-08T14:07:42.8348572Z [2m14:07:42[22m [34m[build][39m Rearranging server assets...
+2026-10-08T14:07:42.8538310Z 
+2026-10-08T14:07:42.8539339Z [42m[30m generating static routes [39m[49m
+2026-10-08T14:07:42.8676085Z [2m14:07:42[22m   [34m├─[39m [2m/admin/index.html[22m [2m(+13ms)[22m 
+2026-10-08T14:07:42.8716334Z [2m14:07:42[22m   [34m├─[39m [2m/desk/index.html[22m [2m(+3ms)[22m 
+2026-10-08T14:07:42.8779185Z [2m14:07:42[22m   [34m├─[39m [2m/document/index.html[22m [2m(+7ms)[22m 
+2026-10-08T14:07:42.8806525Z [2m14:07:42[22m   [34m├─[39m [2m/form/order/index.html[22m [2m(+3ms)[22m 
+2026-10-08T14:07:42.8830251Z [2m14:07:42[22m   [34m├─[39m [2m/form/index.html[22m [2m(+2ms)[22m 
+2026-10-08T14:07:42.8850035Z [2m14:07:42[22m   [34m├─[39m [2m/login/index.html[22m [2m(+2ms)[22m 
+2026-10-08T14:07:42.8874574Z [2m14:07:42[22m   [34m├─[39m [2m/order-request/index.html[22m [2m(+2ms)[22m 
+2026-10-08T14:07:42.8899096Z [2m14:07:42[22m   [34m├─[39m [2m/verif/index.html[22m [2m(+2ms)[22m 
+2026-10-08T14:07:42.8932129Z [2m14:07:42[22m   [34m├─[39m [2m/verifi/index.html[22m [2m(+3ms)[22m 
+2026-10-08T14:07:42.8955127Z [2m14:07:42[22m   [34m├─[39m [2m/index.html[22m [2m(+2ms)[22m 
+2026-10-08T14:07:42.8956435Z [2m14:07:42[22m [32m✓ Completed in 60ms.
+2026-10-08T14:07:42.8957090Z [39m
+2026-10-08T14:07:42.8974717Z [2m14:07:42[22m [34m[build][39m [32m✓ Completed in 898ms.[39m
+2026-10-08T14:07:42.8978739Z [2m14:07:42[22m [34m[build][39m 10 page(s) built in [1m1.03s[22m
+2026-10-08T14:07:42.8979657Z [2m14:07:42[22m [34m[build][39m [1mComplete![22m
+2026-10-08T14:07:43.4589666Z ✔ Copying web assets from dist to android/app/src/main/assets/public in 14.37ms
+2026-10-08T14:07:43.4598282Z ✔ Creating capacitor.config.json in android/app/src/main/assets in 636.15μs
+2026-10-08T14:07:43.4686035Z ✔ copy android in 42.30ms
+2026-10-08T14:07:43.4978105Z ✔ Updating Android plugins in 7.37ms
+2026-10-08T14:07:43.5000189Z [info] Found 12 Capacitor plugins for android:
+2026-10-08T14:07:43.5000878Z        @capacitor/app@8.1.2
+2026-10-08T14:07:43.5001443Z        @capacitor/barcode-scanner@3.1.3
+2026-10-08T14:07:43.5002059Z        @capacitor/filesystem@8.1.4
+2026-10-08T14:07:43.5002610Z        @capacitor/haptics@8.0.2
+2026-10-08T14:07:43.5003133Z        @capacitor/keyboard@8.0.6
+2026-10-08T14:07:43.5003710Z        @capacitor/local-notifications@8.3.1
+2026-10-08T14:07:43.5004363Z        @capacitor/network@8.0.1
+2026-10-08T14:07:43.5005605Z        @capacitor/push-notifications@8.1.3
+2026-10-08T14:07:43.5006316Z        @capacitor/share@8.0.3
+2026-10-08T14:07:43.5006883Z        @capacitor/splash-screen@8.0.2
+2026-10-08T14:07:43.5007510Z        @capacitor/status-bar@8.0.4
+2026-10-08T14:07:43.5008087Z        @capgo/capacitor-updater@8.52.1
+2026-10-08T14:07:43.5445654Z ✔ update android in 65.28ms
+2026-10-08T14:07:43.5558338Z [info] Sync finished in 0.152s
+2026-10-08T14:07:43.5859663Z ##[group]Run chmod +x ./gradlew
+2026-10-08T14:07:43.5859999Z [36;1mchmod +x ./gradlew[0m
+2026-10-08T14:07:43.5860280Z [36;1m./gradlew assembleRelease[0m
+2026-10-08T14:07:43.5924222Z shell: /usr/bin/bash -e {0}
+2026-10-08T14:07:43.5924499Z env:
+2026-10-08T14:07:43.5925034Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T14:07:43.5925569Z   JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T14:07:43.5925996Z ##[endgroup]
+2026-10-08T14:07:43.8306021Z Downloading https://services.gradle.org/distributions/gradle-8.14.3-all.zip
+2026-10-08T14:07:46.0269996Z .....................10%.....................20%......................30%.....................40%......................50%.....................60%.....................70%......................80%.....................90%......................100%
+2026-10-08T14:07:49.3328211Z 
+2026-10-08T14:07:49.3329142Z Welcome to Gradle 8.14.3!
+2026-10-08T14:07:49.3329832Z 
+2026-10-08T14:07:49.3330185Z Here are the highlights of this release:
+2026-10-08T14:07:49.3330753Z  - Java 24 support
+2026-10-08T14:07:49.3331292Z  - GraalVM Native Image toolchain selection
+2026-10-08T14:07:49.3331896Z  - Enhancements to test reporting
+2026-10-08T14:07:49.3332467Z  - Build Authoring improvements
+2026-10-08T14:07:49.3332791Z 
+2026-10-08T14:07:49.3333318Z For more details see https://docs.gradle.org/8.14.3/release-notes.html
+2026-10-08T14:07:49.3333877Z 
+2026-10-08T14:07:49.5313800Z Starting a Gradle Daemon (subsequent builds will be faster)
+2026-10-08T14:08:17.3379932Z 
+2026-10-08T14:08:17.3426321Z > Configure project :app
+2026-10-08T14:08:17.3481259Z WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+2026-10-08T14:08:25.7314768Z 
+2026-10-08T14:08:25.7336408Z > Configure project :capacitor-cordova-android-plugins
+2026-10-08T14:08:25.7338120Z WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+2026-10-08T14:08:48.6311307Z 
+2026-10-08T14:08:48.6312277Z > Task :app:preBuild UP-TO-DATE
+2026-10-08T14:08:48.7328983Z > Task :app:preReleaseBuild UP-TO-DATE
+2026-10-08T14:08:48.8333687Z > Task :app:mergeReleaseJniLibFolders
+2026-10-08T14:08:48.8338947Z > Task :capacitor-android:preBuild UP-TO-DATE
+2026-10-08T14:08:48.8355926Z > Task :capacitor-android:preReleaseBuild UP-TO-DATE
+2026-10-08T14:08:48.8376098Z > Task :capacitor-android:mergeReleaseJniLibFolders
+2026-10-08T14:08:48.9346378Z > Task :capacitor-android:mergeReleaseNativeLibs NO-SOURCE
+2026-10-08T14:08:48.9375792Z > Task :capacitor-app:preBuild UP-TO-DATE
+2026-10-08T14:08:48.9404054Z > Task :capacitor-app:preReleaseBuild UP-TO-DATE
+2026-10-08T14:08:48.9421994Z > Task :capacitor-android:copyReleaseJniLibsProjectOnly
+2026-10-08T14:08:48.9422984Z > Task :capacitor-app:mergeReleaseJniLibFolders
+2026-10-08T14:08:48.9424015Z > Task :capacitor-app:mergeReleaseNativeLibs NO-SOURCE
+2026-10-08T14:08:48.9425247Z > Task :capacitor-barcode-scanner:preBuild UP-TO-DATE
+2026-10-08T14:08:48.9426342Z > Task :capacitor-barcode-scanner:preReleaseBuild UP-TO-DATE
+2026-10-08T14:08:48.9427351Z > Task :capacitor-app:copyReleaseJniLibsProjectOnly
+2026-10-08T14:08:48.9428354Z > Task :capacitor-barcode-scanner:mergeReleaseJniLibFolders
+2026-10-08T14:08:48.9429454Z > Task :capacitor-barcode-scanner:mergeReleaseNativeLibs NO-SOURCE
+2026-10-08T14:08:48.9430567Z > Task :capacitor-cordova-android-plugins:preBuild UP-TO-DATE
+2026-10-08T14:08:48.9431969Z > Task :capacitor-barcode-scanner:copyReleaseJniLibsProjectOnly
+2026-10-08T14:08:48.9433124Z > Task :capacitor-cordova-android-plugins:preReleaseBuild UP-TO-DATE
+2026-10-08T14:08:48.9434295Z > Task :capacitor-cordova-android-plugins:mergeReleaseJniLibFolders
+2026-10-08T14:08:48.9435724Z > Task :capacitor-cordova-android-plugins:mergeReleaseNativeLibs NO-SOURCE
+2026-10-08T14:08:48.9525936Z > Task :capacitor-filesystem:preBuild UP-TO-DATE
+2026-10-08T14:08:48.9539047Z > Task :capacitor-filesystem:preReleaseBuild UP-TO-DATE
+2026-10-08T14:08:48.9561476Z > Task :capacitor-cordova-android-plugins:copyReleaseJniLibsProjectOnly
+2026-10-08T14:08:48.9593220Z > Task :capacitor-filesystem:mergeReleaseJniLibFolders
+2026-10-08T14:08:48.9612347Z > Task :capacitor-filesystem:mergeReleaseNativeLibs NO-SOURCE
+2026-10-08T14:08:48.9617522Z > Task :capacitor-haptics:preBuild UP-TO-DATE
+2026-10-08T14:08:48.9618518Z > Task :capacitor-haptics:preReleaseBuild UP-TO-DATE
+2026-10-08T14:08:48.9630256Z > Task :capacitor-filesystem:copyReleaseJniLibsProjectOnly
+2026-10-08T14:08:49.0376716Z > Task :capacitor-haptics:mergeReleaseJniLibFolders
+2026-10-08T14:08:49.0405906Z > Task :capacitor-haptics:mergeReleaseNativeLibs NO-SOURCE
+2026-10-08T14:08:49.0433650Z > Task :capacitor-keyboard:preBuild UP-TO-DATE
+2026-10-08T14:08:49.0445731Z > Task :capacitor-keyboard:preReleaseBuild UP-TO-DATE
+2026-10-08T14:08:49.0465816Z > Task :capacitor-haptics:copyReleaseJniLibsProjectOnly
+2026-10-08T14:08:49.0495933Z > Task :capacitor-keyboard:mergeReleaseJniLibFolders
+2026-10-08T14:08:49.0526076Z > Task :capacitor-keyboard:mergeReleaseNativeLibs NO-SOURCE
+2026-10-08T14:08:49.0555747Z > Task :capacitor-local-notifications:preBuild UP-TO-DATE
+2026-10-08T14:08:49.0557056Z > Task :capacitor-local-notifications:preReleaseBuild UP-TO-DATE
+2026-10-08T14:08:49.0585883Z > Task :capacitor-keyboard:copyReleaseJniLibsProjectOnly
+2026-10-08T14:08:49.0616056Z > Task :capacitor-local-notifications:mergeReleaseJniLibFolders
+2026-10-08T14:08:49.0646051Z > Task :capacitor-local-notifications:mergeReleaseNativeLibs NO-SOURCE
+2026-10-08T14:08:49.0675629Z > Task :capacitor-network:preBuild UP-TO-DATE
+2026-10-08T14:08:49.0676427Z > Task :capacitor-network:preReleaseBuild UP-TO-DATE
+2026-10-08T14:08:49.0677336Z > Task :capacitor-local-notifications:copyReleaseJniLibsProjectOnly
+2026-10-08T14:08:49.0678193Z > Task :capacitor-network:mergeReleaseJniLibFolders
+2026-10-08T14:08:49.0678979Z > Task :capacitor-network:mergeReleaseNativeLibs NO-SOURCE
+2026-10-08T14:08:49.0679800Z > Task :capacitor-push-notifications:preBuild UP-TO-DATE
+2026-10-08T14:08:49.0680689Z > Task :capacitor-push-notifications:preReleaseBuild UP-TO-DATE
+2026-10-08T14:08:49.0681570Z > Task :capacitor-network:copyReleaseJniLibsProjectOnly
+2026-10-08T14:08:49.0682801Z > Task :capacitor-push-notifications:mergeReleaseJniLibFolders
+2026-10-08T14:08:49.0683809Z > Task :capacitor-push-notifications:mergeReleaseNativeLibs NO-SOURCE
+2026-10-08T14:08:49.0684657Z > Task :capacitor-share:preBuild UP-TO-DATE
+2026-10-08T14:08:49.0685627Z > Task :capacitor-share:preReleaseBuild UP-TO-DATE
+2026-10-08T14:08:49.0686482Z > Task :capacitor-push-notifications:copyReleaseJniLibsProjectOnly
+2026-10-08T14:08:49.0687331Z > Task :capacitor-share:mergeReleaseJniLibFolders
+2026-10-08T14:08:49.0688094Z > Task :capacitor-share:mergeReleaseNativeLibs NO-SOURCE
+2026-10-08T14:08:49.0688858Z > Task :capacitor-splash-screen:preBuild UP-TO-DATE
+2026-10-08T14:08:49.0689641Z > Task :capacitor-splash-screen:preReleaseBuild UP-TO-DATE
+2026-10-08T14:08:49.0690458Z > Task :capacitor-share:copyReleaseJniLibsProjectOnly
+2026-10-08T14:08:49.0691324Z > Task :capacitor-splash-screen:mergeReleaseJniLibFolders
+2026-10-08T14:08:49.0692259Z > Task :capacitor-splash-screen:mergeReleaseNativeLibs NO-SOURCE
+2026-10-08T14:08:49.0693098Z > Task :capacitor-status-bar:preBuild UP-TO-DATE
+2026-10-08T14:08:49.0693879Z > Task :capacitor-splash-screen:copyReleaseJniLibsProjectOnly
+2026-10-08T14:08:49.0694691Z > Task :capacitor-status-bar:preReleaseBuild UP-TO-DATE
+2026-10-08T14:08:49.1361067Z > Task :capacitor-status-bar:mergeReleaseJniLibFolders
+2026-10-08T14:08:49.1385946Z > Task :capacitor-status-bar:mergeReleaseNativeLibs NO-SOURCE
+2026-10-08T14:08:49.1415705Z > Task :capgo-capacitor-updater:preBuild UP-TO-DATE
+2026-10-08T14:08:49.1445758Z > Task :capgo-capacitor-updater:preReleaseBuild UP-TO-DATE
+2026-10-08T14:08:49.1466059Z > Task :capacitor-status-bar:copyReleaseJniLibsProjectOnly
+2026-10-08T14:08:49.1496113Z > Task :capgo-capacitor-updater:mergeReleaseJniLibFolders
+2026-10-08T14:08:49.1516629Z > Task :capgo-capacitor-updater:mergeReleaseNativeLibs NO-SOURCE
+2026-10-08T14:08:49.1517752Z > Task :capgo-capacitor-updater:copyReleaseJniLibsProjectOnly
+2026-10-08T14:08:49.1518713Z > Task :capacitor-android:generateReleaseResValues
+2026-10-08T14:09:00.7320481Z > Task :capacitor-android:generateReleaseResources
+2026-10-08T14:09:00.7321546Z > Task :app:mergeReleaseNativeLibs
+2026-10-08T14:09:00.8311673Z > Task :capacitor-android:packageReleaseResources
+2026-10-08T14:09:00.8312767Z > Task :capacitor-android:processReleaseNavigationResources
+2026-10-08T14:09:00.9311192Z 
+2026-10-08T14:09:00.9312066Z > Task :app:stripReleaseDebugSymbols
+2026-10-08T14:09:00.9320036Z Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libbarhopper_v3.so, libdatastore_shared_counter.so, libimage_processing_util_jni.so, libsurface_util_jni.so. Run with --info option to learn more.
+2026-10-08T14:09:03.4340842Z 
+2026-10-08T14:09:03.4362404Z > Task :capacitor-app:generateReleaseResValues
+2026-10-08T14:09:03.4363685Z > Task :app:extractReleaseNativeSymbolTables
+2026-10-08T14:09:03.4366534Z > Task :capacitor-android:javaPreCompileRelease
+2026-10-08T14:09:03.4367517Z > Task :capacitor-app:generateReleaseResources
+2026-10-08T14:09:03.4368592Z > Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+2026-10-08T14:09:03.4369688Z > Task :capacitor-app:packageReleaseResources
+2026-10-08T14:09:03.4370850Z > Task :capacitor-app:processReleaseNavigationResources
+2026-10-08T14:09:03.4373958Z > Task :capacitor-barcode-scanner:checkKotlinGradlePluginConfigurationErrors SKIPPED
+2026-10-08T14:09:03.4375548Z > Task :capacitor-app:javaPreCompileRelease
+2026-10-08T14:09:03.4376615Z > Task :capacitor-android:parseReleaseLocalResources
+2026-10-08T14:09:03.4377749Z > Task :capacitor-barcode-scanner:generateReleaseResValues
+2026-10-08T14:09:03.5326317Z > Task :capacitor-app:parseReleaseLocalResources
+2026-10-08T14:09:03.5335890Z > Task :capacitor-barcode-scanner:generateReleaseResources
+2026-10-08T14:09:03.5355813Z > Task :capacitor-barcode-scanner:packageReleaseResources
+2026-10-08T14:09:03.5385822Z > Task :capacitor-barcode-scanner:processReleaseNavigationResources
+2026-10-08T14:09:03.5415853Z > Task :capacitor-app:generateReleaseRFile
+2026-10-08T14:09:03.5423922Z > Task :capacitor-android:generateReleaseRFile
+2026-10-08T14:09:03.5425172Z > Task :capacitor-barcode-scanner:javaPreCompileRelease
+2026-10-08T14:09:03.5426263Z > Task :capacitor-barcode-scanner:parseReleaseLocalResources
+2026-10-08T14:09:10.6327133Z 
+2026-10-08T14:09:10.6337487Z Note: Some input files use unchecked or unsafe operations.
+2026-10-08T14:09:10.6338292Z > Task :capacitor-android:compileReleaseJavaWithJavac
+2026-10-08T14:09:10.6355974Z Note: Recompile with -Xlint:unchecked for details.
+2026-10-08T14:09:12.8317151Z 
+2026-10-08T14:09:12.8318792Z > Task :capacitor-filesystem:checkKotlinGradlePluginConfigurationErrors SKIPPED
+2026-10-08T14:09:12.8358430Z > Task :capacitor-filesystem:generateReleaseResValues
+2026-10-08T14:09:12.8375831Z > Task :capacitor-filesystem:generateReleaseResources
+2026-10-08T14:09:12.8386555Z > Task :capacitor-barcode-scanner:generateReleaseRFile
+2026-10-08T14:09:12.8387801Z > Task :capacitor-android:bundleLibCompileToJarRelease
+2026-10-08T14:09:12.8388903Z > Task :capacitor-filesystem:packageReleaseResources
+2026-10-08T14:09:13.1312073Z > Task :capacitor-app:compileReleaseJavaWithJavac
+2026-10-08T14:09:13.1313457Z > Task :capacitor-app:mergeReleaseGeneratedProguardFiles
+2026-10-08T14:09:13.1314724Z > Task :capacitor-app:exportReleaseConsumerProguardFiles
+2026-10-08T14:09:22.5356616Z > Task :capacitor-filesystem:processReleaseNavigationResources
+2026-10-08T14:09:22.5366154Z > Task :capacitor-haptics:generateReleaseResValues
+2026-10-08T14:09:22.5416527Z > Task :capacitor-filesystem:javaPreCompileRelease
+2026-10-08T14:09:22.5476240Z > Task :capacitor-haptics:generateReleaseResources
+2026-10-08T14:09:22.5477411Z > Task :capacitor-filesystem:parseReleaseLocalResources
+2026-10-08T14:09:22.5495977Z > Task :capacitor-haptics:packageReleaseResources
+2026-10-08T14:09:22.5497419Z > Task :capacitor-haptics:processReleaseNavigationResources
+2026-10-08T14:09:22.5535924Z > Task :capacitor-filesystem:generateReleaseRFile
+2026-10-08T14:09:22.5564557Z > Task :capacitor-haptics:javaPreCompileRelease
+2026-10-08T14:09:22.5596243Z > Task :capacitor-haptics:parseReleaseLocalResources
+2026-10-08T14:09:23.5340248Z > Task :capacitor-keyboard:generateReleaseResValues
+2026-10-08T14:09:23.5383405Z > Task :capacitor-keyboard:generateReleaseResources
+2026-10-08T14:09:23.5395757Z > Task :capacitor-haptics:generateReleaseRFile
+2026-10-08T14:09:23.5416042Z > Task :capacitor-keyboard:packageReleaseResources
+2026-10-08T14:09:23.9312431Z > Task :capacitor-haptics:compileReleaseJavaWithJavac
+2026-10-08T14:09:24.0343787Z > Task :capacitor-haptics:mergeReleaseGeneratedProguardFiles
+2026-10-08T14:09:24.0367410Z > Task :capacitor-haptics:exportReleaseConsumerProguardFiles
+2026-10-08T14:09:24.0419551Z > Task :capacitor-keyboard:processReleaseNavigationResources
+2026-10-08T14:09:24.0468062Z > Task :capacitor-keyboard:javaPreCompileRelease
+2026-10-08T14:09:24.0496145Z > Task :capacitor-local-notifications:checkKotlinGradlePluginConfigurationErrors SKIPPED
+2026-10-08T14:09:24.0525850Z > Task :capacitor-local-notifications:generateReleaseResValues
+2026-10-08T14:09:24.0526844Z > Task :capacitor-local-notifications:generateReleaseResources
+2026-10-08T14:09:24.0527776Z > Task :capacitor-keyboard:parseReleaseLocalResources
+2026-10-08T14:09:24.0528656Z > Task :capacitor-local-notifications:packageReleaseResources
+2026-10-08T14:09:24.0529675Z > Task :capacitor-local-notifications:processReleaseNavigationResources
+2026-10-08T14:09:24.0530576Z > Task :capacitor-keyboard:generateReleaseRFile
+2026-10-08T14:09:24.1339311Z > Task :capacitor-local-notifications:parseReleaseLocalResources
+2026-10-08T14:09:24.4326562Z > Task :capacitor-keyboard:compileReleaseJavaWithJavac
+2026-10-08T14:09:24.4334819Z > Task :capacitor-keyboard:mergeReleaseGeneratedProguardFiles
+2026-10-08T14:09:24.4346118Z > Task :capacitor-keyboard:exportReleaseConsumerProguardFiles
+2026-10-08T14:09:24.5335735Z > Task :capacitor-local-notifications:javaPreCompileRelease
+2026-10-08T14:09:24.5376285Z > Task :capacitor-local-notifications:generateReleaseRFile
+2026-10-08T14:09:24.5401769Z > Task :capacitor-network:generateReleaseResValues
+2026-10-08T14:09:30.3356904Z > Task :capacitor-network:generateReleaseResources
+2026-10-08T14:09:30.4322957Z > Task :capacitor-network:packageReleaseResources
+2026-10-08T14:09:30.4407125Z > Task :capacitor-network:processReleaseNavigationResources
+2026-10-08T14:09:30.4415749Z > Task :capacitor-network:parseReleaseLocalResources
+2026-10-08T14:09:30.5368356Z > Task :capacitor-network:generateReleaseRFile
+2026-10-08T14:09:30.5456206Z > Task :capacitor-network:javaPreCompileRelease
+2026-10-08T14:09:30.9316384Z > Task :capacitor-network:compileReleaseJavaWithJavac
+2026-10-08T14:09:30.9345891Z > Task :capacitor-network:mergeReleaseGeneratedProguardFiles
+2026-10-08T14:09:30.9407644Z > Task :capacitor-network:exportReleaseConsumerProguardFiles
+2026-10-08T14:09:30.9486182Z > Task :capacitor-push-notifications:generateReleaseResValues
+2026-10-08T14:09:30.9546092Z > Task :capacitor-push-notifications:generateReleaseResources
+2026-10-08T14:09:31.0368687Z > Task :capacitor-push-notifications:packageReleaseResources
+2026-10-08T14:09:31.0496643Z > Task :capacitor-push-notifications:processReleaseNavigationResources
+2026-10-08T14:09:31.0556471Z > Task :capacitor-push-notifications:parseReleaseLocalResources
+2026-10-08T14:09:31.1316434Z > Task :capacitor-push-notifications:generateReleaseRFile
+2026-10-08T14:09:31.1376385Z > Task :capacitor-push-notifications:javaPreCompileRelease
+2026-10-08T14:09:33.1312499Z 
+2026-10-08T14:09:33.1326120Z Note: /home/runner/work/nalaro-app/nalaro-app/node_modules/@capacitor/push-notifications/android/src/main/java/com/capacitorjs/plugins/pushnotifications/PushNotificationsPlugin.java uses or overrides a deprecated API.
+2026-10-08T14:09:33.1366052Z Note: Recompile with -Xlint:deprecation for details.
+2026-10-08T14:09:33.1367438Z > Task :capacitor-push-notifications:compileReleaseJavaWithJavac
+2026-10-08T14:09:34.3314483Z 
+2026-10-08T14:09:34.3379579Z > Task :capacitor-push-notifications:mergeReleaseGeneratedProguardFiles
+2026-10-08T14:09:34.3409991Z > Task :capacitor-push-notifications:exportReleaseConsumerProguardFiles
+2026-10-08T14:09:34.4312799Z > Task :capacitor-share:generateReleaseResValues
+2026-10-08T14:09:34.4319995Z > Task :capacitor-share:generateReleaseResources
+2026-10-08T14:09:34.4376051Z > Task :capacitor-share:packageReleaseResources
+2026-10-08T14:09:34.4436275Z > Task :capacitor-share:processReleaseNavigationResources
+2026-10-08T14:09:34.4476077Z > Task :capacitor-share:parseReleaseLocalResources
+2026-10-08T14:09:34.5328379Z > Task :capacitor-share:generateReleaseRFile
+2026-10-08T14:09:34.5422964Z > Task :capacitor-share:javaPreCompileRelease
+2026-10-08T14:09:34.6336357Z > Task :capacitor-barcode-scanner:compileReleaseKotlin
+2026-10-08T14:09:35.0317105Z > Task :capacitor-share:compileReleaseJavaWithJavac
+2026-10-08T14:09:35.0348661Z > Task :capacitor-barcode-scanner:compileReleaseJavaWithJavac NO-SOURCE
+2026-10-08T14:09:35.0394223Z > Task :capacitor-barcode-scanner:mergeReleaseGeneratedProguardFiles
+2026-10-08T14:09:35.0440981Z > Task :capacitor-barcode-scanner:exportReleaseConsumerProguardFiles
+2026-10-08T14:09:35.0498730Z > Task :capacitor-share:mergeReleaseGeneratedProguardFiles
+2026-10-08T14:09:35.0526729Z > Task :capacitor-share:exportReleaseConsumerProguardFiles
+2026-10-08T14:09:35.0575977Z > Task :capacitor-splash-screen:generateReleaseResValues
+2026-10-08T14:09:35.1312641Z > Task :capacitor-splash-screen:generateReleaseResources
+2026-10-08T14:09:35.1366310Z > Task :capacitor-splash-screen:packageReleaseResources
+2026-10-08T14:09:35.1426391Z > Task :capacitor-splash-screen:processReleaseNavigationResources
+2026-10-08T14:09:35.1436680Z > Task :capacitor-splash-screen:javaPreCompileRelease
+2026-10-08T14:09:35.1466008Z > Task :capacitor-status-bar:generateReleaseResValues
+2026-10-08T14:09:35.1516215Z > Task :capacitor-splash-screen:parseReleaseLocalResources
+2026-10-08T14:09:35.2311577Z > Task :capacitor-status-bar:generateReleaseResources
+2026-10-08T14:09:35.2313333Z > Task :capacitor-splash-screen:generateReleaseRFile
+2026-10-08T14:09:35.2314709Z > Task :capacitor-status-bar:packageReleaseResources
+2026-10-08T14:09:35.8326392Z > Task :capacitor-splash-screen:compileReleaseJavaWithJavac
+2026-10-08T14:09:35.9346375Z > Task :capacitor-splash-screen:mergeReleaseGeneratedProguardFiles
+2026-10-08T14:09:35.9416477Z > Task :capacitor-splash-screen:exportReleaseConsumerProguardFiles
+2026-10-08T14:09:35.9493826Z > Task :capacitor-status-bar:processReleaseNavigationResources
+2026-10-08T14:09:35.9606201Z > Task :capacitor-status-bar:javaPreCompileRelease
+2026-10-08T14:09:35.9636027Z > Task :capgo-capacitor-updater:generateReleaseResValues
+2026-10-08T14:09:35.9636944Z > Task :capacitor-status-bar:parseReleaseLocalResources
+2026-10-08T14:09:35.9637825Z > Task :capgo-capacitor-updater:generateReleaseResources
+2026-10-08T14:09:36.0328703Z > Task :capacitor-status-bar:generateReleaseRFile
+2026-10-08T14:09:36.0373496Z > Task :capgo-capacitor-updater:packageReleaseResources
+2026-10-08T14:09:36.3316600Z > Task :capacitor-status-bar:compileReleaseJavaWithJavac
+2026-10-08T14:09:36.3376282Z > Task :capacitor-status-bar:mergeReleaseGeneratedProguardFiles
+2026-10-08T14:09:36.4311676Z > Task :capacitor-status-bar:exportReleaseConsumerProguardFiles
+2026-10-08T14:09:36.4335906Z > Task :capgo-capacitor-updater:processReleaseNavigationResources
+2026-10-08T14:09:36.4416317Z > Task :capgo-capacitor-updater:javaPreCompileRelease
+2026-10-08T14:09:36.4425908Z > Task :capacitor-android:mergeReleaseGeneratedProguardFiles
+2026-10-08T14:09:36.4491326Z > Task :capgo-capacitor-updater:parseReleaseLocalResources
+2026-10-08T14:09:36.4526205Z > Task :capacitor-android:exportReleaseConsumerProguardFiles
+2026-10-08T14:09:36.4583922Z > Task :capacitor-cordova-android-plugins:generateReleaseResValues
+2026-10-08T14:09:36.4638024Z > Task :capgo-capacitor-updater:generateReleaseRFile
+2026-10-08T14:09:36.4639266Z > Task :capacitor-cordova-android-plugins:generateReleaseResources
+2026-10-08T14:09:38.3311578Z > Task :capacitor-filesystem:compileReleaseKotlin
+2026-10-08T14:09:40.1314813Z Note: /home/runner/work/nalaro-app/nalaro-app/node_modules/@capgo/capacitor-updater/android/src/main/java/ee/forgr/capacitor_updater/CapacitorUpdaterPlugin.java uses or overrides a deprecated API.
+2026-10-08T14:09:40.1360729Z Note: Recompile with -Xlint:deprecation for details.
+2026-10-08T14:09:40.1361218Z 
+2026-10-08T14:09:40.1411514Z > Task :capgo-capacitor-updater:compileReleaseJavaWithJavac
+2026-10-08T14:09:40.7319704Z 
+2026-10-08T14:09:40.7339840Z > Task :capacitor-filesystem:compileReleaseJavaWithJavac NO-SOURCE
+2026-10-08T14:09:40.8322939Z > Task :capacitor-filesystem:mergeReleaseGeneratedProguardFiles
+2026-10-08T14:09:40.8359946Z > Task :capacitor-filesystem:exportReleaseConsumerProguardFiles
+2026-10-08T14:09:40.8360967Z > Task :capgo-capacitor-updater:mergeReleaseGeneratedProguardFiles
+2026-10-08T14:09:40.8361960Z > Task :capgo-capacitor-updater:exportReleaseConsumerProguardFiles
+2026-10-08T14:09:40.8362908Z > Task :capacitor-cordova-android-plugins:packageReleaseResources
+2026-10-08T14:09:40.8363979Z > Task :capacitor-cordova-android-plugins:processReleaseNavigationResources
+2026-10-08T14:09:40.9356691Z > Task :capacitor-cordova-android-plugins:javaPreCompileRelease
+2026-10-08T14:09:40.9374702Z > Task :capacitor-cordova-android-plugins:parseReleaseLocalResources
+2026-10-08T14:09:42.7358945Z > Task :app:javaPreCompileRelease
+2026-10-08T14:09:42.7436410Z > Task :capacitor-cordova-android-plugins:generateReleaseRFile
+2026-10-08T14:09:42.7542084Z > Task :capacitor-android:writeReleaseAarMetadata
+2026-10-08T14:09:42.7543675Z > Task :capacitor-cordova-android-plugins:compileReleaseJavaWithJavac NO-SOURCE
+2026-10-08T14:09:42.7577868Z > Task :capacitor-cordova-android-plugins:mergeReleaseGeneratedProguardFiles
+2026-10-08T14:09:42.7598136Z > Task :app:checkReleaseDuplicateClasses
+2026-10-08T14:09:42.7656910Z > Task :capacitor-cordova-android-plugins:exportReleaseConsumerProguardFiles
+2026-10-08T14:09:42.7658204Z > Task :capacitor-app:writeReleaseAarMetadata
+2026-10-08T14:09:42.7660032Z > Task :capacitor-barcode-scanner:writeReleaseAarMetadata
+2026-10-08T14:09:42.7680475Z > Task :capacitor-cordova-android-plugins:writeReleaseAarMetadata
+2026-10-08T14:09:42.7681597Z > Task :capacitor-filesystem:writeReleaseAarMetadata
+2026-10-08T14:09:42.7682542Z > Task :capacitor-haptics:writeReleaseAarMetadata
+2026-10-08T14:09:42.8356723Z > Task :capacitor-local-notifications:writeReleaseAarMetadata
+2026-10-08T14:09:42.8365972Z > Task :capacitor-network:writeReleaseAarMetadata
+2026-10-08T14:09:42.8395996Z > Task :capacitor-keyboard:writeReleaseAarMetadata
+2026-10-08T14:09:42.8426018Z > Task :capacitor-push-notifications:writeReleaseAarMetadata
+2026-10-08T14:09:42.8427186Z > Task :capacitor-share:writeReleaseAarMetadata
+2026-10-08T14:09:42.8455933Z > Task :capacitor-splash-screen:writeReleaseAarMetadata
+2026-10-08T14:09:42.8485980Z > Task :capacitor-status-bar:writeReleaseAarMetadata
+2026-10-08T14:09:42.8516020Z > Task :capgo-capacitor-updater:writeReleaseAarMetadata
+2026-10-08T14:09:43.0336031Z > Task :app:processReleaseNavigationResources
+2026-10-08T14:09:43.2336424Z > Task :app:checkReleaseAarMetadata
+2026-10-08T14:09:43.5314577Z > Task :app:generateReleaseResValues
+2026-10-08T14:09:43.7339835Z > Task :app:compileReleaseNavigationResources
+2026-10-08T14:09:43.7341902Z > Task :app:mapReleaseSourceSetPaths
+2026-10-08T14:09:43.8311557Z > Task :app:generateReleaseResources
+2026-10-08T14:09:45.7396332Z > Task :app:packageReleaseResources
+2026-10-08T14:09:45.7417217Z > Task :app:createReleaseCompatibleScreenManifests
+2026-10-08T14:09:45.7476515Z > Task :app:extractDeepLinksRelease
+2026-10-08T14:09:45.7576167Z > Task :capacitor-android:extractDeepLinksRelease
+2026-10-08T14:09:47.3336261Z > Task :app:parseReleaseLocalResources
+2026-10-08T14:09:47.3345732Z > Task :capacitor-app:extractDeepLinksRelease
+2026-10-08T14:09:47.4360287Z > Task :capacitor-android:processReleaseManifest
+2026-10-08T14:09:47.4446210Z > Task :capacitor-app:processReleaseManifest
+2026-10-08T14:09:47.4448860Z > Task :capacitor-barcode-scanner:extractDeepLinksRelease
+2026-10-08T14:09:47.4506508Z > Task :capacitor-cordova-android-plugins:extractDeepLinksRelease
+2026-10-08T14:09:47.4536109Z > Task :capacitor-barcode-scanner:processReleaseManifest
+2026-10-08T14:09:47.5319772Z > Task :capacitor-filesystem:extractDeepLinksRelease
+2026-10-08T14:09:47.5329192Z > Task :capacitor-cordova-android-plugins:processReleaseManifest
+2026-10-08T14:09:47.5355868Z > Task :capacitor-haptics:extractDeepLinksRelease
+2026-10-08T14:09:47.5370060Z > Task :capacitor-filesystem:processReleaseManifest
+2026-10-08T14:09:47.5370969Z > Task :capacitor-keyboard:extractDeepLinksRelease
+2026-10-08T14:09:47.5371858Z > Task :capacitor-haptics:processReleaseManifest
+2026-10-08T14:09:47.6311630Z > Task :capacitor-local-notifications:extractDeepLinksRelease
+2026-10-08T14:09:47.6336367Z > Task :capacitor-keyboard:processReleaseManifest
+2026-10-08T14:09:47.6367482Z > Task :capacitor-network:extractDeepLinksRelease
+2026-10-08T14:09:47.6396078Z > Task :capacitor-local-notifications:processReleaseManifest
+2026-10-08T14:09:47.6397862Z > Task :capacitor-network:processReleaseManifest
+2026-10-08T14:09:47.6426000Z > Task :capacitor-push-notifications:extractDeepLinksRelease
+2026-10-08T14:09:47.7380040Z > Task :capacitor-share:extractDeepLinksRelease
+2026-10-08T14:09:47.7381045Z > Task :capacitor-push-notifications:processReleaseManifest
+2026-10-08T14:09:47.7381880Z > Task :capacitor-share:processReleaseManifest
+2026-10-08T14:09:47.7382630Z > Task :capacitor-splash-screen:extractDeepLinksRelease
+2026-10-08T14:09:47.8366396Z > Task :capacitor-status-bar:extractDeepLinksRelease
+2026-10-08T14:09:47.8397783Z > Task :capacitor-splash-screen:processReleaseManifest
+2026-10-08T14:09:47.8421976Z > Task :capacitor-status-bar:processReleaseManifest
+2026-10-08T14:09:47.8450297Z > Task :capgo-capacitor-updater:extractDeepLinksRelease
+2026-10-08T14:09:47.9311077Z > Task :app:mergeReleaseResources
+2026-10-08T14:09:47.9349498Z > Task :capgo-capacitor-updater:processReleaseManifest
+2026-10-08T14:09:47.9403163Z > Task :capacitor-app:bundleLibCompileToJarRelease
+2026-10-08T14:09:48.6336461Z > Task :app:processReleaseMainManifest
+2026-10-08T14:09:48.8326416Z > Task :app:processReleaseManifest
+2026-10-08T14:09:48.8328045Z > Task :capacitor-barcode-scanner:bundleLibCompileToJarRelease
+2026-10-08T14:09:48.9316481Z > Task :capacitor-cordova-android-plugins:bundleLibCompileToJarRelease
+2026-10-08T14:09:48.9349286Z > Task :capacitor-filesystem:bundleLibCompileToJarRelease
+2026-10-08T14:09:48.9375722Z > Task :app:processReleaseManifestForPackage
+2026-10-08T14:09:48.9405877Z > Task :capacitor-haptics:bundleLibCompileToJarRelease
+2026-10-08T14:09:49.3347174Z > Task :capacitor-keyboard:bundleLibCompileToJarRelease
+2026-10-08T14:09:49.3376241Z > Task :capacitor-network:bundleLibCompileToJarRelease
+2026-10-08T14:09:49.3436373Z > Task :capacitor-push-notifications:bundleLibCompileToJarRelease
+2026-10-08T14:09:49.3496152Z > Task :capacitor-share:bundleLibCompileToJarRelease
+2026-10-08T14:09:49.3525996Z > Task :capacitor-splash-screen:bundleLibCompileToJarRelease
+2026-10-08T14:09:49.3555873Z > Task :capacitor-status-bar:bundleLibCompileToJarRelease
+2026-10-08T14:09:49.3615966Z > Task :capacitor-android:prepareReleaseArtProfile
+2026-10-08T14:09:49.3676006Z > Task :capacitor-app:prepareReleaseArtProfile
+2026-10-08T14:09:49.3736070Z > Task :capgo-capacitor-updater:bundleLibCompileToJarRelease
+2026-10-08T14:09:49.3786017Z > Task :capacitor-barcode-scanner:prepareReleaseArtProfile
+2026-10-08T14:09:49.3863006Z > Task :capacitor-cordova-android-plugins:prepareReleaseArtProfile
+2026-10-08T14:09:49.3897825Z > Task :capacitor-filesystem:prepareReleaseArtProfile
+2026-10-08T14:09:49.3935907Z > Task :capacitor-haptics:prepareReleaseArtProfile
+2026-10-08T14:09:49.3936920Z > Task :capacitor-keyboard:prepareReleaseArtProfile
+2026-10-08T14:09:49.4003406Z > Task :capacitor-local-notifications:prepareReleaseArtProfile
+2026-10-08T14:09:49.4004507Z > Task :capacitor-network:prepareReleaseArtProfile
+2026-10-08T14:09:49.4056048Z > Task :capacitor-push-notifications:prepareReleaseArtProfile
+2026-10-08T14:09:49.4116170Z > Task :capacitor-share:prepareReleaseArtProfile
+2026-10-08T14:09:49.4130378Z > Task :capacitor-splash-screen:prepareReleaseArtProfile
+2026-10-08T14:09:49.4141598Z > Task :capacitor-status-bar:prepareReleaseArtProfile
+2026-10-08T14:09:49.4316549Z > Task :capgo-capacitor-updater:prepareReleaseArtProfile
+2026-10-08T14:09:49.6366359Z > Task :app:mergeReleaseArtProfile
+2026-10-08T14:09:49.6413529Z > Task :capacitor-android:bundleLibRuntimeToJarRelease
+2026-10-08T14:09:49.6472558Z > Task :capacitor-app:bundleLibRuntimeToJarRelease
+2026-10-08T14:09:49.6507258Z > Task :capacitor-cordova-android-plugins:bundleLibRuntimeToJarRelease
+2026-10-08T14:09:49.6556268Z > Task :capacitor-barcode-scanner:bundleLibRuntimeToJarRelease
+2026-10-08T14:09:49.6603461Z > Task :capacitor-haptics:bundleLibRuntimeToJarRelease
+2026-10-08T14:09:49.6650353Z > Task :capacitor-filesystem:bundleLibRuntimeToJarRelease
+2026-10-08T14:09:49.6651960Z > Task :capacitor-keyboard:bundleLibRuntimeToJarRelease
+2026-10-08T14:09:49.7320593Z > Task :capacitor-network:bundleLibRuntimeToJarRelease
+2026-10-08T14:09:49.7376106Z > Task :capacitor-push-notifications:bundleLibRuntimeToJarRelease
+2026-10-08T14:09:49.7388035Z > Task :capacitor-share:bundleLibRuntimeToJarRelease
+2026-10-08T14:09:49.7388919Z > Task :capacitor-splash-screen:bundleLibRuntimeToJarRelease
+2026-10-08T14:09:49.7389778Z > Task :capacitor-status-bar:bundleLibRuntimeToJarRelease
+2026-10-08T14:09:49.7390464Z > Task :app:extractProguardFiles
+2026-10-08T14:09:49.7391184Z > Task :capgo-capacitor-updater:bundleLibRuntimeToJarRelease
+2026-10-08T14:09:49.7391933Z > Task :app:processReleaseJavaRes NO-SOURCE
+2026-10-08T14:09:49.7392721Z > Task :capacitor-android:processReleaseJavaRes NO-SOURCE
+2026-10-08T14:09:49.7393517Z > Task :capacitor-app:processReleaseJavaRes NO-SOURCE
+2026-10-08T14:09:49.8350012Z > Task :capacitor-barcode-scanner:processReleaseJavaRes
+2026-10-08T14:09:49.8378901Z > Task :capacitor-cordova-android-plugins:processReleaseJavaRes NO-SOURCE
+2026-10-08T14:09:49.8405964Z > Task :capacitor-filesystem:processReleaseJavaRes
+2026-10-08T14:09:49.8456834Z > Task :capacitor-haptics:processReleaseJavaRes NO-SOURCE
+2026-10-08T14:09:49.8496119Z > Task :capacitor-keyboard:processReleaseJavaRes NO-SOURCE
+2026-10-08T14:09:49.8526357Z > Task :capacitor-network:processReleaseJavaRes NO-SOURCE
+2026-10-08T14:09:49.8586418Z > Task :capacitor-push-notifications:processReleaseJavaRes NO-SOURCE
+2026-10-08T14:09:49.8635882Z > Task :capacitor-share:processReleaseJavaRes NO-SOURCE
+2026-10-08T14:09:49.8670667Z > Task :capacitor-splash-screen:processReleaseJavaRes NO-SOURCE
+2026-10-08T14:09:49.8695953Z > Task :capacitor-status-bar:processReleaseJavaRes NO-SOURCE
+2026-10-08T14:09:49.8755964Z > Task :capgo-capacitor-updater:processReleaseJavaRes NO-SOURCE
+2026-10-08T14:09:49.8805844Z > Task :app:mergeReleaseStartupProfile
+2026-10-08T14:09:49.8855733Z > Task :app:mergeReleaseShaders
+2026-10-08T14:09:49.8895785Z > Task :app:compileReleaseShaders NO-SOURCE
+2026-10-08T14:09:49.8905741Z > Task :app:generateReleaseAssets UP-TO-DATE
+2026-10-08T14:09:49.8947205Z > Task :capacitor-android:mergeReleaseShaders
+2026-10-08T14:09:49.8975927Z > Task :capacitor-android:compileReleaseShaders NO-SOURCE
+2026-10-08T14:09:49.9006076Z > Task :capacitor-android:generateReleaseAssets UP-TO-DATE
+2026-10-08T14:09:49.9311070Z > Task :capacitor-android:mergeReleaseAssets
+2026-10-08T14:09:49.9312314Z > Task :capacitor-app:mergeReleaseShaders
+2026-10-08T14:09:49.9313261Z > Task :capacitor-app:compileReleaseShaders NO-SOURCE
+2026-10-08T14:09:49.9314231Z > Task :capacitor-app:generateReleaseAssets UP-TO-DATE
+2026-10-08T14:09:49.9315476Z > Task :capacitor-app:mergeReleaseAssets
+2026-10-08T14:09:49.9316434Z > Task :capacitor-barcode-scanner:mergeReleaseShaders
+2026-10-08T14:09:49.9317921Z > Task :capacitor-barcode-scanner:compileReleaseShaders NO-SOURCE
+2026-10-08T14:09:49.9319235Z > Task :capacitor-barcode-scanner:generateReleaseAssets UP-TO-DATE
+2026-10-08T14:09:49.9320428Z > Task :capacitor-barcode-scanner:mergeReleaseAssets
+2026-10-08T14:09:49.9321651Z > Task :capacitor-cordova-android-plugins:mergeReleaseShaders
+2026-10-08T14:09:49.9346079Z > Task :capacitor-cordova-android-plugins:compileReleaseShaders NO-SOURCE
+2026-10-08T14:09:49.9372864Z > Task :capacitor-cordova-android-plugins:generateReleaseAssets UP-TO-DATE
+2026-10-08T14:09:49.9406073Z > Task :capacitor-cordova-android-plugins:mergeReleaseAssets
+2026-10-08T14:09:50.0346475Z > Task :capacitor-filesystem:mergeReleaseShaders
+2026-10-08T14:09:50.0376186Z > Task :capacitor-filesystem:compileReleaseShaders NO-SOURCE
+2026-10-08T14:09:50.0436045Z > Task :capacitor-filesystem:generateReleaseAssets UP-TO-DATE
+2026-10-08T14:09:50.0466034Z > Task :capacitor-filesystem:mergeReleaseAssets
+2026-10-08T14:09:50.0522530Z > Task :capacitor-haptics:mergeReleaseShaders
+2026-10-08T14:09:50.0545896Z > Task :capacitor-haptics:compileReleaseShaders NO-SOURCE
+2026-10-08T14:09:50.0605950Z > Task :capacitor-haptics:generateReleaseAssets UP-TO-DATE
+2026-10-08T14:09:50.0636027Z > Task :capacitor-haptics:mergeReleaseAssets
+2026-10-08T14:09:50.0695961Z > Task :capacitor-keyboard:mergeReleaseShaders
+2026-10-08T14:09:50.0725967Z > Task :capacitor-keyboard:compileReleaseShaders NO-SOURCE
+2026-10-08T14:09:50.0789250Z > Task :capacitor-keyboard:generateReleaseAssets UP-TO-DATE
+2026-10-08T14:09:50.0875807Z > Task :capacitor-keyboard:mergeReleaseAssets
+2026-10-08T14:09:50.0996005Z > Task :capacitor-local-notifications:mergeReleaseShaders
+2026-10-08T14:09:50.1027413Z > Task :capacitor-local-notifications:compileReleaseShaders NO-SOURCE
+2026-10-08T14:09:50.1067883Z > Task :capacitor-local-notifications:generateReleaseAssets UP-TO-DATE
+2026-10-08T14:09:50.1127958Z > Task :capacitor-local-notifications:mergeReleaseAssets
+2026-10-08T14:09:50.1155792Z > Task :capacitor-network:mergeReleaseShaders
+2026-10-08T14:09:50.1185992Z > Task :capacitor-network:compileReleaseShaders NO-SOURCE
+2026-10-08T14:09:50.1215760Z > Task :capacitor-network:generateReleaseAssets UP-TO-DATE
+2026-10-08T14:09:50.1245571Z > Task :capacitor-network:mergeReleaseAssets
+2026-10-08T14:09:50.1275751Z > Task :capacitor-push-notifications:mergeReleaseShaders
+2026-10-08T14:09:50.1305725Z > Task :capacitor-push-notifications:compileReleaseShaders NO-SOURCE
+2026-10-08T14:09:50.1335841Z > Task :capacitor-push-notifications:generateReleaseAssets UP-TO-DATE
+2026-10-08T14:09:50.1365690Z > Task :capacitor-push-notifications:mergeReleaseAssets
+2026-10-08T14:09:50.1425902Z > Task :capacitor-share:mergeReleaseShaders
+2026-10-08T14:09:50.1452164Z > Task :capacitor-share:compileReleaseShaders NO-SOURCE
+2026-10-08T14:09:50.1475664Z > Task :capacitor-share:generateReleaseAssets UP-TO-DATE
+2026-10-08T14:09:50.1505658Z > Task :capacitor-share:mergeReleaseAssets
+2026-10-08T14:09:50.1535863Z > Task :capacitor-splash-screen:mergeReleaseShaders
+2026-10-08T14:09:50.1595835Z > Task :capacitor-splash-screen:compileReleaseShaders NO-SOURCE
+2026-10-08T14:09:50.1656004Z > Task :capacitor-splash-screen:generateReleaseAssets UP-TO-DATE
+2026-10-08T14:09:50.1685798Z > Task :capacitor-splash-screen:mergeReleaseAssets
+2026-10-08T14:09:50.1715776Z > Task :capacitor-status-bar:mergeReleaseShaders
+2026-10-08T14:09:50.1775869Z > Task :capacitor-status-bar:compileReleaseShaders NO-SOURCE
+2026-10-08T14:09:50.1805833Z > Task :capacitor-status-bar:generateReleaseAssets UP-TO-DATE
+2026-10-08T14:09:50.1865735Z > Task :capacitor-status-bar:mergeReleaseAssets
+2026-10-08T14:09:50.1895686Z > Task :capgo-capacitor-updater:mergeReleaseShaders
+2026-10-08T14:09:50.1925779Z > Task :capgo-capacitor-updater:compileReleaseShaders NO-SOURCE
+2026-10-08T14:09:50.1975857Z > Task :capgo-capacitor-updater:generateReleaseAssets UP-TO-DATE
+2026-10-08T14:09:50.2326198Z > Task :capgo-capacitor-updater:mergeReleaseAssets
+2026-10-08T14:09:50.4366551Z > Task :app:mergeReleaseAssets
+2026-10-08T14:09:50.6326674Z > Task :app:processReleaseResources
+2026-10-08T14:09:50.7336303Z > Task :app:compressReleaseAssets
+2026-10-08T14:09:50.8329184Z > Task :app:extractReleaseVersionControlInfo
+2026-10-08T14:09:50.8355185Z > Task :capacitor-android:createFullJarRelease
+2026-10-08T14:09:50.8385885Z > Task :capacitor-android:extractProguardFiles
+2026-10-08T14:09:52.7311461Z > Task :capacitor-android:generateReleaseLintModel
+2026-10-08T14:09:52.7312437Z > Task :capacitor-app:createFullJarRelease
+2026-10-08T14:09:52.7345736Z > Task :capacitor-android:prepareLintJarForPublish
+2026-10-08T14:09:52.7375795Z > Task :capacitor-app:extractProguardFiles
+2026-10-08T14:09:52.7385638Z > Task :capacitor-app:generateReleaseLintModel
+2026-10-08T14:09:52.7405827Z > Task :capacitor-app:prepareLintJarForPublish
+2026-10-08T14:09:52.7409352Z > Task :capacitor-barcode-scanner:createFullJarRelease
+2026-10-08T14:09:52.7410402Z > Task :capacitor-barcode-scanner:extractProguardFiles
+2026-10-08T14:09:52.9311722Z > Task :capacitor-local-notifications:compileReleaseKotlin
+2026-10-08T14:09:54.1311142Z > Task :capacitor-barcode-scanner:generateReleaseLintModel
+2026-10-08T14:09:54.1312187Z > Task :capacitor-local-notifications:compileReleaseJavaWithJavac NO-SOURCE
+2026-10-08T14:09:54.2311752Z > Task :capacitor-local-notifications:mergeReleaseGeneratedProguardFiles
+2026-10-08T14:09:54.2312822Z > Task :capacitor-local-notifications:exportReleaseConsumerProguardFiles
+2026-10-08T14:09:54.2313722Z > Task :capacitor-local-notifications:bundleLibCompileToJarRelease
+2026-10-08T14:09:54.2314577Z > Task :capacitor-local-notifications:bundleLibRuntimeToJarRelease
+2026-10-08T14:09:54.2315688Z > Task :capacitor-local-notifications:processReleaseJavaRes
+2026-10-08T14:09:54.9326284Z > Task :app:compileReleaseJavaWithJavac
+2026-10-08T14:09:55.2351641Z > Task :app:mergeReleaseGeneratedProguardFiles
+2026-10-08T14:09:56.2311313Z > Task :capacitor-barcode-scanner:prepareLintJarForPublish
+2026-10-08T14:09:56.2361625Z > Task :capacitor-cordova-android-plugins:createFullJarRelease
+2026-10-08T14:09:56.2385155Z > Task :capacitor-cordova-android-plugins:extractProguardFiles
+2026-10-08T14:09:56.2386492Z > Task :app:expandReleaseArtProfileWildcards
+2026-10-08T14:09:57.2310869Z > Task :app:mergeReleaseJavaResource
+2026-10-08T14:09:57.5311777Z > Task :capacitor-cordova-android-plugins:generateReleaseLintModel
+2026-10-08T14:09:58.2332156Z > Task :capacitor-cordova-android-plugins:prepareLintJarForPublish
+2026-10-08T14:09:58.2369083Z > Task :capacitor-filesystem:createFullJarRelease
+2026-10-08T14:09:58.2409996Z > Task :capacitor-filesystem:extractProguardFiles
+2026-10-08T14:09:58.3326626Z > Task :capacitor-filesystem:generateReleaseLintModel
+2026-10-08T14:09:58.3342076Z > Task :capacitor-haptics:createFullJarRelease
+2026-10-08T14:09:58.3369694Z > Task :capacitor-filesystem:prepareLintJarForPublish
+2026-10-08T14:09:58.3398847Z > Task :capacitor-haptics:extractProguardFiles
+2026-10-08T14:09:58.3415817Z > Task :capacitor-haptics:generateReleaseLintModel
+2026-10-08T14:09:58.3417540Z > Task :capacitor-haptics:prepareLintJarForPublish
+2026-10-08T14:09:58.3418213Z > Task :capacitor-keyboard:createFullJarRelease
+2026-10-08T14:09:58.3418841Z > Task :capacitor-keyboard:extractProguardFiles
+2026-10-08T14:09:58.4346243Z > Task :capacitor-keyboard:generateReleaseLintModel
+2026-10-08T14:09:58.4375615Z > Task :capacitor-keyboard:prepareLintJarForPublish
+2026-10-08T14:09:58.4395801Z > Task :capacitor-local-notifications:createFullJarRelease
+2026-10-08T14:09:58.4435775Z > Task :capacitor-local-notifications:extractProguardFiles
+2026-10-08T14:09:58.4455843Z > Task :capacitor-local-notifications:generateReleaseLintModel
+2026-10-08T14:09:58.4456955Z > Task :capacitor-local-notifications:prepareLintJarForPublish
+2026-10-08T14:09:58.4485862Z > Task :capacitor-network:createFullJarRelease
+2026-10-08T14:09:58.4515581Z > Task :capacitor-network:extractProguardFiles
+2026-10-08T14:09:58.4545563Z > Task :capacitor-network:generateReleaseLintModel
+2026-10-08T14:09:58.4546628Z > Task :capacitor-network:prepareLintJarForPublish
+2026-10-08T14:09:58.4577609Z > Task :capacitor-push-notifications:createFullJarRelease
+2026-10-08T14:09:58.4605709Z > Task :capacitor-push-notifications:extractProguardFiles
+2026-10-08T14:09:59.0311387Z > Task :capacitor-push-notifications:generateReleaseLintModel
+2026-10-08T14:09:59.0326168Z > Task :capacitor-push-notifications:prepareLintJarForPublish
+2026-10-08T14:09:59.0355988Z > Task :capacitor-share:createFullJarRelease
+2026-10-08T14:09:59.0385691Z > Task :capacitor-share:extractProguardFiles
+2026-10-08T14:09:59.1327824Z > Task :capacitor-share:generateReleaseLintModel
+2026-10-08T14:09:59.1328862Z > Task :capacitor-share:prepareLintJarForPublish
+2026-10-08T14:09:59.1358058Z > Task :capacitor-splash-screen:createFullJarRelease
+2026-10-08T14:09:59.1385994Z > Task :capacitor-splash-screen:extractProguardFiles
+2026-10-08T14:09:59.2339941Z > Task :capacitor-splash-screen:generateReleaseLintModel
+2026-10-08T14:09:59.2354754Z > Task :capacitor-splash-screen:prepareLintJarForPublish
+2026-10-08T14:09:59.2365713Z > Task :capacitor-status-bar:createFullJarRelease
+2026-10-08T14:09:59.2395973Z > Task :capacitor-status-bar:extractProguardFiles
+2026-10-08T14:09:59.3338308Z > Task :capacitor-status-bar:generateReleaseLintModel
+2026-10-08T14:09:59.3339668Z > Task :capacitor-status-bar:prepareLintJarForPublish
+2026-10-08T14:09:59.3365737Z > Task :capgo-capacitor-updater:createFullJarRelease
+2026-10-08T14:09:59.3395690Z > Task :capgo-capacitor-updater:extractProguardFiles
+2026-10-08T14:09:59.8346488Z > Task :capgo-capacitor-updater:generateReleaseLintModel
+2026-10-08T14:09:59.8375804Z > Task :capgo-capacitor-updater:prepareLintJarForPublish
+2026-10-08T14:10:00.0311771Z > Task :app:generateReleaseLintVitalReportModel
+2026-10-08T14:10:00.0345994Z > Task :capacitor-app:stripReleaseDebugSymbols NO-SOURCE
+2026-10-08T14:10:00.0405928Z > Task :capacitor-app:checkReleaseAarMetadata
+2026-10-08T14:10:00.0415642Z > Task :capacitor-app:extractDeepLinksForAarRelease
+2026-10-08T14:10:00.0464093Z > Task :capacitor-app:copyReleaseJniLibsProjectAndLocalJars
+2026-10-08T14:10:07.8336442Z > Task :capacitor-app:extractReleaseAnnotations
+2026-10-08T14:10:07.8366099Z > Task :capacitor-app:mergeReleaseConsumerProguardFiles
+2026-10-08T14:10:07.8414150Z > Task :capacitor-app:mergeReleaseJavaResource
+2026-10-08T14:10:07.9336639Z > Task :capacitor-barcode-scanner:checkReleaseAarMetadata
+2026-10-08T14:10:07.9375893Z > Task :capacitor-app:syncReleaseLibJars
+2026-10-08T14:10:07.9437309Z > Task :capacitor-app:bundleReleaseLocalLintAar
+2026-10-08T14:10:07.9486278Z > Task :capacitor-barcode-scanner:stripReleaseDebugSymbols NO-SOURCE
+2026-10-08T14:10:07.9525984Z > Task :capacitor-barcode-scanner:extractDeepLinksForAarRelease
+2026-10-08T14:10:07.9555978Z > Task :capacitor-barcode-scanner:copyReleaseJniLibsProjectAndLocalJars
+2026-10-08T14:10:08.8311316Z > Task :capacitor-barcode-scanner:extractReleaseAnnotations
+2026-10-08T14:10:08.8317422Z > Task :capacitor-barcode-scanner:mergeReleaseConsumerProguardFiles
+2026-10-08T14:10:08.8318636Z > Task :capacitor-barcode-scanner:mergeReleaseJavaResource
+2026-10-08T14:10:08.8319648Z > Task :capacitor-filesystem:checkReleaseAarMetadata
+2026-10-08T14:10:08.9312224Z > Task :capacitor-barcode-scanner:syncReleaseLibJars
+2026-10-08T14:10:08.9366384Z > Task :capacitor-barcode-scanner:bundleReleaseLocalLintAar
+2026-10-08T14:10:08.9426045Z > Task :capacitor-filesystem:stripReleaseDebugSymbols NO-SOURCE
+2026-10-08T14:10:08.9443187Z > Task :capacitor-filesystem:copyReleaseJniLibsProjectAndLocalJars
+2026-10-08T14:10:08.9455829Z > Task :capacitor-filesystem:extractDeepLinksForAarRelease
+2026-10-08T14:10:08.9515796Z > Task :capacitor-filesystem:extractReleaseAnnotations
+2026-10-08T14:10:08.9516740Z > Task :capacitor-filesystem:mergeReleaseConsumerProguardFiles
+2026-10-08T14:10:08.9517629Z > Task :capacitor-filesystem:mergeReleaseJavaResource
+2026-10-08T14:10:08.9518431Z > Task :capacitor-haptics:checkReleaseAarMetadata
+2026-10-08T14:10:09.0346235Z > Task :capacitor-filesystem:syncReleaseLibJars
+2026-10-08T14:10:09.0406699Z > Task :capacitor-filesystem:bundleReleaseLocalLintAar
+2026-10-08T14:10:09.0446261Z > Task :capacitor-haptics:stripReleaseDebugSymbols NO-SOURCE
+2026-10-08T14:10:09.0493975Z > Task :capacitor-haptics:copyReleaseJniLibsProjectAndLocalJars
+2026-10-08T14:10:09.0525873Z > Task :capacitor-haptics:extractDeepLinksForAarRelease
+2026-10-08T14:10:09.0573744Z > Task :capacitor-haptics:extractReleaseAnnotations
+2026-10-08T14:10:09.0615935Z > Task :capacitor-haptics:mergeReleaseConsumerProguardFiles
+2026-10-08T14:10:09.1316670Z > Task :capacitor-haptics:mergeReleaseJavaResource
+2026-10-08T14:10:09.1347992Z > Task :capacitor-keyboard:checkReleaseAarMetadata
+2026-10-08T14:10:09.1379933Z > Task :capacitor-haptics:syncReleaseLibJars
+2026-10-08T14:10:09.1398278Z > Task :capacitor-haptics:bundleReleaseLocalLintAar
+2026-10-08T14:10:09.1427987Z > Task :capacitor-keyboard:stripReleaseDebugSymbols NO-SOURCE
+2026-10-08T14:10:09.1460078Z > Task :capacitor-keyboard:copyReleaseJniLibsProjectAndLocalJars
+2026-10-08T14:10:09.1496043Z > Task :capacitor-keyboard:extractDeepLinksForAarRelease
+2026-10-08T14:10:09.1499201Z > Task :capacitor-keyboard:extractReleaseAnnotations
+2026-10-08T14:10:09.1500032Z > Task :capacitor-keyboard:mergeReleaseConsumerProguardFiles
+2026-10-08T14:10:09.1500815Z > Task :capacitor-keyboard:mergeReleaseJavaResource
+2026-10-08T14:10:09.1501492Z > Task :capacitor-keyboard:syncReleaseLibJars
+2026-10-08T14:10:09.1502252Z > Task :capacitor-local-notifications:checkReleaseAarMetadata
+2026-10-08T14:10:09.1503133Z > Task :capacitor-keyboard:bundleReleaseLocalLintAar
+2026-10-08T14:10:09.1504053Z > Task :capacitor-local-notifications:stripReleaseDebugSymbols NO-SOURCE
+2026-10-08T14:10:09.2326113Z > Task :capacitor-local-notifications:copyReleaseJniLibsProjectAndLocalJars
+2026-10-08T14:10:09.2326824Z > Task :capacitor-local-notifications:extractDeepLinksForAarRelease
+2026-10-08T14:10:09.2327381Z > Task :capacitor-local-notifications:extractReleaseAnnotations
+2026-10-08T14:10:09.2327952Z > Task :capacitor-local-notifications:mergeReleaseConsumerProguardFiles
+2026-10-08T14:10:09.2328533Z > Task :capacitor-local-notifications:mergeReleaseJavaResource
+2026-10-08T14:10:09.2329018Z > Task :capacitor-local-notifications:syncReleaseLibJars
+2026-10-08T14:10:09.2329793Z > Task :capacitor-local-notifications:bundleReleaseLocalLintAar
+2026-10-08T14:10:09.2330283Z > Task :capacitor-network:stripReleaseDebugSymbols NO-SOURCE
+2026-10-08T14:10:09.2330716Z > Task :capacitor-network:checkReleaseAarMetadata
+2026-10-08T14:10:09.2331178Z > Task :capacitor-network:copyReleaseJniLibsProjectAndLocalJars
+2026-10-08T14:10:09.2331644Z > Task :capacitor-network:extractDeepLinksForAarRelease
+2026-10-08T14:10:09.2332066Z > Task :capacitor-network:extractReleaseAnnotations
+2026-10-08T14:10:09.2332519Z > Task :capacitor-network:mergeReleaseConsumerProguardFiles
+2026-10-08T14:10:09.3356703Z > Task :capacitor-network:mergeReleaseJavaResource
+2026-10-08T14:10:09.3417757Z > Task :capacitor-push-notifications:checkReleaseAarMetadata
+2026-10-08T14:10:09.3425854Z > Task :capacitor-network:syncReleaseLibJars
+2026-10-08T14:10:09.3455987Z > Task :capacitor-network:bundleReleaseLocalLintAar
+2026-10-08T14:10:09.3457265Z > Task :capacitor-push-notifications:stripReleaseDebugSymbols NO-SOURCE
+2026-10-08T14:10:09.3486073Z > Task :capacitor-push-notifications:copyReleaseJniLibsProjectAndLocalJars
+2026-10-08T14:10:09.3515909Z > Task :capacitor-push-notifications:extractDeepLinksForAarRelease
+2026-10-08T14:10:09.3535953Z > Task :capacitor-push-notifications:extractReleaseAnnotations
+2026-10-08T14:10:09.3545953Z > Task :capacitor-push-notifications:mergeReleaseConsumerProguardFiles
+2026-10-08T14:10:09.3575921Z > Task :capacitor-push-notifications:mergeReleaseJavaResource
+2026-10-08T14:10:09.3597915Z > Task :capacitor-share:checkReleaseAarMetadata
+2026-10-08T14:10:09.3610247Z > Task :capacitor-push-notifications:syncReleaseLibJars
+2026-10-08T14:10:09.3616648Z > Task :capacitor-push-notifications:bundleReleaseLocalLintAar
+2026-10-08T14:10:09.3617724Z > Task :capacitor-share:stripReleaseDebugSymbols NO-SOURCE
+2026-10-08T14:10:09.3619130Z > Task :capacitor-share:copyReleaseJniLibsProjectAndLocalJars
+2026-10-08T14:10:09.3622739Z > Task :capacitor-share:extractDeepLinksForAarRelease
+2026-10-08T14:10:09.3624076Z > Task :capacitor-share:extractReleaseAnnotations
+2026-10-08T14:10:09.3625532Z > Task :capacitor-share:mergeReleaseConsumerProguardFiles
+2026-10-08T14:10:09.3645915Z > Task :capacitor-share:mergeReleaseJavaResource
+2026-10-08T14:10:09.4326340Z > Task :capacitor-share:syncReleaseLibJars
+2026-10-08T14:10:09.4327242Z > Task :capacitor-splash-screen:checkReleaseAarMetadata
+2026-10-08T14:10:09.4327723Z > Task :capacitor-share:bundleReleaseLocalLintAar
+2026-10-08T14:10:09.4328242Z > Task :capacitor-splash-screen:stripReleaseDebugSymbols NO-SOURCE
+2026-10-08T14:10:09.4328820Z > Task :capacitor-splash-screen:copyReleaseJniLibsProjectAndLocalJars
+2026-10-08T14:10:09.4329386Z > Task :capacitor-splash-screen:extractDeepLinksForAarRelease
+2026-10-08T14:10:09.4329876Z > Task :capacitor-splash-screen:extractReleaseAnnotations
+2026-10-08T14:10:09.4330415Z > Task :capacitor-splash-screen:mergeReleaseConsumerProguardFiles
+2026-10-08T14:10:09.4330918Z > Task :capacitor-splash-screen:mergeReleaseJavaResource
+2026-10-08T14:10:09.4331372Z > Task :capacitor-status-bar:checkReleaseAarMetadata
+2026-10-08T14:10:09.4331801Z > Task :capacitor-splash-screen:syncReleaseLibJars
+2026-10-08T14:10:09.4332244Z > Task :capacitor-splash-screen:bundleReleaseLocalLintAar
+2026-10-08T14:10:09.4332725Z > Task :capacitor-status-bar:stripReleaseDebugSymbols NO-SOURCE
+2026-10-08T14:10:09.4333252Z > Task :capacitor-status-bar:copyReleaseJniLibsProjectAndLocalJars
+2026-10-08T14:10:09.4333757Z > Task :capacitor-status-bar:extractDeepLinksForAarRelease
+2026-10-08T14:10:09.4334221Z > Task :capacitor-status-bar:extractReleaseAnnotations
+2026-10-08T14:10:09.4334707Z > Task :capacitor-status-bar:mergeReleaseConsumerProguardFiles
+2026-10-08T14:10:09.4335504Z > Task :capacitor-status-bar:mergeReleaseJavaResource
+2026-10-08T14:10:09.4335950Z > Task :capgo-capacitor-updater:checkReleaseAarMetadata
+2026-10-08T14:10:09.4336364Z > Task :capacitor-status-bar:syncReleaseLibJars
+2026-10-08T14:10:09.5319738Z > Task :capacitor-status-bar:bundleReleaseLocalLintAar
+2026-10-08T14:10:09.5335883Z > Task :capgo-capacitor-updater:stripReleaseDebugSymbols NO-SOURCE
+2026-10-08T14:10:09.5366106Z > Task :capgo-capacitor-updater:copyReleaseJniLibsProjectAndLocalJars
+2026-10-08T14:10:09.5395685Z > Task :capgo-capacitor-updater:extractDeepLinksForAarRelease
+2026-10-08T14:10:09.5425935Z > Task :capgo-capacitor-updater:extractReleaseAnnotations
+2026-10-08T14:10:09.5427294Z > Task :capgo-capacitor-updater:mergeReleaseConsumerProguardFiles
+2026-10-08T14:10:09.5455814Z > Task :capgo-capacitor-updater:mergeReleaseJavaResource
+2026-10-08T14:10:09.5485850Z > Task :capacitor-android:checkReleaseAarMetadata
+2026-10-08T14:10:09.5515791Z > Task :capgo-capacitor-updater:syncReleaseLibJars
+2026-10-08T14:10:09.5516803Z > Task :capgo-capacitor-updater:bundleReleaseLocalLintAar
+2026-10-08T14:10:09.6331278Z > Task :capacitor-android:stripReleaseDebugSymbols NO-SOURCE
+2026-10-08T14:10:09.6356152Z > Task :capacitor-android:copyReleaseJniLibsProjectAndLocalJars
+2026-10-08T14:10:09.6378929Z > Task :capacitor-android:extractDeepLinksForAarRelease
+2026-10-08T14:10:09.6380138Z > Task :capacitor-android:extractReleaseAnnotations
+2026-10-08T14:10:09.6386453Z > Task :capacitor-android:mergeReleaseConsumerProguardFiles
+2026-10-08T14:10:09.6387445Z > Task :capacitor-android:mergeReleaseJavaResource
+2026-10-08T14:10:09.6388438Z > Task :capacitor-cordova-android-plugins:checkReleaseAarMetadata
+2026-10-08T14:10:09.7316769Z > Task :capacitor-android:syncReleaseLibJars
+2026-10-08T14:10:09.7345900Z > Task :capacitor-android:bundleReleaseLocalLintAar
+2026-10-08T14:10:09.7355841Z > Task :capacitor-cordova-android-plugins:stripReleaseDebugSymbols NO-SOURCE
+2026-10-08T14:10:09.7411559Z > Task :capacitor-cordova-android-plugins:copyReleaseJniLibsProjectAndLocalJars
+2026-10-08T14:10:09.7416381Z > Task :capacitor-cordova-android-plugins:extractDeepLinksForAarRelease
+2026-10-08T14:10:10.0326649Z > Task :capacitor-cordova-android-plugins:extractReleaseAnnotations
+2026-10-08T14:10:10.0356340Z > Task :capacitor-cordova-android-plugins:mergeReleaseConsumerProguardFiles
+2026-10-08T14:10:10.0358017Z > Task :capacitor-cordova-android-plugins:mergeReleaseJavaResource
+2026-10-08T14:10:10.1312164Z > Task :capacitor-cordova-android-plugins:syncReleaseLibJars
+2026-10-08T14:10:10.1336459Z > Task :capacitor-cordova-android-plugins:bundleReleaseLocalLintAar
+2026-10-08T14:10:10.1337899Z > Task :capacitor-android:writeReleaseLintModelMetadata
+2026-10-08T14:10:10.1338953Z > Task :capacitor-app:writeReleaseLintModelMetadata
+2026-10-08T14:10:10.1340057Z > Task :capacitor-barcode-scanner:writeReleaseLintModelMetadata
+2026-10-08T14:10:10.2340176Z > Task :capacitor-cordova-android-plugins:writeReleaseLintModelMetadata
+2026-10-08T14:10:10.2366210Z > Task :capacitor-filesystem:writeReleaseLintModelMetadata
+2026-10-08T14:10:10.2396040Z > Task :capacitor-haptics:writeReleaseLintModelMetadata
+2026-10-08T14:10:10.2425929Z > Task :capacitor-keyboard:writeReleaseLintModelMetadata
+2026-10-08T14:10:10.2427278Z > Task :capacitor-local-notifications:writeReleaseLintModelMetadata
+2026-10-08T14:10:10.2455825Z > Task :capacitor-network:writeReleaseLintModelMetadata
+2026-10-08T14:10:10.2486049Z > Task :capacitor-push-notifications:writeReleaseLintModelMetadata
+2026-10-08T14:10:10.2515826Z > Task :capacitor-share:writeReleaseLintModelMetadata
+2026-10-08T14:10:10.2517188Z > Task :capacitor-splash-screen:writeReleaseLintModelMetadata
+2026-10-08T14:10:10.2546033Z > Task :capacitor-status-bar:writeReleaseLintModelMetadata
+2026-10-08T14:10:10.2575998Z > Task :capgo-capacitor-updater:writeReleaseLintModelMetadata
+2026-10-08T14:10:10.3336379Z > Task :capacitor-android:generateReleaseLintVitalModel
+2026-10-08T14:10:10.3386134Z > Task :capacitor-app:generateReleaseLintVitalModel
+2026-10-08T14:10:10.4339974Z > Task :capacitor-barcode-scanner:generateReleaseLintVitalModel
+2026-10-08T14:10:10.5332599Z > Task :capacitor-cordova-android-plugins:generateReleaseLintVitalModel
+2026-10-08T14:10:10.5355950Z > Task :capacitor-filesystem:generateReleaseLintVitalModel
+2026-10-08T14:10:10.6326691Z > Task :capacitor-haptics:generateReleaseLintVitalModel
+2026-10-08T14:10:10.7316253Z > Task :capacitor-keyboard:generateReleaseLintVitalModel
+2026-10-08T14:10:10.7376019Z > Task :capacitor-local-notifications:generateReleaseLintVitalModel
+2026-10-08T14:10:10.8336432Z > Task :capacitor-network:generateReleaseLintVitalModel
+2026-10-08T14:10:10.8396405Z > Task :capacitor-push-notifications:generateReleaseLintVitalModel
+2026-10-08T14:10:10.9338101Z > Task :capacitor-share:generateReleaseLintVitalModel
+2026-10-08T14:10:10.9376104Z > Task :capacitor-splash-screen:generateReleaseLintVitalModel
+2026-10-08T14:10:10.9416061Z > Task :capacitor-status-bar:generateReleaseLintVitalModel
+2026-10-08T14:10:11.0310755Z > Task :capgo-capacitor-updater:generateReleaseLintVitalModel
+2026-10-08T14:10:11.2313090Z > Task :app:collectReleaseDependencies
+2026-10-08T14:10:11.4337611Z > Task :app:sdkReleaseDependencyData
+2026-10-08T14:10:13.4311410Z > Task :app:validateSigningRelease
+2026-10-08T14:10:13.4375256Z > Task :app:writeReleaseAppMetadata
+2026-10-08T14:10:13.4376468Z > Task :app:writeReleaseSigningConfigVersions
+2026-10-08T14:10:13.5311366Z > Task :capacitor-android:bundleReleaseAar
+2026-10-08T14:10:13.5379140Z > Task :capacitor-android:mapReleaseSourceSetPaths
+2026-10-08T14:10:14.7326434Z > Task :capacitor-android:mergeReleaseResources
+2026-10-08T14:10:15.9368110Z ERROR: Missing classes detected while running R8. Please add the missing classes or apply additional keep rules that are generated in /home/runner/work/nalaro-app/nalaro-app/android/app/build/outputs/mapping/release/missing_rules.txt.
+2026-10-08T14:10:15.9369769Z 
+2026-10-08T14:10:15.9414509Z ERROR: R8: Missing class com.google.gson.annotations.SerializedName (referenced from: java.lang.String com.outsystems.plugins.barcode.model.OSBARCScanParameters.androidScanningLibrary and 9 other contexts)
+2026-10-08T14:10:15.9417070Z > Task :app:minifyReleaseWithR8
+2026-10-08T14:10:16.0310895Z 
+2026-10-08T14:10:16.0311713Z > Task :app:minifyReleaseWithR8 FAILED
+2026-10-08T14:10:16.5326440Z > Task :capacitor-android:verifyReleaseResources
+2026-10-08T14:10:20.0310732Z > Task :capacitor-app:lintVitalAnalyzeRelease
+2026-10-08T14:10:21.8311471Z > Task :capacitor-android:lintVitalAnalyzeRelease
+2026-10-08T14:10:21.9313958Z 
+2026-10-08T14:10:21.9314795Z w: Detected multiple Kotlin daemon sessions at 
+2026-10-08T14:10:21.9316208Z FAILURE: Build failed with an exception.
+2026-10-08T14:10:21.9316526Z 
+2026-10-08T14:10:21.9316836Z 
+2026-10-08T14:10:21.9317859Z [Incubating] Problems report is available at: file:///home/runner/work/nalaro-app/nalaro-app/android/build/reports/problems/problems-report.html
+2026-10-08T14:10:21.9319170Z * What went wrong:
+2026-10-08T14:10:21.9319382Z 
+2026-10-08T14:10:21.9319976Z Execution failed for task ':app:minifyReleaseWithR8'.
+2026-10-08T14:10:21.9320967Z Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+2026-10-08T14:10:21.9322417Z > A failure occurred while executing com.android.build.gradle.internal.tasks.R8Task$R8Runnable
+2026-10-08T14:10:21.9323051Z 
+2026-10-08T14:10:21.9323520Z    > Compilation failed to complete
+2026-10-08T14:10:21.9324685Z You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+2026-10-08T14:10:21.9325955Z 
+2026-10-08T14:10:21.9325968Z 
+2026-10-08T14:10:21.9326333Z * Try:
+2026-10-08T14:10:21.9327542Z For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+2026-10-08T14:10:21.9329026Z > Run with --stacktrace option to get the stack trace.
+2026-10-08T14:10:21.9329599Z 523 actionable tasks: 523 executed
+2026-10-08T14:10:21.9330459Z > Run with --info or --debug option to get more log output.
+2026-10-08T14:10:21.9331305Z > Run with --scan to get full insights.
+2026-10-08T14:10:21.9332062Z > Get more help at https://help.gradle.org.
+2026-10-08T14:10:21.9332565Z 
+2026-10-08T14:10:21.9332905Z BUILD FAILED in 2m 38s
+2026-10-08T14:10:22.4242189Z ##[error]Process completed with exit code 1.
+2026-10-08T14:10:22.4372472Z Post job cleanup.
+2026-10-08T14:10:22.5773428Z (node:3226) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-08T14:10:22.5774418Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-08T14:10:22.6000166Z Post job cleanup.
+2026-10-08T14:10:22.7029996Z [command]/usr/bin/git version
+2026-10-08T14:10:22.7080513Z git version 2.55.0
+2026-10-08T14:10:22.7123347Z Temporarily overriding HOME='/home/runner/work/_temp/8de0f714-a743-4ca9-9051-efb9591a78fe' before making global git config changes
+2026-10-08T14:10:22.7125081Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-08T14:10:22.7129649Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/nalaro-app/nalaro-app
+2026-10-08T14:10:22.7175616Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-08T14:10:22.7222978Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-08T14:10:22.7479891Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-08T14:10:22.7511556Z http.https://github.com/.extraheader
+2026-10-08T14:10:22.7529015Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-08T14:10:22.7572205Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-08T14:10:22.7839640Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-08T14:10:22.7880909Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-08T14:10:22.8300363Z Cleaning up orphan processes
+2026-10-08T14:10:22.8645131Z Terminate orphan process: pid (2700) (java)
+2026-10-08T14:10:22.8682378Z Terminate orphan process: pid (3075) (java)
+2026-10-08T14:10:22.8716484Z Terminate orphan process: pid (3118) (java)
+2026-10-08T14:10:22.8756257Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-java@v4, actions/setup-node@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

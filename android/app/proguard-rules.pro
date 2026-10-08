@@ -19,3 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Custom Capacitor Proguard Rules for Minification
+-dontwarn com.google.gson.**
+-keep class com.google.gson.** { *; }
+-dontwarn com.outsystems.plugins.barcode.**
+-keep class com.outsystems.plugins.barcode.** { *; }
+-dontwarn io.ionic.libs.**
+-keep class io.ionic.libs.** { *; }
