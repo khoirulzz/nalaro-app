@@ -50,5 +50,12 @@ jobs:
           npm run build
           npx cap sync android
 
-      # Additional steps like bundling ZIP for OTA and uploading to R2 would go here.
-      # For now, this workflow ensures that the codebase builds correctly.
+      - name: Build Android APK
+        working-directory: ./android
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nalaro-app-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
