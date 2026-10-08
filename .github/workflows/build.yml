@@ -41,7 +41,7 @@ jobs:
       - name: Run Tests
         run: |
           npm install -g wait-on
-          npm run preview -- --port 4322 --host 127.0.0.1 &
+          node tests/preview.mjs &
           wait-on http://127.0.0.1:4322 -t 15000 || sleep 5
           npx firebase-tools emulators:exec --only firestore 'npm run test:ui && npm run test:pdf && npm run test:orders'
 
