@@ -1,0 +1,519 @@
+﻿2026-10-08T13:33:39.2244213Z Current runner version: '2.337.0'
+2026-10-08T13:33:39.2280417Z ##[group]Runner Image Provisioner
+2026-10-08T13:33:39.2281637Z Hosted Compute Agent
+2026-10-08T13:33:39.2282503Z Version: 20261002.596
+2026-10-08T13:33:39.2283443Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-08T13:33:39.2284441Z Build Date: 2026-10-02T22:28:27Z
+2026-10-08T13:33:39.2285509Z Worker ID: {7bd1001f-18b3-493f-8d4e-b707f805cbf1}
+2026-10-08T13:33:39.2286504Z Region: centralus
+2026-10-08T13:33:39.2287189Z Cloud: Azure
+2026-10-08T13:33:39.2288142Z ##[endgroup]
+2026-10-08T13:33:39.2290312Z ##[group]Operating System
+2026-10-08T13:33:39.2291216Z Ubuntu
+2026-10-08T13:33:39.2291909Z 24.04.5
+2026-10-08T13:33:39.2292607Z LTS
+2026-10-08T13:33:39.2293290Z ##[endgroup]
+2026-10-08T13:33:39.2293999Z ##[group]Runner Image
+2026-10-08T13:33:39.2294937Z Image: ubuntu-24.04
+2026-10-08T13:33:39.2295733Z Version: 20261004.327.1
+2026-10-08T13:33:39.2297718Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261004.327/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-08T13:33:39.2299928Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327
+2026-10-08T13:33:39.2301878Z ##[endgroup]
+2026-10-08T13:33:39.2303404Z ##[group]GITHUB_TOKEN Permissions
+2026-10-08T13:33:39.2306406Z Contents: read
+2026-10-08T13:33:39.2307143Z Metadata: read
+2026-10-08T13:33:39.2308114Z Packages: read
+2026-10-08T13:33:39.2308893Z ##[endgroup]
+2026-10-08T13:33:39.2312755Z Secret source: Actions
+2026-10-08T13:33:39.2314086Z Cache mode: write
+2026-10-08T13:33:39.2315316Z Prepare workflow directory
+2026-10-08T13:33:39.3230872Z Prepare all required actions
+2026-10-08T13:33:39.3303712Z Getting action download info
+2026-10-08T13:33:39.6344499Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-08T13:33:39.8435083Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-08T13:33:39.9838300Z Download action repository 'actions/setup-java@v4' (SHA:cf277c60eb25467037889841efdb72551f06f6c3)
+2026-10-08T13:33:40.7311914Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-08T13:33:40.9950487Z Complete job name: Build Web and Mobile
+2026-10-08T13:33:41.0663866Z ##[group]Run actions/checkout@v4
+2026-10-08T13:33:41.0664810Z with:
+2026-10-08T13:33:41.0665340Z   repository: khoirulzz/nalaro-app
+2026-10-08T13:33:41.0670043Z   token: ***
+2026-10-08T13:33:41.0670549Z   ssh-strict: true
+2026-10-08T13:33:41.0671031Z   ssh-user: git
+2026-10-08T13:33:41.0671533Z   persist-credentials: true
+2026-10-08T13:33:41.0672035Z   clean: true
+2026-10-08T13:33:41.0672523Z   sparse-checkout-cone-mode: true
+2026-10-08T13:33:41.0673059Z   fetch-depth: 1
+2026-10-08T13:33:41.0673513Z   fetch-tags: false
+2026-10-08T13:33:41.0673984Z   show-progress: true
+2026-10-08T13:33:41.0674458Z   lfs: false
+2026-10-08T13:33:41.0674913Z   submodules: false
+2026-10-08T13:33:41.0675442Z   set-safe-directory: true
+2026-10-08T13:33:41.0676045Z   allow-unsafe-pr-checkout: false
+2026-10-08T13:33:41.0676772Z ##[endgroup]
+2026-10-08T13:33:41.1695164Z Syncing repository: khoirulzz/nalaro-app
+2026-10-08T13:33:41.1697754Z ##[group]Getting Git version info
+2026-10-08T13:33:41.1698770Z Working directory is '/home/runner/work/nalaro-app/nalaro-app'
+2026-10-08T13:33:41.1700090Z [command]/usr/bin/git version
+2026-10-08T13:33:41.1751688Z git version 2.55.0
+2026-10-08T13:33:41.1772459Z ##[endgroup]
+2026-10-08T13:33:41.1787839Z Temporarily overriding HOME='/home/runner/work/_temp/de210b55-0103-4686-9386-1c745848d916' before making global git config changes
+2026-10-08T13:33:41.1789681Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-08T13:33:41.1793632Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/nalaro-app/nalaro-app
+2026-10-08T13:33:41.1845617Z Deleting the contents of '/home/runner/work/nalaro-app/nalaro-app'
+2026-10-08T13:33:41.1851610Z ##[group]Initializing the repository
+2026-10-08T13:33:41.1857608Z [command]/usr/bin/git init /home/runner/work/nalaro-app/nalaro-app
+2026-10-08T13:33:41.1970332Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-08T13:33:41.1972147Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-08T13:33:41.1977511Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-08T13:33:41.1979244Z hint: call:
+2026-10-08T13:33:41.1980137Z hint:
+2026-10-08T13:33:41.1981273Z hint: 	git config --global init.defaultBranch <name>
+2026-10-08T13:33:41.1982164Z hint:
+2026-10-08T13:33:41.1983082Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-08T13:33:41.1984467Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-08T13:33:41.1985776Z hint:
+2026-10-08T13:33:41.1986545Z hint: 	git branch -m <name>
+2026-10-08T13:33:41.1987548Z hint:
+2026-10-08T13:33:41.1988861Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-08T13:33:41.1990658Z Initialized empty Git repository in /home/runner/work/nalaro-app/nalaro-app/.git/
+2026-10-08T13:33:41.1993635Z [command]/usr/bin/git remote add origin https://github.com/khoirulzz/nalaro-app
+2026-10-08T13:33:41.2062025Z ##[endgroup]
+2026-10-08T13:33:41.2063714Z ##[group]Disabling automatic garbage collection
+2026-10-08T13:33:41.2064940Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-08T13:33:41.2101198Z ##[endgroup]
+2026-10-08T13:33:41.2102825Z ##[group]Setting up auth
+2026-10-08T13:33:41.2106782Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-08T13:33:41.2135566Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-08T13:33:41.2504974Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-08T13:33:41.2543149Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-08T13:33:41.2792562Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-08T13:33:41.2828305Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-08T13:33:41.3023386Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-08T13:33:41.3064176Z ##[endgroup]
+2026-10-08T13:33:41.3075998Z ##[group]Fetching the repository
+2026-10-08T13:33:41.3077658Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +e4403493cdf8e82b9099ba7b94e0059f790bcc25:refs/remotes/origin/main
+2026-10-08T13:33:41.8232042Z From https://github.com/khoirulzz/nalaro-app
+2026-10-08T13:33:41.8234483Z  * [new ref]         e4403493cdf8e82b9099ba7b94e0059f790bcc25 -> origin/main
+2026-10-08T13:33:41.8239463Z ##[endgroup]
+2026-10-08T13:33:41.8241196Z ##[group]Determining the checkout info
+2026-10-08T13:33:41.8243585Z ##[endgroup]
+2026-10-08T13:33:41.8245958Z [command]/usr/bin/git sparse-checkout disable
+2026-10-08T13:33:41.8301084Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-08T13:33:41.8332318Z ##[group]Checking out the ref
+2026-10-08T13:33:41.8334907Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-08T13:33:41.8530358Z Switched to a new branch 'main'
+2026-10-08T13:33:41.8533251Z branch 'main' set up to track 'origin/main'.
+2026-10-08T13:33:41.8541977Z ##[endgroup]
+2026-10-08T13:33:41.8579234Z [command]/usr/bin/git log -1 --format=%H
+2026-10-08T13:33:41.8602709Z e4403493cdf8e82b9099ba7b94e0059f790bcc25
+2026-10-08T13:33:41.8981342Z ##[group]Run actions/setup-node@v4
+2026-10-08T13:33:41.8982493Z with:
+2026-10-08T13:33:41.8983626Z   node-version: 22
+2026-10-08T13:33:41.8984680Z   always-auth: false
+2026-10-08T13:33:41.8985686Z   check-latest: false
+2026-10-08T13:33:41.8996152Z   token: ***
+2026-10-08T13:33:41.8997145Z ##[endgroup]
+2026-10-08T13:33:42.0404350Z Found in cache @ /opt/hostedtoolcache/node/22.23.3/x64
+2026-10-08T13:33:42.0411030Z (node:2068) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-08T13:33:42.0414927Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-08T13:33:42.0419394Z ##[group]Environment details
+2026-10-08T13:33:42.4184026Z node: v22.23.3
+2026-10-08T13:33:42.4185455Z npm: 10.9.9
+2026-10-08T13:33:42.4186863Z yarn: 1.22.22
+2026-10-08T13:33:42.4189857Z ##[endgroup]
+2026-10-08T13:33:42.4487426Z ##[group]Run actions/setup-java@v4
+2026-10-08T13:33:42.4488675Z with:
+2026-10-08T13:33:42.4489569Z   distribution: temurin
+2026-10-08T13:33:42.4490566Z   java-version: 21
+2026-10-08T13:33:42.4491503Z   java-package: jdk
+2026-10-08T13:33:42.4492494Z   check-latest: false
+2026-10-08T13:33:42.4493473Z   server-id: github
+2026-10-08T13:33:42.4494421Z   server-username: GITHUB_ACTOR
+2026-10-08T13:33:42.4495608Z   server-password: GITHUB_TOKEN
+2026-10-08T13:33:42.4496709Z   overwrite-settings: true
+2026-10-08T13:33:42.4497925Z   job-status: success
+2026-10-08T13:33:42.4507067Z   token: ***
+2026-10-08T13:33:42.4508196Z ##[endgroup]
+2026-10-08T13:33:42.6218946Z ##[warning]setup-java v4 is deprecated and will no longer receive updates. Please migrate to actions/setup-java@v5.
+2026-10-08T13:33:42.6230838Z ##[group]Installed distributions
+2026-10-08T13:33:42.6261512Z Resolved Java 21.0.12+1 from tool-cache
+2026-10-08T13:33:42.6263148Z Setting Java 21.0.12+1 as the default
+2026-10-08T13:33:42.6266566Z (node:2100) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-08T13:33:42.6270026Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-08T13:33:42.6272248Z Creating toolchains.xml for JDK version 21 from temurin
+2026-10-08T13:33:42.6335552Z Writing to /home/runner/.m2/toolchains.xml
+2026-10-08T13:33:42.6336856Z 
+2026-10-08T13:33:42.6337822Z Java configuration:
+2026-10-08T13:33:42.6339168Z   Distribution: temurin
+2026-10-08T13:33:42.6340553Z   Version: 21.0.12+1
+2026-10-08T13:33:42.6342403Z   Path: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T13:33:42.6343746Z 
+2026-10-08T13:33:42.6345291Z ##[endgroup]
+2026-10-08T13:33:42.6353452Z Creating settings.xml with server-id: github
+2026-10-08T13:33:42.6394037Z Writing to /home/runner/.m2/settings.xml
+2026-10-08T13:33:42.6606968Z ##[group]Run npm ci
+2026-10-08T13:33:42.6608492Z [36;1mnpm ci[0m
+2026-10-08T13:33:42.6848803Z shell: /usr/bin/bash -e {0}
+2026-10-08T13:33:42.6850200Z env:
+2026-10-08T13:33:42.6851474Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T13:33:42.6853439Z   JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T13:33:42.6855034Z ##[endgroup]
+2026-10-08T13:33:47.4484919Z npm warn deprecated uuid@7.0.3: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+2026-10-08T13:33:47.9289622Z npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+2026-10-08T13:33:49.0929243Z npm warn deprecated json-ptr@3.1.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+2026-10-08T13:33:53.9132161Z npm warn deprecated uuid@9.0.1: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+2026-10-08T13:33:54.1358119Z npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+2026-10-08T13:33:54.1598132Z npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+2026-10-08T13:33:54.2026593Z npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+2026-10-08T13:33:54.2523572Z npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+2026-10-08T13:35:13.4370316Z 
+2026-10-08T13:35:13.4371519Z added 1112 packages, and audited 1113 packages in 2m
+2026-10-08T13:35:13.4372298Z 
+2026-10-08T13:35:13.4372563Z 194 packages are looking for funding
+2026-10-08T13:35:13.4372996Z   run `npm fund` for details
+2026-10-08T13:35:14.1831638Z 
+2026-10-08T13:35:14.1832806Z 34 vulnerabilities (16 moderate, 17 high, 1 critical)
+2026-10-08T13:35:14.1833320Z 
+2026-10-08T13:35:14.1833631Z To address issues that do not require attention, run:
+2026-10-08T13:35:14.1834109Z   npm audit fix
+2026-10-08T13:35:14.1834276Z 
+2026-10-08T13:35:14.1834621Z To address all issues (including breaking changes), run:
+2026-10-08T13:35:14.1835073Z   npm audit fix --force
+2026-10-08T13:35:14.1835288Z 
+2026-10-08T13:35:14.1835456Z Run `npm audit` for details.
+2026-10-08T13:35:14.2468085Z ##[group]Run npm run check
+2026-10-08T13:35:14.2468441Z [36;1mnpm run check[0m
+2026-10-08T13:35:14.2515413Z shell: /usr/bin/bash -e {0}
+2026-10-08T13:35:14.2515743Z env:
+2026-10-08T13:35:14.2516118Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T13:35:14.2516554Z   JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T13:35:14.2516955Z ##[endgroup]
+2026-10-08T13:35:14.3382889Z 
+2026-10-08T13:35:14.3383610Z > nalaro-trans@1.0.0 check
+2026-10-08T13:35:14.3384075Z > tsc --noEmit
+2026-10-08T13:35:14.8192476Z 
+2026-10-08T13:35:14.8236864Z ##[group]Run npm run build
+2026-10-08T13:35:14.8238263Z [36;1mnpm run build[0m
+2026-10-08T13:35:14.8301393Z shell: /usr/bin/bash -e {0}
+2026-10-08T13:35:14.8301780Z env:
+2026-10-08T13:35:14.8302242Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T13:35:14.8302959Z   JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T13:35:14.8303483Z ##[endgroup]
+2026-10-08T13:35:14.9212370Z 
+2026-10-08T13:35:14.9213112Z > nalaro-trans@1.0.0 build
+2026-10-08T13:35:14.9213539Z > astro build
+2026-10-08T13:35:14.9213698Z 
+2026-10-08T13:35:15.9455786Z [2m13:35:15[22m [34m[types][39m Generated [2m138ms[22m
+2026-10-08T13:35:15.9456659Z [2m13:35:15[22m [34m[build][39m output: [34m"static"[39m
+2026-10-08T13:35:15.9457436Z [2m13:35:15[22m [34m[build][39m mode: [34m"static"[39m
+2026-10-08T13:35:15.9458105Z [2m13:35:15[22m [34m[build][39m directory: [34m/home/runner/work/nalaro-app/nalaro-app/dist/[39m
+2026-10-08T13:35:15.9459165Z [2m13:35:15[22m [34m[build][39m Collecting build info...
+2026-10-08T13:35:15.9462163Z [2m13:35:15[22m [34m[build][39m [32m✓ Completed in 202ms.[39m
+2026-10-08T13:35:15.9475260Z [2m13:35:15[22m [34m[build][39m Building static entrypoints...
+2026-10-08T13:35:16.3631892Z [2m13:35:16[22m [34m[vite][39m [32m✓ built in 391ms[39m
+2026-10-08T13:35:16.7015846Z [2m13:35:16[22m [34m[vite][39m [32m✓ built in 336ms[39m
+2026-10-08T13:35:16.7078620Z [2m13:35:16[22m [34m[build][39m Rearranging server assets...
+2026-10-08T13:35:16.7264062Z 
+2026-10-08T13:35:16.7265173Z [42m[30m generating static routes [39m[49m
+2026-10-08T13:35:16.7381113Z [2m13:35:16[22m   [34m├─[39m [2m/admin/index.html[22m [2m(+11ms)[22m 
+2026-10-08T13:35:16.7409810Z [2m13:35:16[22m   [34m├─[39m [2m/desk/index.html[22m [2m(+3ms)[22m 
+2026-10-08T13:35:16.7469672Z [2m13:35:16[22m   [34m├─[39m [2m/document/index.html[22m [2m(+5ms)[22m 
+2026-10-08T13:35:16.7509503Z [2m13:35:16[22m   [34m├─[39m [2m/form/order/index.html[22m [2m(+3ms)[22m 
+2026-10-08T13:35:16.7522896Z [2m13:35:16[22m   [34m├─[39m [2m/form/index.html[22m [2m(+3ms)[22m 
+2026-10-08T13:35:16.7545054Z [2m13:35:16[22m   [34m├─[39m [2m/login/index.html[22m [2m(+2ms)[22m 
+2026-10-08T13:35:16.7565123Z [2m13:35:16[22m   [34m├─[39m [2m/order-request/index.html[22m [2m(+2ms)[22m 
+2026-10-08T13:35:16.7589040Z [2m13:35:16[22m   [34m├─[39m [2m/verif/index.html[22m [2m(+2ms)[22m 
+2026-10-08T13:35:16.7621994Z [2m13:35:16[22m   [34m├─[39m [2m/verifi/index.html[22m [2m(+3ms)[22m 
+2026-10-08T13:35:16.7644827Z [2m13:35:16[22m   [34m├─[39m [2m/index.html[22m [2m(+2ms)[22m 
+2026-10-08T13:35:16.7645706Z [2m13:35:16[22m [32m✓ Completed in 56ms.
+2026-10-08T13:35:16.7646402Z [39m
+2026-10-08T13:35:16.7660616Z [2m13:35:16[22m [34m[build][39m [32m✓ Completed in 819ms.[39m
+2026-10-08T13:35:16.7664138Z [2m13:35:16[22m [34m[build][39m 10 page(s) built in [1m1.02s[22m
+2026-10-08T13:35:16.7664994Z [2m13:35:16[22m [34m[build][39m [1mComplete![22m
+2026-10-08T13:35:16.7900810Z ##[group]Run npm run build
+2026-10-08T13:35:16.7901226Z [36;1mnpm run build[0m
+2026-10-08T13:35:16.7901576Z [36;1mnpx cap sync android[0m
+2026-10-08T13:35:16.7963983Z shell: /usr/bin/bash -e {0}
+2026-10-08T13:35:16.7964319Z env:
+2026-10-08T13:35:16.7964703Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T13:35:16.7965326Z   JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T13:35:16.7965866Z ##[endgroup]
+2026-10-08T13:35:16.8868657Z 
+2026-10-08T13:35:16.8869462Z > nalaro-trans@1.0.0 build
+2026-10-08T13:35:16.8869925Z > astro build
+2026-10-08T13:35:16.8870118Z 
+2026-10-08T13:35:17.7662660Z [2m13:35:17[22m [34m[types][39m Generated [2m45ms[22m
+2026-10-08T13:35:17.7663509Z [2m13:35:17[22m [34m[build][39m output: [34m"static"[39m
+2026-10-08T13:35:17.7664125Z [2m13:35:17[22m [34m[build][39m mode: [34m"static"[39m
+2026-10-08T13:35:17.7664804Z [2m13:35:17[22m [34m[build][39m directory: [34m/home/runner/work/nalaro-app/nalaro-app/dist/[39m
+2026-10-08T13:35:17.7665322Z [2m13:35:17[22m [34m[build][39m Collecting build info...
+2026-10-08T13:35:17.7668249Z [2m13:35:17[22m [34m[build][39m [32m✓ Completed in 108ms.[39m
+2026-10-08T13:35:17.7722384Z [2m13:35:17[22m [34m[build][39m Building static entrypoints...
+2026-10-08T13:35:18.1827176Z [2m13:35:18[22m [34m[vite][39m [32m✓ built in 381ms[39m
+2026-10-08T13:35:18.5306697Z [2m13:35:18[22m [34m[vite][39m [32m✓ built in 346ms[39m
+2026-10-08T13:35:18.5366505Z [2m13:35:18[22m [34m[build][39m Rearranging server assets...
+2026-10-08T13:35:18.5533014Z 
+2026-10-08T13:35:18.5534415Z [42m[30m generating static routes [39m[49m
+2026-10-08T13:35:18.5652180Z [2m13:35:18[22m   [34m├─[39m [2m/admin/index.html[22m [2m(+11ms)[22m 
+2026-10-08T13:35:18.5677646Z [2m13:35:18[22m   [34m├─[39m [2m/desk/index.html[22m [2m(+2ms)[22m 
+2026-10-08T13:35:18.5723890Z [2m13:35:18[22m   [34m├─[39m [2m/document/index.html[22m [2m(+5ms)[22m 
+2026-10-08T13:35:18.5754167Z [2m13:35:18[22m   [34m├─[39m [2m/form/order/index.html[22m [2m(+3ms)[22m 
+2026-10-08T13:35:18.5778047Z [2m13:35:18[22m   [34m├─[39m [2m/form/index.html[22m [2m(+2ms)[22m 
+2026-10-08T13:35:18.5796095Z [2m13:35:18[22m   [34m├─[39m [2m/login/index.html[22m [2m(+2ms)[22m 
+2026-10-08T13:35:18.5813825Z [2m13:35:18[22m   [34m├─[39m [2m/order-request/index.html[22m [2m(+2ms)[22m 
+2026-10-08T13:35:18.5834644Z [2m13:35:18[22m   [34m├─[39m [2m/verif/index.html[22m [2m(+2ms)[22m 
+2026-10-08T13:35:18.5863103Z [2m13:35:18[22m   [34m├─[39m [2m/verifi/index.html[22m [2m(+3ms)[22m 
+2026-10-08T13:35:18.5884936Z [2m13:35:18[22m   [34m├─[39m [2m/index.html[22m [2m(+2ms)[22m 
+2026-10-08T13:35:18.5886220Z [2m13:35:18[22m [32m✓ Completed in 51ms.
+2026-10-08T13:35:18.5886668Z [39m
+2026-10-08T13:35:18.5901414Z [2m13:35:18[22m [34m[build][39m [32m✓ Completed in 818ms.[39m
+2026-10-08T13:35:18.5905487Z [2m13:35:18[22m [34m[build][39m 10 page(s) built in [1m932ms[22m
+2026-10-08T13:35:18.5906108Z [2m13:35:18[22m [34m[build][39m [1mComplete![22m
+2026-10-08T13:35:19.0313996Z ✔ Copying web assets from dist to android/app/src/main/assets/public in 11.86ms
+2026-10-08T13:35:19.0320827Z ✔ Creating capacitor.config.json in android/app/src/main/assets in 509.59μs
+2026-10-08T13:35:19.0387125Z ✔ copy android in 34.05ms
+2026-10-08T13:35:19.0599511Z ✔ Updating Android plugins in 5.63ms
+2026-10-08T13:35:19.0616808Z [info] Found 12 Capacitor plugins for android:
+2026-10-08T13:35:19.0617459Z        @capacitor/app@8.1.2
+2026-10-08T13:35:19.0617872Z        @capacitor/barcode-scanner@3.1.3
+2026-10-08T13:35:19.0618198Z        @capacitor/filesystem@8.1.4
+2026-10-08T13:35:19.0618492Z        @capacitor/haptics@8.0.2
+2026-10-08T13:35:19.0618775Z        @capacitor/keyboard@8.0.6
+2026-10-08T13:35:19.0619082Z        @capacitor/local-notifications@8.3.1
+2026-10-08T13:35:19.0619381Z        @capacitor/network@8.0.1
+2026-10-08T13:35:19.0620056Z        @capacitor/push-notifications@8.1.3
+2026-10-08T13:35:19.0620348Z        @capacitor/share@8.0.3
+2026-10-08T13:35:19.0620632Z        @capacitor/splash-screen@8.0.2
+2026-10-08T13:35:19.0620924Z        @capacitor/status-bar@8.0.4
+2026-10-08T13:35:19.0621224Z        @capgo/capacitor-updater@8.52.1
+2026-10-08T13:35:19.0936794Z ✔ update android in 47.16ms
+2026-10-08T13:35:19.1016025Z [info] Sync finished in 0.117s
+2026-10-08T13:35:19.1263220Z ##[group]Run chmod +x ./gradlew
+2026-10-08T13:35:19.1263575Z [36;1mchmod +x ./gradlew[0m
+2026-10-08T13:35:19.1263855Z [36;1m./gradlew assembleDebug[0m
+2026-10-08T13:35:19.1309954Z shell: /usr/bin/bash -e {0}
+2026-10-08T13:35:19.1310267Z env:
+2026-10-08T13:35:19.1310588Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T13:35:19.1311062Z   JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.12-1/x64
+2026-10-08T13:35:19.1311426Z ##[endgroup]
+2026-10-08T13:35:19.3315921Z Downloading https://services.gradle.org/distributions/gradle-8.14.3-all.zip
+2026-10-08T13:35:20.9932771Z .....................10%.....................20%......................30%.....................40%......................50%.....................60%.....................70%......................80%.....................90%......................100%
+2026-10-08T13:35:23.8682327Z 
+2026-10-08T13:35:23.8683579Z Welcome to Gradle 8.14.3!
+2026-10-08T13:35:23.8684396Z 
+2026-10-08T13:35:23.8684974Z Here are the highlights of this release:
+2026-10-08T13:35:23.8685643Z  - Java 24 support
+2026-10-08T13:35:23.8686319Z  - GraalVM Native Image toolchain selection
+2026-10-08T13:35:23.8686905Z  - Enhancements to test reporting
+2026-10-08T13:35:23.8687838Z  - Build Authoring improvements
+2026-10-08T13:35:23.8688210Z 
+2026-10-08T13:35:23.8688746Z For more details see https://docs.gradle.org/8.14.3/release-notes.html
+2026-10-08T13:35:23.8689301Z 
+2026-10-08T13:35:23.9679414Z Starting a Gradle Daemon (subsequent builds will be faster)
+2026-10-08T13:35:51.3727970Z 
+2026-10-08T13:35:51.3788880Z > Configure project :app
+2026-10-08T13:35:51.3790256Z WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+2026-10-08T13:36:00.0688587Z 
+2026-10-08T13:36:00.0696846Z > Configure project :capacitor-cordova-android-plugins
+2026-10-08T13:36:00.0698365Z WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+2026-10-08T13:36:16.8674534Z 
+2026-10-08T13:36:16.8675524Z > Task :app:preBuild UP-TO-DATE
+2026-10-08T13:36:16.8676106Z > Task :app:preDebugBuild UP-TO-DATE
+2026-10-08T13:36:16.9729376Z > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+2026-10-08T13:36:16.9759287Z > Task :capacitor-android:preBuild UP-TO-DATE
+2026-10-08T13:36:16.9779222Z > Task :capacitor-android:preDebugBuild UP-TO-DATE
+2026-10-08T13:36:16.9779978Z > Task :capacitor-app:preBuild UP-TO-DATE
+2026-10-08T13:36:16.9780637Z > Task :capacitor-app:preDebugBuild UP-TO-DATE
+2026-10-08T13:36:16.9796546Z > Task :capacitor-barcode-scanner:preBuild UP-TO-DATE
+2026-10-08T13:36:16.9819858Z > Task :capacitor-barcode-scanner:preDebugBuild UP-TO-DATE
+2026-10-08T13:36:16.9821147Z > Task :capacitor-android:writeDebugAarMetadata
+2026-10-08T13:36:16.9822048Z > Task :capacitor-barcode-scanner:writeDebugAarMetadata
+2026-10-08T13:36:16.9823603Z > Task :capacitor-app:writeDebugAarMetadata
+2026-10-08T13:36:16.9824979Z > Task :capacitor-cordova-android-plugins:preBuild UP-TO-DATE
+2026-10-08T13:36:16.9827812Z > Task :capacitor-cordova-android-plugins:preDebugBuild UP-TO-DATE
+2026-10-08T13:36:16.9829092Z > Task :app:javaPreCompileDebug
+2026-10-08T13:36:16.9829648Z > Task :capacitor-filesystem:preBuild UP-TO-DATE
+2026-10-08T13:36:16.9830319Z > Task :capacitor-cordova-android-plugins:writeDebugAarMetadata
+2026-10-08T13:36:16.9831027Z > Task :capacitor-filesystem:preDebugBuild UP-TO-DATE
+2026-10-08T13:36:16.9831604Z > Task :capacitor-haptics:preBuild UP-TO-DATE
+2026-10-08T13:36:16.9832206Z > Task :capacitor-haptics:preDebugBuild UP-TO-DATE
+2026-10-08T13:36:16.9832822Z > Task :capacitor-filesystem:writeDebugAarMetadata
+2026-10-08T13:36:16.9833414Z > Task :capacitor-keyboard:preBuild UP-TO-DATE
+2026-10-08T13:36:16.9834009Z > Task :capacitor-keyboard:preDebugBuild UP-TO-DATE
+2026-10-08T13:36:17.0674723Z > Task :capacitor-haptics:writeDebugAarMetadata
+2026-10-08T13:36:17.0675730Z > Task :capacitor-keyboard:writeDebugAarMetadata
+2026-10-08T13:36:17.0677129Z > Task :capacitor-local-notifications:preBuild UP-TO-DATE
+2026-10-08T13:36:17.0694290Z > Task :capacitor-local-notifications:preDebugBuild UP-TO-DATE
+2026-10-08T13:36:17.0695215Z > Task :capacitor-network:preBuild UP-TO-DATE
+2026-10-08T13:36:17.0696034Z > Task :capacitor-network:preDebugBuild UP-TO-DATE
+2026-10-08T13:36:17.0696843Z > Task :capacitor-local-notifications:writeDebugAarMetadata
+2026-10-08T13:36:17.0697839Z > Task :capacitor-push-notifications:preBuild UP-TO-DATE
+2026-10-08T13:36:17.0698670Z > Task :capacitor-push-notifications:preDebugBuild UP-TO-DATE
+2026-10-08T13:36:17.0699395Z > Task :capacitor-network:writeDebugAarMetadata
+2026-10-08T13:36:17.0700002Z > Task :capacitor-share:preBuild UP-TO-DATE
+2026-10-08T13:36:17.0700664Z > Task :capacitor-push-notifications:writeDebugAarMetadata
+2026-10-08T13:36:17.0701335Z > Task :capacitor-share:preDebugBuild UP-TO-DATE
+2026-10-08T13:36:17.0701936Z > Task :capacitor-splash-screen:preBuild UP-TO-DATE
+2026-10-08T13:36:17.0702624Z > Task :capacitor-splash-screen:preDebugBuild UP-TO-DATE
+2026-10-08T13:36:17.0703314Z > Task :capacitor-share:writeDebugAarMetadata
+2026-10-08T13:36:17.0703999Z > Task :capacitor-status-bar:preBuild UP-TO-DATE
+2026-10-08T13:36:17.0704730Z > Task :capacitor-status-bar:preDebugBuild UP-TO-DATE
+2026-10-08T13:36:17.0705478Z > Task :capacitor-splash-screen:writeDebugAarMetadata
+2026-10-08T13:36:17.0706199Z > Task :capgo-capacitor-updater:preBuild UP-TO-DATE
+2026-10-08T13:36:17.0706939Z > Task :capgo-capacitor-updater:preDebugBuild UP-TO-DATE
+2026-10-08T13:36:17.0707781Z > Task :capacitor-status-bar:writeDebugAarMetadata
+2026-10-08T13:36:17.0708517Z > Task :capgo-capacitor-updater:writeDebugAarMetadata
+2026-10-08T13:36:17.0709277Z > Task :capacitor-android:processDebugNavigationResources
+2026-10-08T13:36:44.0702818Z > Task :capacitor-app:processDebugNavigationResources
+2026-10-08T13:36:44.0722906Z > Task :capacitor-barcode-scanner:processDebugNavigationResources
+2026-10-08T13:36:44.0730250Z > Task :app:checkDebugAarMetadata
+2026-10-08T13:36:44.0738461Z > Task :capacitor-cordova-android-plugins:processDebugNavigationResources
+2026-10-08T13:36:44.0739545Z > Task :capacitor-filesystem:processDebugNavigationResources
+2026-10-08T13:36:44.0740744Z > Task :capacitor-haptics:processDebugNavigationResources
+2026-10-08T13:36:44.0743218Z > Task :capacitor-keyboard:processDebugNavigationResources
+2026-10-08T13:36:44.0761486Z > Task :capacitor-local-notifications:processDebugNavigationResources
+2026-10-08T13:36:44.0762477Z > Task :capacitor-network:processDebugNavigationResources
+2026-10-08T13:36:44.0763400Z > Task :capacitor-push-notifications:processDebugNavigationResources
+2026-10-08T13:36:44.0764270Z > Task :capacitor-share:processDebugNavigationResources
+2026-10-08T13:36:44.0765086Z > Task :capacitor-splash-screen:processDebugNavigationResources
+2026-10-08T13:36:44.0765927Z > Task :capacitor-status-bar:processDebugNavigationResources
+2026-10-08T13:36:44.0766946Z > Task :capgo-capacitor-updater:processDebugNavigationResources
+2026-10-08T13:36:44.1674118Z > Task :app:processDebugNavigationResources
+2026-10-08T13:36:44.7675917Z > Task :app:generateDebugResValues
+2026-10-08T13:36:44.7676561Z > Task :capacitor-android:generateDebugResValues
+2026-10-08T13:36:44.7677135Z > Task :capacitor-android:generateDebugResources
+2026-10-08T13:36:44.7677772Z > Task :app:compileDebugNavigationResources
+2026-10-08T13:36:44.7678301Z > Task :capacitor-android:packageDebugResources
+2026-10-08T13:36:44.7678822Z > Task :capacitor-app:generateDebugResValues
+2026-10-08T13:36:44.7679330Z > Task :capacitor-app:generateDebugResources
+2026-10-08T13:36:44.7679872Z > Task :capacitor-app:packageDebugResources
+2026-10-08T13:36:44.7680511Z > Task :capacitor-barcode-scanner:generateDebugResValues
+2026-10-08T13:36:44.8684233Z > Task :capacitor-barcode-scanner:generateDebugResources
+2026-10-08T13:36:44.8689613Z > Task :capacitor-barcode-scanner:packageDebugResources
+2026-10-08T13:36:44.8690589Z > Task :capacitor-cordova-android-plugins:generateDebugResValues
+2026-10-08T13:36:44.8698277Z > Task :capacitor-cordova-android-plugins:generateDebugResources
+2026-10-08T13:36:44.8699403Z > Task :capacitor-cordova-android-plugins:packageDebugResources
+2026-10-08T13:36:44.8700292Z > Task :capacitor-filesystem:generateDebugResValues
+2026-10-08T13:36:44.8701046Z > Task :capacitor-filesystem:generateDebugResources
+2026-10-08T13:36:44.8701868Z > Task :capacitor-filesystem:packageDebugResources
+2026-10-08T13:36:44.8702509Z > Task :capacitor-haptics:generateDebugResValues
+2026-10-08T13:36:44.8703192Z > Task :capacitor-haptics:generateDebugResources
+2026-10-08T13:36:44.8703875Z > Task :capacitor-haptics:packageDebugResources
+2026-10-08T13:36:44.8704568Z > Task :capacitor-keyboard:generateDebugResValues
+2026-10-08T13:36:44.8705268Z > Task :capacitor-keyboard:generateDebugResources
+2026-10-08T13:36:44.8705964Z > Task :capacitor-keyboard:packageDebugResources
+2026-10-08T13:36:44.8708025Z > Task :capacitor-local-notifications:generateDebugResValues
+2026-10-08T13:36:44.8708837Z > Task :capacitor-local-notifications:generateDebugResources
+2026-10-08T13:36:44.8712735Z > Task :capacitor-local-notifications:packageDebugResources
+2026-10-08T13:36:44.8713598Z > Task :capacitor-network:generateDebugResValues
+2026-10-08T13:36:44.8714340Z > Task :capacitor-network:generateDebugResources
+2026-10-08T13:36:44.8715078Z > Task :capacitor-network:packageDebugResources
+2026-10-08T13:36:44.8715835Z > Task :capacitor-push-notifications:generateDebugResValues
+2026-10-08T13:36:44.8716662Z > Task :capacitor-push-notifications:generateDebugResources
+2026-10-08T13:36:44.8717652Z > Task :capacitor-push-notifications:packageDebugResources
+2026-10-08T13:36:44.8718429Z > Task :capacitor-share:generateDebugResValues
+2026-10-08T13:36:44.8719879Z > Task :capacitor-share:generateDebugResources
+2026-10-08T13:36:44.8720911Z > Task :capacitor-share:packageDebugResources
+2026-10-08T13:36:44.8722608Z > Task :capacitor-splash-screen:generateDebugResValues
+2026-10-08T13:36:44.8723392Z > Task :capacitor-splash-screen:generateDebugResources
+2026-10-08T13:36:44.9686240Z > Task :capacitor-splash-screen:packageDebugResources
+2026-10-08T13:36:44.9687810Z > Task :capacitor-status-bar:generateDebugResValues
+2026-10-08T13:36:44.9688545Z > Task :capacitor-status-bar:generateDebugResources
+2026-10-08T13:36:44.9689544Z > Task :capacitor-status-bar:packageDebugResources
+2026-10-08T13:36:44.9690206Z > Task :capgo-capacitor-updater:generateDebugResValues
+2026-10-08T13:36:44.9690909Z > Task :capgo-capacitor-updater:generateDebugResources
+2026-10-08T13:36:44.9691543Z > Task :capgo-capacitor-updater:packageDebugResources
+2026-10-08T13:36:45.0674908Z > Task :app:mapDebugSourceSetPaths
+2026-10-08T13:36:45.0699038Z > Task :app:generateDebugResources
+2026-10-08T13:36:46.1728866Z > Task :app:packageDebugResources
+2026-10-08T13:36:46.9674944Z > Task :app:createDebugCompatibleScreenManifests
+2026-10-08T13:36:46.9728628Z > Task :app:extractDeepLinksDebug
+2026-10-08T13:36:46.9729265Z > Task :capacitor-android:extractDeepLinksDebug
+2026-10-08T13:36:47.0699006Z > Task :capacitor-app:extractDeepLinksDebug
+2026-10-08T13:36:47.0699811Z > Task :app:mergeDebugResources
+2026-10-08T13:36:47.0728922Z > Task :capacitor-barcode-scanner:extractDeepLinksDebug
+2026-10-08T13:36:47.0758698Z > Task :app:parseDebugLocalResources
+2026-10-08T13:36:47.0788592Z > Task :capacitor-cordova-android-plugins:extractDeepLinksDebug
+2026-10-08T13:36:47.1678909Z > Task :capacitor-app:processDebugManifest
+2026-10-08T13:36:47.1728739Z > Task :capacitor-cordova-android-plugins:processDebugManifest
+2026-10-08T13:36:47.1758349Z > Task :capacitor-barcode-scanner:processDebugManifest
+2026-10-08T13:36:47.1758925Z > Task :capacitor-android:processDebugManifest
+2026-10-08T13:36:47.1759448Z > Task :capacitor-filesystem:extractDeepLinksDebug
+2026-10-08T13:36:47.1759948Z > Task :capacitor-filesystem:processDebugManifest
+2026-10-08T13:36:47.1760453Z > Task :capacitor-haptics:extractDeepLinksDebug
+2026-10-08T13:36:47.1760942Z > Task :capacitor-haptics:processDebugManifest
+2026-10-08T13:36:47.1761413Z > Task :capacitor-keyboard:extractDeepLinksDebug
+2026-10-08T13:36:47.1762304Z > Task :capacitor-keyboard:processDebugManifest
+2026-10-08T13:36:47.1762881Z > Task :capacitor-local-notifications:extractDeepLinksDebug
+2026-10-08T13:36:47.1763434Z > Task :capacitor-network:extractDeepLinksDebug
+2026-10-08T13:36:47.1763933Z > Task :capacitor-local-notifications:processDebugManifest
+2026-10-08T13:36:47.1764433Z > Task :capacitor-network:processDebugManifest
+2026-10-08T13:36:47.1764957Z > Task :capacitor-push-notifications:extractDeepLinksDebug
+2026-10-08T13:36:47.1765547Z > Task :capacitor-push-notifications:processDebugManifest
+2026-10-08T13:36:47.1766045Z > Task :capacitor-share:extractDeepLinksDebug
+2026-10-08T13:36:47.1766531Z > Task :capacitor-splash-screen:extractDeepLinksDebug
+2026-10-08T13:36:47.1767002Z > Task :capacitor-share:processDebugManifest
+2026-10-08T13:36:47.1767745Z > Task :capacitor-splash-screen:processDebugManifest
+2026-10-08T13:36:47.1768260Z > Task :capacitor-status-bar:extractDeepLinksDebug
+2026-10-08T13:36:47.1768732Z > Task :capgo-capacitor-updater:extractDeepLinksDebug
+2026-10-08T13:36:47.1769223Z > Task :capacitor-status-bar:processDebugManifest
+2026-10-08T13:36:47.1769745Z > Task :capgo-capacitor-updater:processDebugManifest
+2026-10-08T13:36:47.2673945Z > Task :capacitor-android:compileDebugLibraryResources
+2026-10-08T13:36:47.5672390Z 
+2026-10-08T13:36:47.5699246Z /home/runner/work/nalaro-app/nalaro-app/android/app/src/main/AndroidManifest.xml Error:
+2026-10-08T13:36:47.5700178Z > Task :app:processDebugMainManifest FAILED
+2026-10-08T13:36:47.5709592Z 	uses-sdk:minSdkVersion 24 cannot be smaller than version 26 declared in library [io.ionic.libs:ionbarcode-android:2.1.1] /home/runner/.gradle/caches/8.14.3/transforms/76d5854932f82abaf0d77bd86d6809f5/transformed/ionbarcode-android-2.1.1/AndroidManifest.xml as the library might be using APIs not available in 24
+2026-10-08T13:36:47.5711165Z 
+2026-10-08T13:36:47.5733737Z 	Suggestion: use a compatible library with a minSdk of at most 24,
+2026-10-08T13:36:47.5734886Z See https://developer.android.com/r/studio-ui/build/manifest-merger for more information about the manifest merger.
+2026-10-08T13:36:47.5738106Z 		or increase this project's minSdk version to at least 26,
+2026-10-08T13:36:47.5753894Z 
+2026-10-08T13:36:47.5754551Z 		or use tools:overrideLibrary="com.outsystems.plugins.barcode" to force usage (may lead to runtime failures)
+2026-10-08T13:36:47.5755092Z 
+2026-10-08T13:36:47.5755322Z FAILURE: Build failed with an exception.
+2026-10-08T13:36:47.5755599Z 
+2026-10-08T13:36:47.5755746Z * What went wrong:
+2026-10-08T13:36:47.5756236Z Execution failed for task ':app:processDebugMainManifest'.
+2026-10-08T13:36:47.5758664Z > Manifest merger failed : uses-sdk:minSdkVersion 24 cannot be smaller than version 26 declared in library [io.ionic.libs:ionbarcode-android:2.1.1] /home/runner/.gradle/caches/8.14.3/transforms/76d5854932f82abaf0d77bd86d6809f5/transformed/ionbarcode-android-2.1.1/AndroidManifest.xml as the library might be using APIs not available in 24
+2026-10-08T13:36:47.5760584Z   	Suggestion: use a compatible library with a minSdk of at most 24,
+2026-10-08T13:36:47.5761196Z   		or increase this project's minSdk version to at least 26,
+2026-10-08T13:36:47.5762016Z   		or use tools:overrideLibrary="com.outsystems.plugins.barcode" to force usage (may lead to runtime failures)
+2026-10-08T13:36:47.5762558Z 
+2026-10-08T13:36:47.5762660Z * Try:
+2026-10-08T13:36:47.5763049Z > Run with --stacktrace option to get the stack trace.
+2026-10-08T13:36:47.5763605Z > Run with --info or --debug option to get more log output.
+2026-10-08T13:36:47.5764111Z > Run with --scan to get full insights.
+2026-10-08T13:36:47.5764591Z > Get more help at https://help.gradle.org.
+2026-10-08T13:36:47.5764874Z 
+2026-10-08T13:36:47.5765022Z BUILD FAILED in 1m 28s
+2026-10-08T13:36:47.5765221Z 
+2026-10-08T13:36:47.5765996Z [Incubating] Problems report is available at: file:///home/runner/work/nalaro-app/nalaro-app/android/build/reports/problems/problems-report.html
+2026-10-08T13:36:47.5766692Z 
+2026-10-08T13:36:47.5767669Z Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+2026-10-08T13:36:47.5768187Z 
+2026-10-08T13:36:47.5768905Z You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+2026-10-08T13:36:47.5769582Z 
+2026-10-08T13:36:47.5770426Z For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+2026-10-08T13:36:47.5771343Z 112 actionable tasks: 112 executed
+2026-10-08T13:36:47.9808180Z ##[error]Process completed with exit code 1.
+2026-10-08T13:36:47.9931134Z Post job cleanup.
+2026-10-08T13:36:48.1272604Z (node:2683) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-08T13:36:48.1273651Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-08T13:36:48.1435024Z Post job cleanup.
+2026-10-08T13:36:48.2396632Z [command]/usr/bin/git version
+2026-10-08T13:36:48.2446771Z git version 2.55.0
+2026-10-08T13:36:48.2489412Z Temporarily overriding HOME='/home/runner/work/_temp/c8b7b81c-fc76-4a73-8dfe-a26aaca08b0d' before making global git config changes
+2026-10-08T13:36:48.2490641Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-08T13:36:48.2494699Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/nalaro-app/nalaro-app
+2026-10-08T13:36:48.2533906Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-08T13:36:48.2567945Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-08T13:36:48.2783060Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-08T13:36:48.2807470Z http.https://github.com/.extraheader
+2026-10-08T13:36:48.2817600Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-08T13:36:48.2850547Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-08T13:36:48.3048531Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-08T13:36:48.3076543Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-08T13:36:48.3437794Z Cleaning up orphan processes
+2026-10-08T13:36:48.3699538Z Terminate orphan process: pid (2447) (java)
+2026-10-08T13:36:48.3712947Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-java@v4, actions/setup-node@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
