@@ -21,3 +21,5 @@ The mailbox Worker source also recognizes the fixed Android Capacitor origin `ht
 Push notifications need Firebase's Android app configuration. Register package `nalaro.projectdesk` with Firebase, set the GitHub Actions secret `FIREBASE_ANDROID_CONFIG_BASE64` to the base64-encoded `google-services.json`, and deploy the receiving token backend. The Android app no longer prompts for notification permission immediately upon login while this feature is unfinished. Notifications and self-hosted OTA require end-to-end device/rollback validation.
 
 PDF sharing now supplies an Android file attachment rather than a URL to the Share Sheet.
+
+The checked-in `workers/mailbox/dashboard-worker.js` has been kept in step with this origin rule. Regenerate it with `npm run build:mailbox` before deploying to Cloudflare to avoid artifact drift.
