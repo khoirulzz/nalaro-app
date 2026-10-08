@@ -26,7 +26,7 @@ import { PushNotifications } from '@capacitor/push-notifications';
 import { Network } from '@capacitor/network';
 import { Haptics, NotificationType } from '@capacitor/haptics';
 import BottomNav from './mobile/BottomNav';
-import MobileFinance, { MobileMore } from './mobile/MobileViews';
+import MobileFinance, { MobileMore, MobileVerify } from './mobile/MobileViews';
 const Mailbox = React.lazy(() => import('./Mailbox'));
 
 function money(value: any = 0) {
@@ -68,6 +68,16 @@ function recordCode(prefix: string, id: string) {
 
 function statusClass(status = '') {
   return 'status-pill status-' + status.toLowerCase().replaceAll(' ', '-').replaceAll('_', '-');
+}
+
+/** Prevent queued offline writes for money-critical workflows. */
+async function requireFinancialNetwork() {
+  if (Capacitor.isNativePlatform()) {
+    const status = await Network.getStatus();
+    if (!status.connected) throw new Error('Koneksi internet diperlukan untuk menerbitkan dokumen atau mencatat pembayaran.');
+  } else if (typeof navigator !== 'undefined' && !navigator.onLine) {
+    throw new Error('Tidak dapat menyimpan transaksi saat offline.');
+  }
 }
 
 async function readCollection(name: string): Promise<any[]> {
@@ -703,6 +713,7 @@ function Invoices() {
 
     setInvoiceBusy(true);
     try {
+    await requireFinancialNetwork();
     const subtotal = Number(form.amount || 0);
     const discount = Number(form.discount || 0);
     const grandTotal = Math.max(0, subtotal - discount);
@@ -811,6 +822,7 @@ function Invoices() {
     setPaymentBusy(true);
 
     try {
+      await requireFinancialNetwork();
       await runTransaction(db, async (transaction) => {
         const invoiceRef = doc(db, 'invoices', paying.id);
         const invoiceSnap = await transaction.get(invoiceRef);
@@ -882,6 +894,7 @@ function Invoices() {
     const number = documentNumber('RCPT', receiptRef.id, payment.paymentDate);
 
     try {
+      await requireFinancialNetwork();
       await runTransaction(db, async (transaction) => {
         const paymentRef = doc(db, 'payments', payment.id);
         const invoiceRef = doc(db, 'invoices', invoice.id);
@@ -1348,6 +1361,7 @@ function AdminLayout() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/finance" element={<MobileFinance />} />
           <Route path="/more" element={<MobileMore logout={logout} />} />
+          <Route path="/verify/:token" element={<MobileVerify />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

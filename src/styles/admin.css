@@ -143,3 +143,22 @@ img,svg{display:block;max-width:100%}
 .mobile-app .admin-page{padding-bottom:24px}
 .mobile-app .mobile-bottom-nav{height:64px;padding-bottom:env(safe-area-inset-bottom)}
 }
+
+/* Registry views live inside the Android shell without importing the public layout. */
+/* E-invoice public registry */
+.verification-shell{width:min(1120px,calc(100% - 96px));margin:0 auto;padding:74px 0 92px;min-height:62vh}
+.verification-kicker{display:flex;justify-content:space-between;gap:20px;padding-bottom:17px;border-bottom:1px solid var(--color-line);font:500 10px var(--font-mono);letter-spacing:.08em;color:var(--color-mute);text-transform:uppercase}
+.registry-code{color:#777a72}
+.registry-record{margin-top:28px;border:1px solid var(--color-line);background:var(--color-ink-2)}
+.registry-record.is-void{border-color:#51352d}
+.registry-head{display:flex;align-items:flex-start;justify-content:space-between;gap:40px;padding:34px 36px 30px;border-bottom:1px solid var(--color-line)}
+.verification-state{display:inline-flex;align-items:center;gap:9px;font:600 10px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--color-bone);margin-bottom:17px}.verification-state i{width:6px;height:6px;background:var(--color-flare)}.verification-state.invalid{color:#cf7b64}.verification-state.invalid i{background:#cf6549}
+.registry-head h1{font:680 clamp(38px,5vw,64px)/.97 var(--font-display);letter-spacing:-.055em;text-transform:uppercase}.registry-status{min-width:150px;text-align:right;padding-top:3px}.registry-status small,.registry-number small,.registry-grid small,.registry-total small{display:block;font:500 9px var(--font-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--color-mute)}.registry-status strong{display:block;margin-top:8px;color:var(--color-flare);font:600 13px var(--font-mono);letter-spacing:.05em}
+.registry-number{padding:27px 36px;border-bottom:1px solid var(--color-line)}.registry-number strong{display:block;margin-top:8px;font:600 clamp(22px,3vw,34px) var(--font-display);letter-spacing:-.025em;overflow-wrap:anywhere}
+.registry-grid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--color-line)}.registry-grid>div{min-height:118px;padding:25px 36px;border-right:1px solid var(--color-line);border-bottom:1px solid var(--color-line)}.registry-grid>div:nth-child(even){border-right:0}.registry-grid>div:nth-last-child(-n+2){border-bottom:0}.registry-grid strong{display:block;margin-top:10px;font-size:15px;font-weight:550;max-width:420px}
+.registry-total{padding:30px 36px 32px;display:flex;align-items:flex-end;justify-content:space-between;gap:30px;border-bottom:1px solid var(--color-line)}.registry-total strong{font:680 clamp(30px,4.5vw,52px)/1 var(--font-display);letter-spacing:-.045em;color:var(--color-flare)}
+.registry-foot{display:flex;justify-content:space-between;gap:45px;padding:21px 36px;color:var(--color-mute);font-size:11px}.registry-foot p{max-width:660px}.registry-foot span{font:400 9px var(--font-mono);white-space:nowrap;color:#777a72}
+.verification-note{display:flex;gap:10px;margin-top:16px;color:var(--color-mute);font-size:11px}.verification-note span{color:var(--color-flare)}
+.verification-loading{min-height:380px;display:flex;align-items:center;justify-content:center;gap:10px;font:500 10px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--color-mute)}
+.verification-error{padding:70px 0 20px;max-width:800px}.verification-error h1{font:680 clamp(44px,7vw,88px)/.95 var(--font-display);letter-spacing:-.06em;text-transform:uppercase;margin-bottom:24px}.verification-error>p{max-width:540px;color:var(--color-mute);font-size:16px;line-height:1.7}.verification-error .text-link{margin-top:27px}
+@media(max-width:760px){.verification-shell{width:calc(100% - 40px);padding:48px 0 70px}.registry-head{padding:26px 22px;flex-direction:column}.registry-status{text-align:left;min-width:0}.registry-number{padding:22px}.registry-grid{grid-template-columns:1fr}.registry-grid>div,.registry-grid>div:nth-child(even),.registry-grid>div:nth-last-child(-n+2){min-height:auto;padding:20px 22px;border-right:0;border-bottom:1px solid var(--color-line)}.registry-grid>div:last-child{border-bottom:0}.registry-total{padding:24px 22px;align-items:flex-start;flex-direction:column}.registry-foot{padding:20px 22px;flex-direction:column;gap:14px}.verification-kicker{font-size:8px}}
