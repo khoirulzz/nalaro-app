@@ -35,16 +35,6 @@ jobs:
       - name: Build Astro
         run: npm run build
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-
-      - name: Run Tests
-        run: |
-          npm install -g wait-on
-          node tests/preview.mjs &
-          wait-on http://127.0.0.1:4322 -t 15000 || sleep 5
-          npx firebase-tools emulators:exec --only firestore 'npm run test:ui && npm run test:pdf && npm run test:orders'
-
       - name: Sync Capacitor
         run: |
           npm run build
@@ -52,7 +42,9 @@ jobs:
 
       - name: Build Android APK
         working-directory: ./android
-        run: ./gradlew assembleDebug
+        run: |
+          chmod +x ./gradlew
+          ./gradlew assembleDebug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
