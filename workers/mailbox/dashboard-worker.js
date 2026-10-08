@@ -5026,7 +5026,8 @@ var worker_default = {
     const origin = request.headers.get("Origin");
     const allowed = String(env.ALLOWED_ORIGINS || "").split(",").map((item) => item.trim()).filter(Boolean);
     const headers = new Headers({ "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff", Vary: "Origin" });
-    if (origin && !allowed.includes(origin)) return Response.json({ error: "Origin tidak diizinkan." }, { status: 403, headers });
+    const nativeOrigin = origin === "http://localhost";
+    if (origin && !allowed.includes(origin) && !nativeOrigin) return Response.json({ error: "Origin tidak diizinkan." }, { status: 403, headers });
     if (origin) {
       headers.set("Access-Control-Allow-Origin", origin);
       headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");

@@ -1,3 +1,5 @@
+import { Capacitor } from '@capacitor/core';
+import { saveDocument } from '../platform/files';
 import { auth } from './firebase';
 import type { BillingEmailDetails } from './email-template';
 
@@ -70,7 +72,8 @@ export async function outgoingFile(file: Blob, filename: string): Promise<Outgoi
   });
   return { filename, contentType: file.type || 'application/octet-stream', content };
 }
-export function downloadMailFile(blob: Blob, filename: string) {
+export async function downloadMailFile(blob: Blob, filename: string) {
+  if (Capacitor.isNativePlatform()) { await saveDocument(filename, blob); return; }
   const url = URL.createObjectURL(blob); const anchor = document.createElement('a');
   anchor.href = url; anchor.download = filename; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 10000);
 }

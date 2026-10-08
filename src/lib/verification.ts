@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core';
 const LEGACY_BASES = new Set([
   'https://e-invoice.nalaro.digital/verif/',
   'https://e-invoice.nalaro.digital/verifi/',
@@ -11,10 +12,11 @@ export function verificationBaseUrl(settings: any = {}, origin = typeof window !
   const configured = String(settings?.verificationBaseUrl || '').trim();
   const environment = String(import.meta.env.PUBLIC_VERIFICATION_BASE_URL || '').trim();
 
-  let raw = configured || environment || origin;
+  const nativeOrigin = Capacitor.isNativePlatform() ? 'https://order.nalaro.digital' : origin;
+  let raw = configured || environment || nativeOrigin;
   if (configured && LEGACY_BASES.has(configured) && origin) {
     try {
-      if (new URL(origin).hostname !== 'e-invoice.nalaro.digital') raw = origin;
+      if (new URL(nativeOrigin).hostname !== 'e-invoice.nalaro.digital') raw = nativeOrigin;
     } catch { /* validation below returns the user-facing error */ }
   }
 

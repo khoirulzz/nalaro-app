@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Capacitor } from '@capacitor/core';
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
 
@@ -13,7 +14,7 @@ export default function Login() {
   useEffect(() => {
     return onAuthStateChanged(auth, async (user) => {
       if (!user) return;
-      if (user.email === ADMIN_EMAIL) window.location.replace('/admin');
+      if (user.email === ADMIN_EMAIL) if (!Capacitor.isNativePlatform()) window.location.replace('/admin');
       else await signOut(auth);
     });
   }, []);
@@ -28,7 +29,7 @@ export default function Login() {
         await signOut(auth);
         throw new Error('unauthorized');
       }
-      window.location.replace('/admin');
+      if (!Capacitor.isNativePlatform()) window.location.replace('/admin');
     } catch {
       setError('Akses ditolak. Periksa email dan password admin.');
       setLoading(false);
@@ -39,7 +40,7 @@ export default function Login() {
     <main className="auth-shell">
       <section className="auth-panel">
         <div className="auth-brand-row">
-          <a href="https://nalaro.digital" className="admin-brand"><img src="/brand/nalaro.png" alt="" /><span>nalaro</span></a>
+          <a href="https://nalaro.digital" target="_blank" rel="noopener noreferrer" className="admin-brand"><img src="/brand/nalaro.png" alt="" /><span>nalaro</span></a>
           <span className="auth-tag"><i /> INTERNAL</span>
         </div>
         <div className="auth-copy">
@@ -53,7 +54,7 @@ export default function Login() {
           {error && <p className="auth-error"><i />{error}</p>}
           <button className="primary-button auth-submit" disabled={loading}>{loading ? 'Memverifikasi…' : 'Masuk ke Project Desk'} <span>↗</span></button>
         </form>
-        <footer><span>order.nalaro.digital</span><a href="https://nalaro.digital">Kembali ke Nalaro ↗</a></footer>
+        <footer><span>order.nalaro.digital</span><a href="https://nalaro.digital" target="_blank" rel="noopener noreferrer">Kembali ke Nalaro ↗</a></footer>
       </section>
       <aside className="auth-aside" aria-hidden="true"><span>01</span><div><small>NALARO SYSTEM</small><strong>CLIENT<br/>PROJECT<br/><em>INVOICE</em><br/>RECEIPT.</strong></div><p>Useful systems for useful work.</p></aside>
     </main>

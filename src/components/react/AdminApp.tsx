@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Navigate, NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import {
-  addDoc,
   collection,
   deleteDoc,
   doc,
   getDoc,
   getDocs,
+  runTransaction,
   serverTimestamp,
   setDoc,
   updateDoc,
@@ -17,15 +17,14 @@ import { auth, db } from '../../lib/firebase';
 import { PAYMENT_METHODS, paymentInformation } from '../../lib/payment';
 import { verificationBaseUrl } from '../../lib/verification';
 import { brandContact, NALARO_EMAIL, NALARO_WEBSITE } from '../../lib/brand';
-import { Capacitor } from '@capacitor/core';
-import { CapacitorUpdater } from '@capgo/capacitor-updater';
-import { PushNotifications } from '@capacitor/push-notifications';
-import { Network } from '@capacitor/network';
-import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
-import BottomNav from './mobile/BottomNav';
-import MobileFinance, { MobileMore } from './mobile/MobileViews';
 
 import { ADMIN_EMAIL } from '../../lib/admin';
+import { Capacitor } from '@capacitor/core';
+import { App as NativeApp } from '@capacitor/app';
+import { Network } from '@capacitor/network';
+import { Haptics, NotificationType } from '@capacitor/haptics';
+import BottomNav from './mobile/BottomNav';
+import MobileFinance, { MobileMore, MobileVerify } from './mobile/MobileViews';
 const Mailbox = React.lazy(() => import('./Mailbox'));
 
 function money(value: any = 0) {
@@ -48,22 +47,35 @@ function showDate(value: any) {
 }
 
 function today() {
-  return new Date().toISOString().slice(0, 10);
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Jakarta',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date());
 }
 
-function documentNumber(type: 'PRJ' | 'INV' | 'RCPT') {
-  return 'NAL/' + type + '/' + new Date().getFullYear() + '/' + Date.now().toString().slice(-6);
+function documentNumber(type: 'PRJ' | 'INV' | 'RCPT', id: string, dateValue = '') {
+  const year = /^\d{4}-/.test(dateValue) ? dateValue.slice(0, 4) : today().slice(0, 4);
+  return 'NAL/' + type + '/' + year + '/' + id.slice(0, 12).toUpperCase();
 }
 
-function publicToken() {
-  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
-    return crypto.randomUUID().replaceAll('-', '').slice(0, 20);
-  }
-  return (Date.now().toString(36) + Math.random().toString(36).slice(2)).slice(0, 20);
+function recordCode(prefix: string, id: string) {
+  return prefix + '-' + id.slice(0, 12).toUpperCase();
 }
 
 function statusClass(status = '') {
   return 'status-pill status-' + status.toLowerCase().replaceAll(' ', '-').replaceAll('_', '-');
+}
+
+/** Prevent queued offline writes for money-critical workflows. */
+async function requireFinancialNetwork() {
+  if (Capacitor.isNativePlatform()) {
+    const status = await Network.getStatus();
+    if (!status.connected) throw new Error('Koneksi internet diperlukan untuk menerbitkan dokumen atau mencatat pembayaran.');
+  } else if (typeof navigator !== 'undefined' && !navigator.onLine) {
+    throw new Error('Tidak dapat menyimpan transaksi saat offline.');
+  }
 }
 
 async function readCollection(name: string): Promise<any[]> {
@@ -113,7 +125,9 @@ function usePdfDownload() {
           ...(record.publicToken ? { verificationToken: String(record.publicToken) } : {}),
         },
       });
-      window.location.assign('/admin/email?mailbox=' + encodeURIComponent(mailbox) + '&draft=' + encodeURIComponent(draft.id));
+      const query = 'mailbox=' + encodeURIComponent(mailbox) + '&draft=' + encodeURIComponent(draft.id);
+      if (Capacitor.isNativePlatform()) window.location.hash = '/email?' + query;
+      else window.location.assign('/admin/email?' + query);
     } catch (error) { setDownloadError('Draft email belum berhasil dibuat. ' + (error instanceof Error ? error.message : 'Coba lagi.')); }
     finally { setDownloading(''); }
   };
@@ -131,7 +145,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (state === 'denied') window.location.replace('/login');
+    if (state === 'denied' && !Capacitor.isNativePlatform()) window.location.replace('/login');
   }, [state]);
 
   if (state === 'loading') {
@@ -329,9 +343,10 @@ function Clients() {
       if (editing) {
         await updateDoc(doc(db, 'clients', editing.id), payload);
       } else {
-        await addDoc(collection(db, 'clients'), {
+        const clientRef = doc(collection(db, 'clients'));
+        await setDoc(clientRef, {
           ...payload,
-          clientCode: 'CLI-' + Date.now().toString().slice(-6),
+          clientCode: recordCode('CLI', clientRef.id),
           createdAt: serverTimestamp(),
         });
       }
@@ -513,9 +528,10 @@ function Projects() {
       if (editing) {
         await updateDoc(doc(db, 'projects', editing.id), payload);
       } else {
-        await addDoc(collection(db, 'projects'), {
+        const projectRef = doc(collection(db, 'projects'));
+        await setDoc(projectRef, {
           ...payload,
-          projectNumber: documentNumber('PRJ'),
+          projectNumber: documentNumber('PRJ', projectRef.id, form.receivedDate),
           createdAt: serverTimestamp(),
         });
       }
@@ -648,7 +664,9 @@ function Invoices() {
   const { downloading, downloadError, downloadPDF, emailPDF } = usePdfDownload();
   const [form, setForm] = useState(blank);
   const [showForm, setShowForm] = useState(false);
+  const [invoiceBusy, setInvoiceBusy] = useState(false);
   const [paying, setPaying] = useState<any>(null);
+  const [paymentBusy, setPaymentBusy] = useState(false);
   const [paymentForm, setPaymentForm] = useState({
     amount: '',
     paymentDate: today(),
@@ -686,17 +704,24 @@ function Invoices() {
 
   const createInvoice = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (invoiceBusy) return;
     const project = projects.find((item) => item.id === form.projectId);
     const client = clients.find((item) => item.id === project?.clientId);
     if (!project || !client) return;
 
+    setInvoiceBusy(true);
+    try {
+    await requireFinancialNetwork();
     const subtotal = Number(form.amount || 0);
     const discount = Number(form.discount || 0);
     const grandTotal = Math.max(0, subtotal - discount);
-    const token = publicToken();
-    const number = documentNumber('INV');
+    const invoiceRef = doc(collection(db, 'invoices'));
+    const registryRef = doc(collection(db, 'public_documents'));
+    const token = registryRef.id;
+    const number = documentNumber('INV', invoiceRef.id, form.issueDate);
+    const batch = writeBatch(db);
 
-    await addDoc(collection(db, 'invoices'), {
+    batch.set(invoiceRef, {
       invoiceNumber: number,
       projectId: project.id,
       projectName: project.name,
@@ -733,7 +758,7 @@ function Invoices() {
       updatedAt: serverTimestamp(),
     });
 
-    await setDoc(doc(db, 'public_documents', token), {
+    batch.set(registryRef, {
       type: 'invoice',
       documentNumber: number,
       clientName: client.name,
@@ -745,9 +770,16 @@ function Invoices() {
       valid: true,
     });
 
+    await batch.commit();
+
     setForm(blank);
     setShowForm(false);
     await load();
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'Invoice gagal diterbitkan. Muat ulang lalu coba lagi.');
+    } finally {
+      setInvoiceBusy(false);
+    }
   };
 
   const downloadInvoice = async (invoice: any, email = false) => {
@@ -779,88 +811,139 @@ function Invoices() {
 
   const recordPayment = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!paying) return;
+    if (!paying || paymentBusy) return;
 
     const amount = Math.max(0, Number(paymentForm.amount || 0));
     if (!amount) return;
 
-    const currentPaid = Number(paying.paidAmount || 0);
-    const total = Number(paying.grandTotal || 0);
-    const newPaid = Math.min(total, currentPaid + amount);
-    const outstanding = Math.max(0, total - newPaid);
-    const nextStatus = outstanding === 0 ? 'paid' : 'partial';
+    const paymentRef = doc(collection(db, 'payments'));
+    setPaymentBusy(true);
 
-    await addDoc(collection(db, 'payments'), {
-      invoiceId: paying.id,
-      invoiceNumber: paying.invoiceNumber,
-      clientId: paying.clientId,
-      paymentDate: paymentForm.paymentDate,
-      amount,
-      paymentMethod: paymentForm.paymentMethod,
-      reference: paymentForm.reference,
-      paymentDetails: paymentInformation(paymentForm.paymentMethod, settings || {}),
-      createdAt: serverTimestamp(),
-    });
+    try {
+      await requireFinancialNetwork();
+      await runTransaction(db, async (transaction) => {
+        const invoiceRef = doc(db, 'invoices', paying.id);
+        const invoiceSnap = await transaction.get(invoiceRef);
+        if (!invoiceSnap.exists()) throw new Error('Invoice tidak ditemukan. Muat ulang halaman lalu coba lagi.');
 
-    await updateDoc(doc(db, 'invoices', paying.id), {
-      paidAmount: newPaid,
-      outstandingAmount: outstanding,
-      status: nextStatus,
-      updatedAt: serverTimestamp(),
-    });
+        const invoice = invoiceSnap.data();
+        const currentStatus = String(invoice.status || '').toLowerCase();
+        if (currentStatus === 'cancelled') throw new Error('Invoice sudah dibatalkan dan tidak dapat menerima pembayaran.');
+        if (currentStatus === 'paid') throw new Error('Invoice sudah lunas.');
 
-    if (paying.publicToken) {
-      await updateDoc(doc(db, 'public_documents', paying.publicToken), { status: nextStatus });
+        const total = Math.max(0, Number(invoice.grandTotal || 0));
+        const currentPaid = Math.max(0, Number(invoice.paidAmount || 0));
+        const outstandingBefore = Math.max(0, Number(invoice.outstandingAmount ?? (total - currentPaid)));
+        if (outstandingBefore <= 0) throw new Error('Invoice sudah tidak memiliki sisa tagihan.');
+        if (amount > outstandingBefore) {
+          throw new Error('Pembayaran melebihi sisa tagihan saat ini (' + money(outstandingBefore) + '). Data mungkin telah berubah di perangkat lain.');
+        }
+
+        const newPaid = currentPaid + amount;
+        const outstanding = Math.max(0, total - newPaid);
+        const nextStatus = outstanding === 0 ? 'paid' : 'partial';
+
+        transaction.set(paymentRef, {
+          invoiceId: paying.id,
+          invoiceNumber: invoice.invoiceNumber || paying.invoiceNumber,
+          clientId: invoice.clientId || paying.clientId,
+          paymentDate: paymentForm.paymentDate,
+          amount,
+          paymentMethod: paymentForm.paymentMethod,
+          reference: paymentForm.reference,
+          paymentDetails: paymentInformation(paymentForm.paymentMethod, settings || {}),
+          createdAt: serverTimestamp(),
+        });
+
+        transaction.update(invoiceRef, {
+          paidAmount: newPaid,
+          outstandingAmount: outstanding,
+          status: nextStatus,
+          updatedAt: serverTimestamp(),
+        });
+
+        if (invoice.publicToken) {
+          transaction.update(doc(db, 'public_documents', invoice.publicToken), { status: nextStatus });
+        }
+      });
+
+      setPaying(null);
+      setPaymentForm({ amount: '', paymentDate: today(), paymentMethod: 'Bank Transfer', reference: '' });
+      await load();
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'Pembayaran gagal disimpan. Muat ulang lalu coba lagi.');
+    } finally {
+      setPaymentBusy(false);
     }
-
-    setPaying(null);
-    setPaymentForm({ amount: '', paymentDate: today(), paymentMethod: 'Bank Transfer', reference: '' });
-    await load();
   };
 
   const issueReceipt = async (invoice: any) => {
     const invoicePayments = payments
       .filter((item) => item.invoiceId === invoice.id)
       .sort((a, b) => String(b.paymentDate).localeCompare(String(a.paymentDate)));
-    const payment = invoicePayments[0];
-    if (!payment || receipts.some((item) => item.paymentId === payment.id)) return;
+    const payment = invoicePayments.find((item) => !receipts.some((receipt) => receipt.paymentId === item.id));
+    if (!payment) return;
 
-    const token = publicToken();
-    const number = documentNumber('RCPT');
+    // One receipt per payment across web/mobile. The deterministic receipt id also
+    // makes transaction retries idempotent.
+    const receiptRef = doc(db, 'receipts', payment.id);
+    const registryRef = doc(collection(db, 'public_documents'));
+    const token = registryRef.id;
+    const number = documentNumber('RCPT', receiptRef.id, payment.paymentDate);
 
-    await addDoc(collection(db, 'receipts'), {
-      receiptNumber: number,
-      invoiceId: invoice.id,
-      relatedInvoice: invoice.invoiceNumber,
-      paymentId: payment.id,
-      clientId: invoice.clientId,
-      clientName: invoice.clientName,
-      projectName: invoice.projectName || '',
-      projectId: invoice.projectId || '',
-      clientSnapshot: invoice.clientSnapshot || { name: invoice.clientName || '' },
-      amount: payment.amount,
-      paymentDate: payment.paymentDate,
-      paymentMethod: payment.paymentMethod,
-      paymentReference: payment.reference || '',
-      paymentDetails: payment.paymentDetails || paymentInformation(payment.paymentMethod, settings || {}),
-      publicToken: token,
-      createdAt: serverTimestamp(),
-    });
+    try {
+      await requireFinancialNetwork();
+      await runTransaction(db, async (transaction) => {
+        const paymentRef = doc(db, 'payments', payment.id);
+        const invoiceRef = doc(db, 'invoices', invoice.id);
+        const paymentSnap = await transaction.get(paymentRef);
+        const invoiceSnap = await transaction.get(invoiceRef);
+        const existingReceipt = await transaction.get(receiptRef);
 
-    await setDoc(doc(db, 'public_documents', token), {
-      type: 'receipt',
-      documentNumber: number,
-      relatedInvoice: invoice.invoiceNumber,
-      clientName: invoice.clientName,
-      projectName: invoice.projectName || '',
-      amount: payment.amount,
-      paymentDate: payment.paymentDate,
-      paymentMethod: payment.paymentMethod,
-      status: 'paid',
-      valid: true,
-    });
+        if (!paymentSnap.exists()) throw new Error('Data pembayaran tidak ditemukan. Muat ulang halaman lalu coba lagi.');
+        if (!invoiceSnap.exists()) throw new Error('Invoice tidak ditemukan. Muat ulang halaman lalu coba lagi.');
+        if (existingReceipt.exists()) return;
 
-    await load();
+        const freshPayment = paymentSnap.data();
+        const freshInvoice = invoiceSnap.data();
+
+        transaction.set(receiptRef, {
+          receiptNumber: number,
+          invoiceId: invoice.id,
+          relatedInvoice: freshInvoice.invoiceNumber || invoice.invoiceNumber,
+          paymentId: payment.id,
+          clientId: freshInvoice.clientId || invoice.clientId,
+          clientName: freshInvoice.clientName || invoice.clientName,
+          projectName: freshInvoice.projectName || invoice.projectName || '',
+          projectId: freshInvoice.projectId || invoice.projectId || '',
+          clientSnapshot: freshInvoice.clientSnapshot || invoice.clientSnapshot || { name: invoice.clientName || '' },
+          amount: freshPayment.amount,
+          paymentDate: freshPayment.paymentDate,
+          paymentMethod: freshPayment.paymentMethod,
+          paymentReference: freshPayment.reference || '',
+          paymentDetails: freshPayment.paymentDetails || paymentInformation(freshPayment.paymentMethod, settings || {}),
+          publicToken: token,
+          createdAt: serverTimestamp(),
+        });
+
+        transaction.set(registryRef, {
+          type: 'receipt',
+          documentNumber: number,
+          relatedInvoice: freshInvoice.invoiceNumber || invoice.invoiceNumber,
+          clientName: freshInvoice.clientName || invoice.clientName,
+          projectName: freshInvoice.projectName || invoice.projectName || '',
+          amount: freshPayment.amount,
+          paymentDate: freshPayment.paymentDate,
+          paymentMethod: freshPayment.paymentMethod,
+          status: 'paid',
+          valid: true,
+        });
+      });
+
+      await load();
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'Receipt gagal diterbitkan. Muat ulang lalu coba lagi.');
+    }
   };
 
   return (
@@ -887,7 +970,7 @@ function Invoices() {
             <label><span>Metode pembayaran</span><select value={form.paymentMethod} onChange={(e) => setForm({ ...form, paymentMethod: e.target.value })}>{PAYMENT_METHODS.map((method) => <option key={method}>{method}</option>)}</select></label>
             <label className="wide"><span>Catatan</span><textarea rows={3} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></label>
           </div>
-          <div className="form-actions"><span>PPN tidak dipungut</span><button className="primary-button" type="submit">Terbitkan invoice</button></div>
+          <div className="form-actions"><span>PPN tidak dipungut</span><button disabled={invoiceBusy} className="primary-button" type="submit">{invoiceBusy ? 'Menerbitkan…' : 'Terbitkan invoice'}</button></div>
         </form>
       )}
 
@@ -904,7 +987,7 @@ function Invoices() {
             <label><span>Metode</span><select value={paymentForm.paymentMethod} onChange={(e) => setPaymentForm({ ...paymentForm, paymentMethod: e.target.value })}>{PAYMENT_METHODS.map((method) => <option key={method}>{method}</option>)}</select></label>
             <label><span>Referensi</span><input value={paymentForm.reference} onChange={(e) => setPaymentForm({ ...paymentForm, reference: e.target.value })} /></label>
           </div>
-          <div className="form-actions"><button className="primary-button" type="submit">Simpan pembayaran</button></div>
+          <div className="form-actions"><button disabled={paymentBusy} className="primary-button" type="submit">{paymentBusy ? 'Menyimpan…' : 'Simpan pembayaran'}</button></div>
         </form>
       )}
 
@@ -916,8 +999,8 @@ function Invoices() {
               const invoicePayments = payments
                 .filter((item) => item.invoiceId === invoice.id)
                 .sort((a, b) => String(b.paymentDate).localeCompare(String(a.paymentDate)));
-              const latestPayment = invoicePayments[0];
-              const hasReceipt = latestPayment ? receipts.some((item) => item.paymentId === latestPayment.id) : false;
+              const pendingReceiptPayment = invoicePayments.find((payment) => !receipts.some((receipt) => receipt.paymentId === payment.id));
+              const allPaymentsReceipted = invoicePayments.length > 0 && !pendingReceiptPayment;
 
               return (
                 <tr key={invoice.id}>
@@ -940,8 +1023,8 @@ function Invoices() {
                           }));
                         }}>Bayar</button>
                       )}
-                      {latestPayment && !hasReceipt && <button onClick={() => issueReceipt(invoice)}>Receipt</button>}
-                      {hasReceipt && <span>Receipt ✓</span>}
+                      {pendingReceiptPayment && <button onClick={() => issueReceipt(invoice)}>Receipt</button>}
+                      {allPaymentsReceipted && <span>Receipt ✓</span>}
                       <button className="danger-action" onClick={() => deleteInvoice(invoice)}>Hapus</button>
                     </div>
                   </td>
@@ -1192,6 +1275,7 @@ function Settings() {
 function AdminLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const isMobileApp = typeof window !== 'undefined' && Capacitor.isNativePlatform();
   const navigation = [
     ['01', 'Overview', '/'],
@@ -1204,10 +1288,24 @@ function AdminLayout() {
   ];
 
   useEffect(() => setMenuOpen(false), [location.pathname]);
+  useEffect(() => {
+    if (!isMobileApp) return;
+    let disposed = false;
+    let listener: { remove: () => Promise<void> } | undefined;
+    void NativeApp.addListener('backButton', () => {
+      if (menuOpen) setMenuOpen(false);
+      else if (location.pathname !== '/') navigate(-1);
+      else void NativeApp.minimizeApp().catch(console.error);
+    }).then(handle => {
+      if (disposed) void handle.remove();
+      else listener = handle;
+    }).catch(console.error);
+    return () => { disposed = true; if (listener) void listener.remove(); };
+  }, [isMobileApp, location.pathname, menuOpen, navigate]);
 
   const logout = async () => {
     await signOut(auth);
-    window.location.replace('/login');
+    if (!isMobileApp) window.location.replace('/login');
   };
 
   return (
@@ -1261,6 +1359,7 @@ function AdminLayout() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/finance" element={<MobileFinance />} />
           <Route path="/more" element={<MobileMore logout={logout} />} />
+          <Route path="/verify/:token" element={<MobileVerify />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
@@ -1273,28 +1372,26 @@ function AdminLayout() {
 export default function AdminApp() {
   useEffect(() => {
     if (typeof window !== 'undefined' && Capacitor.isNativePlatform()) {
-      CapacitorUpdater.notifyAppReady().catch(console.error);
-      
-      PushNotifications.requestPermissions().then(result => {
-        if (result.receive === 'granted') {
-          PushNotifications.register().catch(console.error);
-        }
-      }).catch(console.error);
+      // Push registration requires google-services.json and a user-initiated opt-in.
+      // Do not request a permission on every authenticated app startup.
 
-      Network.addListener('networkStatusChange', status => {
+      let disposed = false;
+      let networkListener: { remove: () => Promise<void> } | undefined;
+      void Network.addListener('networkStatusChange', status => {
         console.log('Network status changed', status);
         if (!status.connected) {
           Haptics.notification({ type: NotificationType.Warning }).catch(() => {});
         }
-      });
+      }).then(listener => {
+        if (disposed) void listener.remove();
+        else networkListener = listener;
+      }).catch(console.error);
+      return () => { disposed = true; if (networkListener) void networkListener.remove(); };
     }
   }, []);
 
-  return (
-    <BrowserRouter basename="/admin">
-      <ProtectedRoute>
-        <AdminLayout />
-      </ProtectedRoute>
-    </BrowserRouter>
-  );
+  const content = <ProtectedRoute><AdminLayout /></ProtectedRoute>;
+  return Capacitor.isNativePlatform()
+    ? <HashRouter>{content}</HashRouter>
+    : <BrowserRouter basename="/admin">{content}</BrowserRouter>;
 }
