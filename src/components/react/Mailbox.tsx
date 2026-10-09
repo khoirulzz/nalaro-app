@@ -172,6 +172,7 @@ export default function Mailbox({ service = mailboxService, configured = MAILBOX
       let message = await service.get(mailbox, item.id);
       if (!message.read && !['sending', 'uncertain'].includes(message.status)) message = await service.patch(mailbox, item.id, { read: true });
       if (version !== selectionGeneration.current) return;
+      setHtml(Capacitor.isNativePlatform() && Boolean(message.html));
       setSelected(message); setItems((current) => current.map((row) => row.id === item.id ? { ...row, read: true } : row));
     } catch (problem) { if (version === selectionGeneration.current) setError(errorText(problem)); }
     finally { if (version === selectionGeneration.current) setReading(false); }
