@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import DOMPurify from 'dompurify';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { EMAIL_ASSET_ORIGIN, isBrandedMailbox, renderOutgoingEmail } from '../../lib/email-template';
-import { MAILBOX_CONFIGURED, mailboxService, outgoingFile, downloadMailFile, type MailboxService, type MailConfig, type MailDraft, type MailFolder, type MailMessage, type MailSummary } from '../../lib/mailbox';
+import { MAILBOX_CONFIGURED, mailboxService, outgoingFile, downloadMailFile, type MailboxService, type MailConfig, type MailDraft, type MailFolder, type MailMessage, type MailSummary, type MailAttachment } from '../../lib/mailbox';
 import '../../styles/mailbox.css';
 
 const folders: [MailFolder, string, string][] = [['inbox', 'Inbox', '↓'], ['starred', 'Starred', '☆'], ['sent', 'Sent', '↗'], ['drafts', 'Drafts', '≡'], ['trash', 'Trash', '×']];
@@ -24,15 +24,34 @@ function MailboxAvatar({ address, size = 'md' }: { address: string; size?: 'sm' 
   return <span className={`mailbox-avatar is-${tone} is-${size}`} aria-hidden="true"><span /></span>;
 }
 
-DOMPurify.addHook('uponSanitizeAttribute', (_node, attribute) => {
-  if (['src', 'srcset', 'poster', 'background'].includes(attribute.attrName)) {
-    attribute.keepAttr = attribute.attrName === 'src' && /^data:image\/(png|jpeg|gif|webp);base64,/i.test(attribute.attrValue);
+const safeImageType = (type: string) => /^(?:image\/png|image\/jpeg|image\/gif|image\/webp)$/i.test(type);
+const normalizedCid = (id: string) => {
+  try { return decodeURIComponent(id).replace(/^cid:/i, '').replace(/^<|>$/g, '').trim().toLowerCase(); }
+  catch { return id.replace(/^cid:/i, '').replace(/^<|>$/g, '').trim().toLowerCase(); }
+};
+const cidReferences = (html: string) => [...html.matchAll(/cid:([^\s"'<>]+)/gi)].map((match) => normalizedCid(match[1]));
+const remoteImagePresent = (html: string) => /<img\b[^>]*\bsrc\s*=\s*(?:"https:\/\/|'https:\/\/|https:\/\/)/i.test(html);
+
+// Sanitize untrusted messages before embedding into a scriptless, opaque-origin frame.
+let allowExternalMailImages = false;
+DOMPurify.addHook('uponSanitizeAttribute', (node, attribute) => {
+  if (['srcset', 'poster', 'background'].includes(attribute.attrName)) attribute.keepAttr = false;
+  if (attribute.attrName === 'src') {
+    const image = node.nodeName.toLowerCase() === 'img';
+    attribute.keepAttr = image && (/^data:image\/(png|jpeg|gif|webp);base64,/i.test(attribute.attrValue)
+      || (allowExternalMailImages && /^https:\/\//i.test(attribute.attrValue)));
   }
   if (attribute.attrName === 'style' && /url\s*\(|@import/i.test(attribute.attrValue)) attribute.keepAttr = false;
 });
 
-function htmlDocument(html: string) {
-  const cleaned = DOMPurify.sanitize(html, { USE_PROFILES: { html: true }, FORBID_TAGS: ['form', 'input', 'button', 'iframe', 'object', 'embed', 'meta', 'link', 'style'] });
+function htmlDocument(html: string, remoteImages = false, inlineImages: Record<string, string> = {}) {
+  // content-id images refer to private attachments; replace only known IDs with raster data.
+  const resolved = html.replace(/cid:([^\s"'<>]+)/gi, (match, id: string) => inlineImages[normalizedCid(id)] || match);
+  allowExternalMailImages = remoteImages;
+  let cleaned: string;
+  try {
+    cleaned = DOMPurify.sanitize(resolved, { USE_PROFILES: { html: true }, FORBID_TAGS: ['form', 'input', 'button', 'iframe', 'object', 'embed', 'meta', 'link', 'style'] });
+  } finally { allowExternalMailImages = false; }
   // Native reader gets a refined, accessible document view. Do not load external
   // media, stylesheets or scripts from potentially untrusted incoming messages.
   if (Capacitor.isNativePlatform()) {
@@ -55,9 +74,9 @@ function htmlDocument(html: string) {
       hr { border:0; border-top:1px solid #e8e8e2; margin:24px 0; }
       @media (max-width:540px) { body { padding:20px 16px; } table[width],td[width] { width:auto !important; } }
     `;
-    return '<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:; font-src \'none\'; form-action \'none\'; base-uri \'none\'"><style>'+css+'</style></head><body>'+cleaned+'</body></html>';
+    return '<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:${remoteImages ? " https:" : ""}; font-src \'none\'; form-action \'none\'; base-uri \'none\'"><style>'+css+'</style></head><body>'+cleaned+'</body></html>';
   }
-  return '<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:; font-src \'none\'; form-action \'none\'; base-uri \'none\'"><style>body{font:14px/1.6 Arial,sans-serif;padding:16px;color:#232420;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{max-width:100%}pre{white-space:pre-wrap}</style></head><body>' + cleaned + '</body></html>';
+  return '<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:${remoteImages ? " https:" : ""}; font-src \'none\'; form-action \'none\'; base-uri \'none\'"><style>body{font:14px/1.6 Arial,sans-serif;padding:16px;color:#232420;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{max-width:100%}pre{white-space:pre-wrap}</style></head><body>' + cleaned + '</body></html>';
 }
 
 export default function Mailbox({ service = mailboxService, configured = MAILBOX_CONFIGURED }: { service?: MailboxService; configured?: boolean }) {
@@ -76,6 +95,10 @@ export default function Mailbox({ service = mailboxService, configured = MAILBOX
   const [selected, setSelected] = useState<MailMessage>();
   const [reading, setReading] = useState(false);
   const [html, setHtml] = useState(false);
+  const [remoteImages, setRemoteImages] = useState(false);
+  const [inlineImages, setInlineImages] = useState<Record<string, string>>({});
+  const [imagePreview, setImagePreview] = useState<{ id: string; filename: string; url: string }>();
+  const previewGeneration = useRef(0);
   const [compose, setCompose] = useState(false);
   const [draft, setDraft] = useState<MailDraft>(blank);
   const [draftId, setDraftId] = useState<string>();
@@ -88,6 +111,47 @@ export default function Mailbox({ service = mailboxService, configured = MAILBOX
   const dirty = useRef(false);
   const composeRef = useRef<HTMLDialogElement>(null);
   const deepLink = useRef(false);
+  useEffect(() => () => {
+    if (imagePreview?.url) URL.revokeObjectURL(imagePreview.url);
+  }, [imagePreview?.url]);
+  useEffect(() => {
+    if (!selected?.html) { setInlineImages({}); return; }
+    const requested = cidReferences(selected.html);
+    if (!requested.length) { setInlineImages({}); return; }
+    let cancelled = false;
+    setInlineImages({});
+    const matches = selected.attachments.filter((attachment) =>
+      safeImageType(attachment.contentType) && requested.some((cid) =>
+        cid === normalizedCid(attachment.contentId || '') || cid === normalizedCid(attachment.filename)));
+    void Promise.allSettled(matches.slice(0, 12).map(async (file) => {
+      if (file.size > 5 * 1024 * 1024) return null;
+      const blob = await service.file(selected.mailbox, selected.id, file.id);
+      const typed = new Blob([blob], { type: file.contentType });
+      const uri = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = () => reject(new Error('Gambar inline tidak dapat dibaca.'));
+        reader.readAsDataURL(typed);
+      });
+      return { uri, ids: [normalizedCid(file.contentId || ''), normalizedCid(file.filename)] };
+    })).then((results) => {
+      if (cancelled) return;
+      const images: Record<string, string> = {};
+      for (const result of results) if (result.status === 'fulfilled' && result.value) {
+        for (const id of result.value.ids) if (id) images[id] = result.value.uri;
+      }
+      setInlineImages(images);
+    });
+    return () => { cancelled = true; };
+  }, [selected?.id, selected?.mailbox, selected?.html, service]);
+  const openImage = async (file: MailAttachment) => {
+    const generation = ++previewGeneration.current;
+    const blob = await service.file(selected!.mailbox, selected!.id, file.id);
+    if (generation !== previewGeneration.current) return;
+    const url = URL.createObjectURL(new Blob([blob], { type: file.contentType }));
+    setImagePreview({ id: file.id, filename: file.filename, url });
+  };
+  const closeImage = () => { previewGeneration.current++; setImagePreview(undefined); };
 
   const connect = async () => {
     setConfigLoading(true); setError('');
@@ -167,7 +231,7 @@ export default function Mailbox({ service = mailboxService, configured = MAILBOX
   };
   const openMessage = async (item: MailSummary) => {
     if (busy) return;
-    const version = ++selectionGeneration.current; setReading(true); setError(''); setSelected(undefined); setHtml(false);
+    const version = ++selectionGeneration.current; setReading(true); setError(''); setSelected(undefined); setHtml(false); setRemoteImages(false); closeImage();
     try {
       let message = await service.get(mailbox, item.id);
       if (!message.read && !['sending', 'uncertain'].includes(message.status)) message = await service.patch(mailbox, item.id, { read: true });
@@ -230,14 +294,17 @@ export default function Mailbox({ service = mailboxService, configured = MAILBOX
             <div className="mail-reader-actions"><button className="mail-back mail-button" onClick={() => { selectionGeneration.current++; setSelected(undefined); }}>← Kembali</button><button className="mail-button" disabled={!!busy || ['sending', 'uncertain'].includes(selected.status)} onClick={() => change({ starred: !selected.starred })}>{selected.starred ? '★ Starred' : '☆ Star'}</button><button className="mail-button" disabled={!!busy || ['sending', 'uncertain'].includes(selected.status)} onClick={() => change({ read: !selected.read })}>{selected.read ? 'Tandai belum dibaca' : 'Tandai dibaca'}</button>{selected.folder !== 'trash' ? <button className="mail-button" disabled={!!busy || ['sending', 'uncertain'].includes(selected.status)} onClick={() => change({ folder: 'trash' })}>Trash</button> : <><button className="mail-button" disabled={!!busy} onClick={() => change({ folder: selected.originalFolder || 'inbox' })}>Pulihkan</button><button className="mail-button mail-danger" disabled={!!busy} onClick={() => { if (window.confirm('Hapus permanen email dan lampirannya?')) void run('delete', async () => { await service.remove(mailbox, selected.id); setSelected(undefined); await load(); }); }}>Hapus permanen</button></>}</div>
             <header className="mail-reader-header"><span className="mail-status">{statusText(selected.status)}</span><h2>{selected.subject || '(Tanpa subjek)'}</h2><dl><div><dt>From</dt><dd className="mail-address-with-avatar"><MailboxAvatar address={selected.from} size="sm" /><span>{selected.fromName && selected.fromName + ' · '}{selected.from}</span></dd></div><div><dt>To</dt><dd>{selected.to.join(', ') || '—'}</dd></div><div><dt>Date</dt><dd>{dateText(selected.sentAt || selected.createdAt)}</dd></div></dl></header>
             {selected.sendError && <p className="document-error">{selected.sendError}</p>}
-            {selected.html && <div className="mail-body-toggle"><button aria-pressed={!html} onClick={() => setHtml(false)}>Teks</button><button aria-pressed={html} onClick={() => setHtml(true)}>{Capacitor.isNativePlatform() ? 'Lihat Desain' : 'Tampilan HTML'}</button><small>Gambar eksternal diblokir.</small></div>}
-            {html && selected.html ? <iframe className={'mail-html'+(Capacitor.isNativePlatform() ? ' mail-html-native' : '')} title="Konten HTML email" sandbox="" referrerPolicy="no-referrer" srcDoc={htmlDocument(selected.html)} /> : <div className="mail-text">{selected.text || (selected.html ? 'Email ini hanya berisi HTML. Pilih Tampilan HTML untuk membacanya.' : '(Pesan kosong)')}</div>}
-            {!!selected.attachments.length && <div className="mail-attachments"><h3>Attachments</h3>{selected.attachments.map((file) => <button key={file.id} disabled={!!busy} onClick={() => run('download', async () => downloadMailFile(await service.file(mailbox, selected.id, file.id), file.filename))}><span>↓</span><strong>{file.filename}</strong><small>{bytesText(file.size)}</small></button>)}</div>}
+            {selected.html && <div className="mail-body-toggle"><button aria-pressed={!html} onClick={() => setHtml(false)}>Teks</button><button aria-pressed={html} onClick={() => setHtml(true)}>{Capacitor.isNativePlatform() ? 'Lihat Desain' : 'Tampilan HTML'}</button>{remoteImagePresent(selected.html) && (Capacitor.isNativePlatform() ? <button type="button" aria-pressed={remoteImages} onClick={() => setRemoteImages(value => !value)}>{remoteImages ? 'Blokir gambar eksternal' : 'Tampilkan gambar eksternal'}</button> : <small>Gambar eksternal diblokir.</small>)}{Capacitor.isNativePlatform() && remoteImagePresent(selected.html) && <small>{remoteImages ? 'Gambar dimuat dari pengirim; alamat IP dapat terlihat.' : 'Gambar eksternal dinonaktifkan untuk privasi.'}</small>}</div>}
+            {html && selected.html ? <iframe className={'mail-html'+(Capacitor.isNativePlatform() ? ' mail-html-native' : '')} title="Konten HTML email" sandbox="" referrerPolicy="no-referrer" srcDoc={htmlDocument(selected.html, Capacitor.isNativePlatform() && remoteImages, inlineImages)} /> : <div className="mail-text">{selected.text || (selected.html ? 'Email ini hanya berisi HTML. Pilih Tampilan HTML untuk membacanya.' : '(Pesan kosong)')}</div>}
+            {!!selected.attachments.length && <div className="mail-attachments"><h3>Attachments</h3>{selected.attachments.map((file) => <div key={file.id} className="mail-attachment-row"><div className="mail-attachment-info"><span aria-hidden="true">{safeImageType(file.contentType) ? '▧' : '▤'}</span><strong>{file.filename}</strong><small>{bytesText(file.size)}</small></div><div className="mail-attachment-actions">{safeImageType(file.contentType) && <button className="mail-button" disabled={!!busy} onClick={() => run('preview-image', () => openImage(file))}>Lihat gambar</button>}<button className="mail-button" disabled={!!busy} onClick={() => run('download', async () => {
+                await downloadMailFile(await service.file(mailbox, selected.id, file.id), file.filename);
+              })}>{Capacitor.isNativePlatform() ? 'Simpan / bagikan' : 'Unduh'}</button></div></div>)}</div>}
             <footer className="mail-reader-footer">{selected.folder === 'drafts' ? <button className="primary-button" disabled={!!busy} onClick={() => editDraft(selected)}>Lanjutkan draft ↗</button> : selected.folder !== 'trash' && selected.status === 'received' ? <button className="primary-button" disabled={!!busy} onClick={() => begin({ ...blank(), to: [selected.replyTo?.[0] || selected.from], subject: /^re:/i.test(selected.subject) ? selected.subject : 'Re: ' + selected.subject, text: '\n\n—\n' + selected.from + ' wrote:\n' + selected.text.split('\n').map((line) => '> ' + line).join('\n'), inReplyTo: selected.messageId, references: [selected.references, selected.messageId].filter(Boolean).join(' ').slice(-2000) })}>Balas email ↗</button> : null}{['sending', 'uncertain'].includes(selected.status) && <button className="mail-button" disabled={!!busy || !config.sendingConfigured} onClick={() => run('retry', async () => { const result = await service.send(mailbox, selected.id); setSelected(result); setNotice(result.status === 'accepted' ? 'Email diterima Resend.' : result.sendError || 'Periksa status pengiriman.'); await load(); })}>Periksa / coba ulang</button>}{selected.hasRaw && <button className="mail-button" disabled={!!busy} onClick={() => run('raw', async () => downloadMailFile(await service.file(mailbox, selected.id), 'email.eml'))}>Unduh email asli</button>}</footer>
           </>}
         </article>
       </div>
     </>}
+    {imagePreview && <div className="mail-image-overlay" role="presentation" onClick={closeImage}><div className="mail-image-dialog" role="dialog" aria-modal="true" aria-label={'Pratinjau ' + imagePreview.filename} onClick={event => event.stopPropagation()}><header><strong>{imagePreview.filename}</strong><button className="mail-button" type="button" onClick={closeImage}>Tutup ×</button></header><img src={imagePreview.url} alt={'Pratinjau ' + imagePreview.filename} /></div></div>}
     {compose && <dialog ref={composeRef} className="mail-compose" aria-labelledby="mail-compose-title" onCancel={(event) => { event.preventDefault(); closeCompose(); }}><form onSubmit={(event) => { event.preventDefault(); void run('send', () => save(true)); }}><header><div className="mail-compose-identity"><MailboxAvatar address={mailbox} size="lg" /><div><small>{mailbox}</small><h2 id="mail-compose-title">{draft.inReplyTo ? 'Balas email' : 'Pesan baru'}</h2></div></div><button type="button" aria-label="Tutup editor email" disabled={!!busy} onClick={closeCompose}>×</button></header>{error && <p className="document-error" role="alert">{error}</p>}<div className="mail-branding-note"><span>{branded ? (draft.billing ? 'Template billing · Ringkasan dokumen dan footer Nalaro otomatis.' : 'Template Nalaro · Branding dan footer otomatis.' + (draft.inReplyTo ? ' Banner disertakan pada balasan.' : ' Banner disertakan.')) : 'Email pribadi · Tanpa template branding.'}</span>{branded && <button type="button" className="mail-button" aria-expanded={preview} onClick={() => setPreview((value) => !value)}>{preview ? 'Tutup pratinjau' : 'Pratinjau email'}</button>}</div>{previewHTML && <iframe className="mail-template-preview" title="Pratinjau template email Nalaro" sandbox="" referrerPolicy="no-referrer" srcDoc={previewHTML} />}<fieldset disabled={!!busy}><label><span>To</span><input type="text" aria-label="Penerima email" value={to} onChange={(event) => { dirty.current = true; setTo(event.target.value); }} placeholder="client@example.com" autoFocus /><small>Pisahkan beberapa alamat dengan koma.</small></label><label><span>Subject</span><input aria-label="Subjek email" maxLength={300} value={draft.subject} onChange={(event) => updateDraft('subject', event.target.value)} placeholder="Tentang pekerjaan berikutnya…" /></label><label className="mail-compose-body"><span>Message</span><textarea aria-label="Isi pesan" maxLength={200000} rows={12} value={draft.text} onChange={(event) => updateDraft('text', event.target.value)} placeholder="Halo," /></label><div className="mail-compose-files">{draft.attachments.map((file, index) => <span key={index}><strong>{file.filename}</strong><button type="button" aria-label={'Hapus lampiran ' + file.filename} onClick={() => { dirty.current = true; setDraft((value) => ({ ...value, attachments: value.attachments.filter((_, position) => index !== position) })); }}>×</button></span>)}<label><span>+ Lampiran</span><input aria-label="Tambah lampiran" type="file" multiple onChange={(event) => { void addFiles(event.target.files); event.target.value = ''; }} /></label><small>Total maksimal 8 MB.</small></div></fieldset><footer><button type="button" className="mail-button" disabled={!!busy} onClick={() => run('save', () => save(false))}>{busy === 'save' ? 'Menyimpan…' : 'Simpan draft'}</button><button className="primary-button" disabled={!!busy || !config?.sendingConfigured}>{busy === 'send' ? 'Mengirim…' : 'Kirim email ↗'}</button></footer></form></dialog>}
   </section>;
 }

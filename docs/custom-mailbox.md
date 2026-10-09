@@ -237,3 +237,12 @@ Setelah kamu memasang konfigurasi nyata, lakukan smoke test sendiri: kirim email
 - Resend send API: https://resend.com/docs/api-reference/emails/send-email
 - Resend idempotency keys: https://resend.com/docs/dashboard/emails/idempotency-keys
 - Resend threaded reply headers: https://resend.com/docs/dashboard/receiving/reply-to-emails
+
+
+### Gambar email dan lampiran pada Android
+
+- Gambar yang dikirim sebagai attachment raster (PNG/JPEG/GIF/WebP) dapat dibuka lewat **Lihat gambar**, tanpa memublikasikan URL R2 atau token Firebase.
+- Gambar `cid:` pada HTML email dihubungkan menggunakan `Content-ID` dari MIME email masuk. **Deploy ulang Worker** setelah perubahan sumber agar pesan baru menyimpan metadata tersebut. Email lama yang tidak menyimpan `Content-ID` hanya dapat memakai fallback nama file yang sama dengan CID.
+- Gambar eksternal HTTPS **tetap diblokir secara default**. Pengguna Android dapat menekan **Tampilkan gambar eksternal** per email. Tindakan ini membuat permintaan langsung ke server pengirim (potensi tracking); iframe tetap memakai sandbox tanpa skrip atau form.
+- Tombol **Simpan / bagikan** membuka Android Sharesheet dengan file yang diambil lewat API privat. Jika `Documents` tidak bisa ditulisi akibat scoped storage, file ditaruh sementara di cache privat dan diberikan melalui FileProvider. Folder Downloads tidak dijamin; pilih tujuan penyimpanan dari sharesheet.
+- Pastikan Worker Mailbox di-deploy dari `workers/mailbox/src/worker.js` atau bangun ulang `dashboard-worker.js` dengan `npm run build:mailbox` sebelum memasang bundle dashboard.

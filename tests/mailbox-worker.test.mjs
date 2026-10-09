@@ -193,3 +193,36 @@ test('pagination keeps cursor even if filtered page has no matching messages', a
   const second = await api('/messages?folder=drafts&cursor=' + first.data.cursor); assert.equal(second.data.items.length, 5); assert.equal(second.data.cursor, null);
   const search = await api('/messages?folder=drafts&q=not-found'); assert.equal(search.data.items.length, 0); assert.ok(search.data.cursor);
 });
+
+test('MIME inline images preserve Content-ID and remain private attachments', async () => {
+  const png = Buffer.from('89504e470d0a1a0a0000000d49484452', 'hex');
+  const inline = [
+    'From: Sender <sender@example.com>',
+    'To: hello@nalaro.digital',
+    'Subject: Inline image from platform',
+    'MIME-Version: 1.0',
+    'Content-Type: multipart/related; boundary="related-test"',
+    '', '--related-test',
+    'Content-Type: text/html; charset=utf-8',
+    '', '<html><body><img src="cid:logo.platform@example.com" alt="Logo"></body></html>',
+    '--related-test',
+    'Content-Type: image/png',
+    'Content-ID: <logo.platform@example.com>',
+    'Content-Disposition: inline; filename="logo.png"',
+    'Content-Transfer-Encoding: base64',
+    '', png.toString('base64'),
+    '--related-test--', ''
+  ].join('\r\n');
+  await receive(inline);
+  const summary = (await api('/messages')).data.items[0];
+  const message = (await api('/messages/' + summary.id)).data.message;
+  const image = message.attachments[0];
+  assert.equal(image.contentId, 'logo.platform@example.com');
+  assert.equal(image.contentType, 'image/png');
+  assert.match(message.html, /cid:logo.platform@example.com/);
+  const file = await api('/messages/' + message.id + '/attachments/' + image.id);
+  assert.equal(file.response.status, 200);
+  assert.deepEqual(Buffer.from(file.data, 'utf8').subarray(0, 4), png.subarray(0, 4));
+  const unauth = await api('/messages/' + message.id + '/attachments/' + image.id, { bearer: null });
+  assert.equal(unauth.response.status, 401);
+});

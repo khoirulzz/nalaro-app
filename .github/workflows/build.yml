@@ -46,6 +46,11 @@ jobs:
       - name: Test Native Mail and Push Endpoints
         run: node tests/native-mail-push.test.mjs
 
+      - name: Test Mailbox MIME and Attachment Storage
+        run: |
+          npm run build:mailbox
+          npm run test:mailbox
+
       - name: Type Check
         run: npm run check
 

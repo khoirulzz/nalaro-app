@@ -35,3 +35,18 @@
     height:min(65dvh,800px); min-height:400px; border:1px solid #d8d8d1; border-radius:16px;
     background:#fff; box-shadow:0 6px 26px #0002; }
 }
+
+/* Private mail attachment preview and explicit save/share on Android. */
+.mail-attachment-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0;border:1px solid var(--color-line);padding:10px 12px;background:#151713}
+.mail-attachment-info{display:flex;align-items:center;gap:9px;min-width:0;flex:1}
+.mail-attachment-info>span{color:var(--color-flare);font-size:20px;flex-shrink:0}
+.mail-attachment-info strong{min-width:0;overflow-wrap:anywhere}
+.mail-attachment-info small{margin-left:auto;flex-shrink:0}
+.mail-attachment-actions{display:flex;gap:6px;flex-shrink:0}
+.mail-attachments .mail-attachment-actions button{display:inline-flex;min-height:36px;padding:7px 12px;white-space:nowrap}
+.mail-image-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.88);padding:16px}
+.mail-image-dialog{width:min(820px,100%);max-height:calc(100dvh - 32px);overflow:auto;background:#171816;border:1px solid #43473f;border-radius:14px}
+.mail-image-dialog header{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;background:#171816}
+.mail-image-dialog header strong{font-size:12px;min-width:0;overflow-wrap:anywhere}
+.mail-image-dialog img{display:block;max-width:100%;height:auto;max-height:calc(100dvh - 108px);object-fit:contain;margin:auto}
+@media(max-width:640px){.mail-attachment-row{align-items:stretch;flex-direction:column}.mail-attachment-actions{width:100%;flex-wrap:wrap}.mail-attachment-actions button{flex:1;justify-content:center}.mail-image-overlay{padding:8px}.mail-image-dialog{max-height:calc(100dvh - 16px)}}

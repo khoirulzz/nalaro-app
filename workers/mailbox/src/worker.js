@@ -142,7 +142,8 @@ async function storeAttachments(env, mailbox, id, decoded, stable = false) {
   for (const file of decoded) {
     const fileId = stable ? String(result.length).padStart(3, '0') : crypto.randomUUID();
     await env.MAIL_BUCKET.put(attachmentKey(mailbox, id, fileId), file.bytes, { httpMetadata: { contentType: file.contentType } });
-    result.push({ id: fileId, filename: file.filename, contentType: file.contentType, size: file.bytes.length });
+    result.push({ id: fileId, filename: file.filename, contentType: file.contentType, size: file.bytes.length,
+      ...(file.contentId ? { contentId: String(file.contentId).replace(/[\r\n\x00<>]/g, '').slice(0, 256) } : {}) });
   }
   return result;
 }
@@ -310,7 +311,7 @@ export default {
     const id = receipt.id;
     if (receipt.complete) return;
     await env.MAIL_BUCKET.put(base(mailbox) + `raw/${id}.eml`, raw, { httpMetadata: { contentType: 'message/rfc822' } });
-    const decoded = (parsed.attachments || []).slice(0, 50).map((file) => ({ filename: cleanName(file.filename), contentType: file.mimeType || 'application/octet-stream', bytes: new Uint8Array(file.content) }));
+    const decoded = (parsed.attachments || []).slice(0, 50).map((file) => ({ filename: cleanName(file.filename), contentType: file.mimeType || 'application/octet-stream', contentId: file.contentId || '', bytes: new Uint8Array(file.content) }));
     const attachments = await storeAttachments(env, mailbox, id, decoded, true);
     const safeHeader = (value) => String(value || '').replace(/[\r\n\x00]/g, '').slice(0, 2000);
     const record = { id, mailbox, folder: 'inbox', status: 'received', read: false, starred: false,
