@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { orderRecords, EMPTY_ORDER } from '../src/lib/order.ts';
+const rules = await readFile('firestore.rules','utf8');
+assert.ok(rules.includes("c.clientCode == 'CLI-' + id[0:12].upper()"));
+assert.ok(rules.includes("p.receivedDate[0:4] + '/' + id[0:12].upper()"));
+const id='a1b2c3d4e5f60718293a4b5c6d7e8f90';
+const x=orderRecords({...EMPTY_ORDER,name:'[TEST] Nalaro Dummy Order',picName:'QA Nalaro',email:'qa@example.com',whatsapp:'081234567890',projectName:'[TEST] Order Contract'},id,new Date(),'2026-10-09');
+assert.equal(x.client.clientCode,'CLI-'+id.slice(0,12).toUpperCase());
+assert.equal(x.project.projectNumber,'NAL/PRJ/2026/'+id.slice(0,12).toUpperCase());
+assert.equal(x.project.clientId,id);
+console.log('PASS: mobile order IDs and Firestore rules agree');

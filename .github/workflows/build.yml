@@ -31,6 +31,9 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Verify Order Contract
+        run: node --experimental-strip-types tests/order-parity.test.mjs
+
       - name: Type Check
         run: npm run check
 
