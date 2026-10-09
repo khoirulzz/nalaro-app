@@ -33,6 +33,30 @@ DOMPurify.addHook('uponSanitizeAttribute', (_node, attribute) => {
 
 function htmlDocument(html: string) {
   const cleaned = DOMPurify.sanitize(html, { USE_PROFILES: { html: true }, FORBID_TAGS: ['form', 'input', 'button', 'iframe', 'object', 'embed', 'meta', 'link', 'style'] });
+  // Native reader gets a refined, accessible document view. Do not load external
+  // media, stylesheets or scripts from potentially untrusted incoming messages.
+  if (Capacitor.isNativePlatform()) {
+    const css = `
+      :root { color-scheme: light; }
+      *, *::before, *::after { box-sizing: border-box; }
+      html { background: #f5f4f1; -webkit-text-size-adjust: 100%; }
+      body { max-width: 700px; min-height: 100vh; margin: 0 auto; padding: clamp(20px, 5vw, 42px);
+        background: #fff; color: #252922; font: 15px/1.75 -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        overflow-wrap: anywhere; }
+      h1,h2,h3 { color:#1d211d; line-height:1.3; letter-spacing:-.025em; }
+      h1 { font-size:clamp(22px,6vw,30px); } h2 { font-size:clamp(19px,5vw,25px); }
+      p,ul,ol { max-width:100%; } p { margin:.9em 0; } li { margin:.3em 0; }
+      blockquote { padding: 12px 16px; margin:18px 0; border-left:3px solid #ff5b2e; background:#fff6f1; color:#414942; }
+      img, video, svg { max-width:100% !important; height:auto !important; }
+      table { width:100% !important; max-width:100% !important; border-collapse:collapse; }
+      td,th { padding:8px !important; max-width:100%; overflow-wrap:anywhere; }
+      a { color:#cc461d; text-decoration:underline; text-underline-offset:3px; }
+      pre { white-space:pre-wrap; overflow-wrap:anywhere; }
+      hr { border:0; border-top:1px solid #e8e8e2; margin:24px 0; }
+      @media (max-width:540px) { body { padding:20px 16px; } table[width],td[width] { width:auto !important; } }
+    `;
+    return '<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:; font-src \'none\'; form-action \'none\'; base-uri \'none\'"><style>'+css+'</style></head><body>'+cleaned+'</body></html>';
+  }
   return '<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:; font-src \'none\'; form-action \'none\'; base-uri \'none\'"><style>body{font:14px/1.6 Arial,sans-serif;padding:16px;color:#232420;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{max-width:100%}pre{white-space:pre-wrap}</style></head><body>' + cleaned + '</body></html>';
 }
 
@@ -148,6 +172,7 @@ export default function Mailbox({ service = mailboxService, configured = MAILBOX
       let message = await service.get(mailbox, item.id);
       if (!message.read && !['sending', 'uncertain'].includes(message.status)) message = await service.patch(mailbox, item.id, { read: true });
       if (version !== selectionGeneration.current) return;
+      setHtml(Capacitor.isNativePlatform() && Boolean(message.html));
       setSelected(message); setItems((current) => current.map((row) => row.id === item.id ? { ...row, read: true } : row));
     } catch (problem) { if (version === selectionGeneration.current) setError(errorText(problem)); }
     finally { if (version === selectionGeneration.current) setReading(false); }
@@ -205,8 +230,8 @@ export default function Mailbox({ service = mailboxService, configured = MAILBOX
             <div className="mail-reader-actions"><button className="mail-back mail-button" onClick={() => { selectionGeneration.current++; setSelected(undefined); }}>← Kembali</button><button className="mail-button" disabled={!!busy || ['sending', 'uncertain'].includes(selected.status)} onClick={() => change({ starred: !selected.starred })}>{selected.starred ? '★ Starred' : '☆ Star'}</button><button className="mail-button" disabled={!!busy || ['sending', 'uncertain'].includes(selected.status)} onClick={() => change({ read: !selected.read })}>{selected.read ? 'Tandai belum dibaca' : 'Tandai dibaca'}</button>{selected.folder !== 'trash' ? <button className="mail-button" disabled={!!busy || ['sending', 'uncertain'].includes(selected.status)} onClick={() => change({ folder: 'trash' })}>Trash</button> : <><button className="mail-button" disabled={!!busy} onClick={() => change({ folder: selected.originalFolder || 'inbox' })}>Pulihkan</button><button className="mail-button mail-danger" disabled={!!busy} onClick={() => { if (window.confirm('Hapus permanen email dan lampirannya?')) void run('delete', async () => { await service.remove(mailbox, selected.id); setSelected(undefined); await load(); }); }}>Hapus permanen</button></>}</div>
             <header className="mail-reader-header"><span className="mail-status">{statusText(selected.status)}</span><h2>{selected.subject || '(Tanpa subjek)'}</h2><dl><div><dt>From</dt><dd className="mail-address-with-avatar"><MailboxAvatar address={selected.from} size="sm" /><span>{selected.fromName && selected.fromName + ' · '}{selected.from}</span></dd></div><div><dt>To</dt><dd>{selected.to.join(', ') || '—'}</dd></div><div><dt>Date</dt><dd>{dateText(selected.sentAt || selected.createdAt)}</dd></div></dl></header>
             {selected.sendError && <p className="document-error">{selected.sendError}</p>}
-            {selected.html && <div className="mail-body-toggle"><button aria-pressed={!html} onClick={() => setHtml(false)}>Teks</button><button aria-pressed={html} onClick={() => setHtml(true)}>Tampilan HTML</button><small>Gambar eksternal diblokir.</small></div>}
-            {html && selected.html ? <iframe className="mail-html" title="Konten HTML email" sandbox="" referrerPolicy="no-referrer" srcDoc={htmlDocument(selected.html)} /> : <div className="mail-text">{selected.text || (selected.html ? 'Email ini hanya berisi HTML. Pilih Tampilan HTML untuk membacanya.' : '(Pesan kosong)')}</div>}
+            {selected.html && <div className="mail-body-toggle"><button aria-pressed={!html} onClick={() => setHtml(false)}>Teks</button><button aria-pressed={html} onClick={() => setHtml(true)}>{Capacitor.isNativePlatform() ? 'Lihat Desain' : 'Tampilan HTML'}</button><small>Gambar eksternal diblokir.</small></div>}
+            {html && selected.html ? <iframe className={'mail-html'+(Capacitor.isNativePlatform() ? ' mail-html-native' : '')} title="Konten HTML email" sandbox="" referrerPolicy="no-referrer" srcDoc={htmlDocument(selected.html)} /> : <div className="mail-text">{selected.text || (selected.html ? 'Email ini hanya berisi HTML. Pilih Tampilan HTML untuk membacanya.' : '(Pesan kosong)')}</div>}
             {!!selected.attachments.length && <div className="mail-attachments"><h3>Attachments</h3>{selected.attachments.map((file) => <button key={file.id} disabled={!!busy} onClick={() => run('download', async () => downloadMailFile(await service.file(mailbox, selected.id, file.id), file.filename))}><span>↓</span><strong>{file.filename}</strong><small>{bytesText(file.size)}</small></button>)}</div>}
             <footer className="mail-reader-footer">{selected.folder === 'drafts' ? <button className="primary-button" disabled={!!busy} onClick={() => editDraft(selected)}>Lanjutkan draft ↗</button> : selected.folder !== 'trash' && selected.status === 'received' ? <button className="primary-button" disabled={!!busy} onClick={() => begin({ ...blank(), to: [selected.replyTo?.[0] || selected.from], subject: /^re:/i.test(selected.subject) ? selected.subject : 'Re: ' + selected.subject, text: '\n\n—\n' + selected.from + ' wrote:\n' + selected.text.split('\n').map((line) => '> ' + line).join('\n'), inReplyTo: selected.messageId, references: [selected.references, selected.messageId].filter(Boolean).join(' ').slice(-2000) })}>Balas email ↗</button> : null}{['sending', 'uncertain'].includes(selected.status) && <button className="mail-button" disabled={!!busy || !config.sendingConfigured} onClick={() => run('retry', async () => { const result = await service.send(mailbox, selected.id); setSelected(result); setNotice(result.status === 'accepted' ? 'Email diterima Resend.' : result.sendError || 'Periksa status pengiriman.'); await load(); })}>Periksa / coba ulang</button>}{selected.hasRaw && <button className="mail-button" disabled={!!busy} onClick={() => run('raw', async () => downloadMailFile(await service.file(mailbox, selected.id), 'email.eml'))}>Unduh email asli</button>}</footer>
           </>}

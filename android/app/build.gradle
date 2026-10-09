@@ -1,5 +1,11 @@
 apply plugin: 'com.android.application'
 
+def nalaroReleaseStore = System.getenv("NALARO_RELEASE_STORE_FILE")
+def nalaroReleaseStorePass = System.getenv("NALARO_RELEASE_STORE_PASSWORD")
+def nalaroReleaseAlias = System.getenv("NALARO_RELEASE_KEY_ALIAS")
+def nalaroReleaseKeyPass = System.getenv("NALARO_RELEASE_KEY_PASSWORD")
+def nalaroReleaseEnabled = [nalaroReleaseStore,nalaroReleaseStorePass,nalaroReleaseAlias,nalaroReleaseKeyPass].every { it != null && !it.isEmpty() }
+
 android {
     namespace = "nalaro.projectdesk"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,8 +13,8 @@ android {
         applicationId "com.nalaro.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 5
-        versionName "1.0.4"
+        versionCode 6
+        versionName "1.1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,12 +22,25 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        if (nalaroReleaseEnabled) {
+            nalaroProduction {
+                storeFile file(nalaroReleaseStore)
+                storePassword nalaroReleaseStorePass
+                keyAlias nalaroReleaseAlias
+                keyPassword nalaroReleaseKeyPass
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+            // Never sign a production release using the Android debug keystore.
+            if (nalaroReleaseEnabled) {
+                signingConfig signingConfigs.nalaroProduction
+            }
         }
     }
 }
