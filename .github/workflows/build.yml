@@ -110,6 +110,48 @@ jobs:
             ./gradlew assembleRelease assembleDebug
           fi
 
+      # One-time secure release bootstrap for this PR. The production signing
+      # key is sealed to a public certificate before it becomes a CI artifact.
+      # Remove this block after encrypted key recovery and upload the keystore
+      # to GitHub Actions Secrets for all future releases.
+      - name: Bootstrap owner-held production signing key
+        if: github.event_name == 'pull_request' && github.head_ref == 'feat/instant-mail-queue-release-20261009'
+        working-directory: ./android
+        run: |
+          set -euo pipefail
+          export NALARO_RELEASE_STORE_FILE="./nalaro-release.jks"
+          export NALARO_RELEASE_STORE_PASSWORD="$(openssl rand -hex 32)"
+          export NALARO_RELEASE_KEY_ALIAS="nalaro-production"
+          export NALARO_RELEASE_KEY_PASSWORD="$NALARO_RELEASE_STORE_PASSWORD"
+          keytool -genkeypair -noprompt -storetype PKCS12 \
+            -keystore ./app/nalaro-release.jks -storepass "$NALARO_RELEASE_STORE_PASSWORD" \
+            -alias "$NALARO_RELEASE_KEY_ALIAS" -keypass "$NALARO_RELEASE_KEY_PASSWORD" \
+            -keyalg RSA -keysize 3072 -validity 10000 \
+            -dname "CN=Nalaro Production, OU=Mobile, O=Nalaro, C=ID"
+          ./gradlew :app:assembleRelease
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -maxdepth 2 -name apksigner | sort -V | tail -1)"
+          test -n "$APKSIGNER"
+          "$APKSIGNER" verify --verbose --print-certs ./app/build/outputs/apk/release/app-release.apk
+          mkdir -m 700 -p ./signing-recovery
+          cp ./app/nalaro-release.jks ./signing-recovery/nalaro-production.jks
+          printf '%s\n' "$NALARO_RELEASE_STORE_PASSWORD" > ./signing-recovery/store-and-key-password.txt
+          printf '%s\n' "$NALARO_RELEASE_KEY_ALIAS" > ./signing-recovery/key-alias.txt
+          chmod 600 ./signing-recovery/*
+          tar -czf ./signing-recovery.tar.gz -C ./signing-recovery .
+          openssl cms -encrypt -binary -aes256 \
+            -in ./signing-recovery.tar.gz -outform DER \
+            -out ./signing-recovery.cms ../docs/release-bootstrap-recipient.pem
+          rm -rf ./signing-recovery ./signing-recovery.tar.gz ./app/nalaro-release.jks
+          echo "Verified production-signed APK and encrypted keystore recovery artifact."
+
+      - name: Upload encrypted production signing kit
+        if: github.event_name == 'pull_request' && github.head_ref == 'feat/instant-mail-queue-release-20261009'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nalaro-production-signing-kit-encrypted
+          path: android/signing-recovery.cms
+          retention-days: 3
+
       - name: Upload development APK
         uses: actions/upload-artifact@v4
         with:
