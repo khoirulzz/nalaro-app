@@ -117,8 +117,19 @@ jobs:
             printf '%s' "$NALARO_RELEASE_STORE_BASE64" | base64 --decode > ./app/nalaro-release.jks
             chmod 600 ./app/nalaro-release.jks
             export NALARO_RELEASE_STORE_FILE="./nalaro-release.jks"
+            trap 'rm -f ./app/nalaro-release.jks' EXIT
             ./gradlew assembleRelease assembleDebug
-            rm -f ./app/nalaro-release.jks
+            APKSIGNER="$(find "$ANDROID_HOME/build-tools" -maxdepth 2 -name apksigner | sort -V | tail -1)"
+            test -n "$APKSIGNER"
+            "$APKSIGNER" verify --verbose --print-certs ./app/build/outputs/apk/release/app-release.apk > /tmp/nalaro-cert.txt
+            signer="$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' /tmp/nalaro-cert.txt | head -1 | tr '[:upper:]' '[:lower:]')"
+            rm -f /tmp/nalaro-cert.txt
+            expected='6b84a81d87146091287c51744dbe37bae46db5a6deee557c74ad1f8c4fe1e7ec'
+            if [ "$signer" != "$expected" ]; then
+              echo "RELEASE BLOCKED: signing certificate differs from original production build." >&2
+              exit 1
+            fi
+            echo "Original Nalaro production signer verified."
           else
             unset NALARO_RELEASE_STORE_PASSWORD NALARO_RELEASE_KEY_ALIAS NALARO_RELEASE_KEY_PASSWORD
             ./gradlew assembleRelease assembleDebug
