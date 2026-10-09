@@ -23,3 +23,13 @@ Push notifications need Firebase's Android app configuration. Register package `
 PDF sharing now supplies an Android file attachment rather than a URL to the Share Sheet.
 
 The checked-in `workers/mailbox/dashboard-worker.js` has been kept in step with this origin rule. Regenerate it with `npm run build:mailbox` before deploying to Cloudflare to avoid artifact drift.
+
+## 2026-10-09 login and Firebase Android registration
+
+Fixed a nested else in Login.tsx that signed out valid admins on Android. There is now exactly one Firebase auth observer for the native screen switcher; after successful login it swaps views without a WebView navigation. Login always stops its loading spinner, and Firebase session bootstrap has a 15-second retry screen.
+
+**Android applicationId changed from `nalaro.projectdesk` to `com.nalaro.app`**, matching the Firebase Android app registration supplied by the owner. Because Android package identity has changed, this installs as a separate application from the previous APK: uninstall the earlier `nalaro.projectdesk` build when it is no longer needed. Do not expect an in-place update.
+
+The uploaded Firebase `google-services.json` should be installed only via GitHub Actions secret `FIREBASE_ANDROID_CONFIG_BASE64` (base64 of complete original JSON); it is not checked into this public repository. It is required for Firebase Messaging/FCM, **not** for Firebase Auth email/password, which still uses Firebase's existing Web SDK client configuration for the same project `nalaro`. Enable Email/Password in Firebase Authentication. Restrict any client API keys appropriately for their platform.
+
+Icons are generated from the **existing** `public/brand/nalaro.png` via `scripts/generate_android_icons.py` during CI (Pillow dependency), including legacy, circular and adaptive foreground. Adaptive background is Nalaro ink black, not the previous Android default white/green.
