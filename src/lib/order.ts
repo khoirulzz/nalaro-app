@@ -15,8 +15,8 @@ export function orderRecords(input: OrderInput, id: string, timestamp: unknown, 
   }
   const shared = { source: 'public_order', orderId: id, createdAt: timestamp, updatedAt: timestamp };
   return {
-    client: { ...shared, name: data.name, picName: data.picName, email: data.email, whatsapp: data.whatsapp, address: data.address, status: 'active', notes: '', clientCode: 'CLI-' + id.slice(0, 8).toUpperCase(), projectId: id },
-    project: { ...shared, name: data.projectName, clientId: id, clientName: data.name, serviceType: data.serviceType, receivedDate, deadline: data.deadline, status: 'planning', value: 0, description: '', projectNumber: 'NAL/PRJ/' + receivedDate.slice(0, 4) + '/' + id.slice(0, 8).toUpperCase() },
+    client: { ...shared, name: data.name, picName: data.picName, email: data.email, whatsapp: data.whatsapp, address: data.address, status: 'active', notes: '', clientCode: 'CLI-' + id.slice(0, 12).toUpperCase(), projectId: id },
+    project: { ...shared, name: data.projectName, clientId: id, clientName: data.name, serviceType: data.serviceType, receivedDate, deadline: data.deadline, status: 'planning', value: 0, description: '', projectNumber: 'NAL/PRJ/' + receivedDate.slice(0, 4) + '/' + id.slice(0, 12).toUpperCase() },
   };
 }
 
