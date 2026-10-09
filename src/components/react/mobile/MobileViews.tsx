@@ -1,4 +1,5 @@
-import React, { lazy, Suspense, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
+import { enableNotifications, getNotificationStatus } from '../../../lib/native-notifications';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Capacitor } from '@capacitor/core';
 import { CapacitorBarcodeScanner, CapacitorBarcodeScannerTypeHint } from '@capacitor/barcode-scanner';
@@ -35,6 +36,23 @@ export function MobileMore({ logout }: { logout: () => void }) {
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [pushBusy, setPushBusy] = useState(false);
+  const [pushStatus, setPushStatus] = useState('Memeriksa status…');
+  useEffect(() => {
+    let mounted = true;
+    const refresh = () => void getNotificationStatus().then(status => {
+      if (mounted) setPushStatus(status.devices ? 'Terdaftar · '+status.devices+' perangkat' : 'Belum didaftarkan');
+    }).catch(() => { if(mounted) setPushStatus('Layanan push belum terhubung'); });
+    refresh();
+    window.addEventListener('nalaro-notification-registered', refresh);
+    return () => { mounted = false; window.removeEventListener('nalaro-notification-registered', refresh); };
+  }, []);
+  const allowPush = async () => {
+    setPushBusy(true); setError('');
+    try { await enableNotifications(); setPushStatus('Mendaftarkan perangkat…'); }
+    catch (problem) { setError(problem instanceof Error ? problem.message : 'Gagal mengaktifkan push.'); }
+    finally { setPushBusy(false); }
+  };
   const scan = async () => {
     if (busy) return;
     if (!Capacitor.isNativePlatform()) { setError('Pemindai hanya tersedia pada aplikasi Android.'); return; }
@@ -56,6 +74,10 @@ export function MobileMore({ logout }: { logout: () => void }) {
       <header className="page-header"><div><p className="page-eyebrow"><span>More</span></p><h1>Lainnya</h1></div></header>
       {error && <p className="document-error" role="alert">{error}</p>}
       <div className="mobile-menu-list">
+        <button className="mobile-menu-item" disabled={pushBusy} onClick={allowPush}>
+          <strong>{pushBusy ? 'Mengaktifkan notifikasi…' : 'Notifikasi native'}</strong>
+          <span>{pushStatus} ↗</span>
+        </button>
         <button className="mobile-menu-item" disabled={busy} onClick={scan}>
           <strong>{busy ? 'Membuka kamera…' : 'Pindai QR Verifikasi'}</strong><span>Periksa invoice atau receipt melalui kamera ↗</span>
         </button>
