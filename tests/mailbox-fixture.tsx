@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { MemoryRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import Mailbox from '../src/components/react/Mailbox';
 import '../src/styles/tokens.css';
 import '../src/styles/admin.css';
@@ -32,4 +32,4 @@ const service: MailboxService = {
     ? new Blob([Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg=='), (c) => c.charCodeAt(0))], { type: 'image/png' })
     : new Blob(['%PDF-test-fixture'], { type: 'application/pdf' }),
 };
-createRoot(document.getElementById('root')!).render(<MemoryRouter><Mailbox service={service} configured={!window.location.search.includes('unconfigured')} /></MemoryRouter>);
+createRoot(document.getElementById('root')!).render(<BrowserRouter><Mailbox service={service} configured={!window.location.search.includes('unconfigured')} /></BrowserRouter>);
