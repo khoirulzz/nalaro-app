@@ -44,13 +44,13 @@ async function request(path: string, values: Record<string, string> = {}, method
   const user = auth.currentUser;
   if (!user) throw new Error('Login admin diperlukan.');
   const perform = async (refresh: boolean) => fetch(apiUrl(path, values), {
-    method, cache: 'no-store', credentials: 'omit', headers: {
+    method, cache: 'no-store', credentials: 'omit', signal: AbortSignal.timeout(20000), headers: {
       Authorization: 'Bearer ' + await user.getIdToken(refresh), ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
     }, ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
   });
   let response: Response;
   try { response = await perform(false); if (response.status === 401) response = await perform(true); }
-  catch { throw new Error('Layanan email tidak terjangkau. Periksa koneksi dan konfigurasi mailbox.'); }
+  catch (error) { throw new Error(error instanceof DOMException && error.name === 'TimeoutError' ? 'Mailbox tidak merespons selama 20 detik. Coba lagi.' : 'Layanan email tidak terjangkau. Periksa koneksi dan konfigurasi mailbox.'); }
   if (!response.ok) { const result = await response.json().catch(() => ({})); throw new Error(result.error || 'Permintaan mailbox gagal.'); }
   return response;
 }

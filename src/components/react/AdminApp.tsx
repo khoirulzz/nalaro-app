@@ -19,6 +19,7 @@ import { verificationBaseUrl } from '../../lib/verification';
 import { brandContact, NALARO_EMAIL, NALARO_WEBSITE } from '../../lib/brand';
 
 import { ADMIN_EMAIL } from '../../lib/admin';
+import { attachNotifications, revokeNotificationToken } from '../../lib/native-notifications';
 import { Capacitor } from '@capacitor/core';
 import { App as NativeApp } from '@capacitor/app';
 import { Network } from '@capacitor/network';
@@ -84,6 +85,7 @@ async function readCollection(name: string): Promise<any[]> {
 }
 
 function usePdfDownload() {
+  const navigate = useNavigate();
   const [downloading, setDownloading] = useState('');
   const [downloadError, setDownloadError] = useState('');
   const downloadPDF = async (id: string, kind: 'invoice' | 'receipt', record: any, client: any, project: any, settings: any) => {
@@ -126,7 +128,7 @@ function usePdfDownload() {
         },
       });
       const query = 'mailbox=' + encodeURIComponent(mailbox) + '&draft=' + encodeURIComponent(draft.id);
-      if (Capacitor.isNativePlatform()) window.location.hash = '/email?' + query;
+      if (Capacitor.isNativePlatform()) navigate('/email?' + query);
       else window.location.assign('/admin/email?' + query);
     } catch (error) { setDownloadError('Draft email belum berhasil dibuat. ' + (error instanceof Error ? error.message : 'Coba lagi.')); }
     finally { setDownloading(''); }
@@ -1291,6 +1293,16 @@ function AdminLayout() {
   useEffect(() => {
     if (!isMobileApp) return;
     let disposed = false;
+    let cleanup: (() => void) | undefined;
+    void attachNotifications(navigate).then(fn => {
+      if (disposed) fn();
+      else cleanup = fn;
+    }).catch(console.error);
+    return () => { disposed = true; cleanup?.(); };
+  }, [isMobileApp, navigate]);
+  useEffect(() => {
+    if (!isMobileApp) return;
+    let disposed = false;
     let listener: { remove: () => Promise<void> } | undefined;
     void NativeApp.addListener('backButton', () => {
       if (menuOpen) setMenuOpen(false);
@@ -1304,6 +1316,7 @@ function AdminLayout() {
   }, [isMobileApp, location.pathname, menuOpen, navigate]);
 
   const logout = async () => {
+    if (isMobileApp) await revokeNotificationToken();
     await signOut(auth);
     if (!isMobileApp) window.location.replace('/login');
   };
