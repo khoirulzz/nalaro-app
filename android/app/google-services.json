@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "136947037780",
+    "project_id": "nalaro",
+    "storage_bucket": "nalaro.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:136947037780:android:37e99acd7375f6f15d1fc1",
+        "android_client_info": {
+          "package_name": "com.nalaro.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAF2AZXn1SRXnympZD8bw6FvRP9Pp6XNsQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
