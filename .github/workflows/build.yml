@@ -31,6 +31,15 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Verify Order Contract
+        run: node --experimental-strip-types tests/order-parity.test.mjs
+
+      - name: Setup Browser Test
+        run: npx playwright install --with-deps chromium
+
+      - name: Firebase Emulator Dummy Order Test
+        run: npx firebase emulators:exec --only firestore --project demo-nalaro-orders "node --experimental-strip-types tests/orders.test.mjs"
+
       - name: Type Check
         run: npm run check
 

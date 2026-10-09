@@ -29,7 +29,7 @@ service cloud.firestore {
         && bounded(c.whatsapp, 24) && c.whatsapp.matches('^[+0-9 ()-]{8,24}$')
         && bounded(c.address, 500)
         && c.status == 'active' && c.notes == ''
-        && c.clientCode == 'CLI-' + id[0:8].upper() && c.projectId == id
+        && c.clientCode == 'CLI-' + id[0:12].upper() && c.projectId == id
         && !exists(/databases/$(database)/documents/projects/$(id))
         && p.source == 'public_order' && p.orderId == id
         && p.clientId == id && p.clientName == c.name;
@@ -47,7 +47,7 @@ service cloud.firestore {
         && p.receivedDate is string && p.receivedDate.matches('^20[0-9]{2}-[0-9]{2}-[0-9]{2}$')
         && p.deadline is string && (p.deadline == '' || (p.deadline.matches('^20[0-9]{2}-[0-9]{2}-[0-9]{2}$') && p.deadline >= p.receivedDate))
         && p.status == 'planning' && p.value == 0 && p.description == ''
-        && p.projectNumber == 'NAL/PRJ/' + p.receivedDate[0:4] + '/' + id[0:8].upper()
+        && p.projectNumber == 'NAL/PRJ/' + p.receivedDate[0:4] + '/' + id[0:12].upper()
         && !exists(/databases/$(database)/documents/clients/$(id))
         && c.source == 'public_order' && c.orderId == id && c.projectId == id;
     }
