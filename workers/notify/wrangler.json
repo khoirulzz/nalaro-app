@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cloudflare/workers-sdk/main/packages/wrangler/config-schema.json",
+  "name": "nalaro-notify",
+  "account_id": "fa9e4b5cc90250f132b17fb7c067490b",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-10-09",
+  "d1_databases": [
+    {
+      "binding": "NOTIFY_DB",
+      "database_name": "nalaro-notify",
+      "database_id": "96b21b14-8c49-4336-920f-db4b83f5dfd2"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MAIL_BUCKET",
+      "bucket_name": "nalaro-mailbox"
+    }
+  ],
+  "vars": {
+    "FIREBASE_PROJECT_ID": "nalaro",
+    "ADMIN_EMAIL": "admin@nalaro.digital",
+    "MAILBOX_ADDRESSES": "hello@nalaro.digital,admin@nalaro.digital,billing@nalaro.digital,business@nalaro.digital,khoirululum@nalaro.digital"
+  },
+  "triggers": {
+    "crons": [
+      "*/1 * * * *"
+    ]
+  }
+}

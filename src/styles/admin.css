@@ -162,3 +162,23 @@ img,svg{display:block;max-width:100%}
 .verification-loading{min-height:380px;display:flex;align-items:center;justify-content:center;gap:10px;font:500 10px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--color-mute)}
 .verification-error{padding:70px 0 20px;max-width:800px}.verification-error h1{font:680 clamp(44px,7vw,88px)/.95 var(--font-display);letter-spacing:-.06em;text-transform:uppercase;margin-bottom:24px}.verification-error>p{max-width:540px;color:var(--color-mute);font-size:16px;line-height:1.7}.verification-error .text-link{margin-top:27px}
 @media(max-width:760px){.verification-shell{width:calc(100% - 40px);padding:48px 0 70px}.registry-head{padding:26px 22px;flex-direction:column}.registry-status{text-align:left;min-width:0}.registry-number{padding:22px}.registry-grid{grid-template-columns:1fr}.registry-grid>div,.registry-grid>div:nth-child(even),.registry-grid>div:nth-last-child(-n+2){min-height:auto;padding:20px 22px;border-right:0;border-bottom:1px solid var(--color-line)}.registry-grid>div:last-child{border-bottom:0}.registry-total{padding:24px 22px;align-items:flex-start;flex-direction:column}.registry-foot{padding:20px 22px;flex-direction:column;gap:14px}.verification-kicker{font-size:8px}}
+
+/* Premium native navigation: stable 64px footprint, precise vector icons. */
+.mobile-app .mobile-bottom-nav { background: #171816; border-top: 1px solid rgba(255,255,255,.11); box-shadow: 0 -8px 28px rgba(0,0,0,.17); }
+.mobile-app .mobile-bottom-nav a { color: #a3a59e; font-size: 10px; font-weight: 530; letter-spacing: .012em; -webkit-tap-highlight-color: transparent; transition: color .18s ease; }
+.mobile-app .mobile-bottom-nav .icon { width: 36px; height: 30px; display: grid; place-items: center; border-radius: 11px; margin: 0 0 2px; transition: background .18s ease, color .18s ease; }
+.mobile-app .mobile-bottom-nav .icon svg { display: block; width: 23px; height: 23px; }
+.mobile-app .mobile-bottom-nav a.active { color: #ff7449; font-weight: 670; }
+.mobile-app .mobile-bottom-nav a.active .icon { background: rgba(255,91,46,.13); color: #ff7449; }
+.mobile-app .mobile-bottom-nav a:focus-visible { outline: 2px solid #ff5b2e; outline-offset: -3px; border-radius: 10px; }
+@media(max-width:760px){
+.mobile-app .mailbox-page { width: calc(100% - 36px); max-width:100%; }
+.mobile-app .mail-workspace { display:block; width:100%; min-width:0; }
+.mobile-app .mail-list-panel, .mobile-app .mail-reader { width:100%; max-width:100%; min-width:0; }
+.mobile-app .mail-workspace:has(.mail-list-panel.has-reader) .mail-list-panel { display:none; }
+.mobile-app .mail-workspace:not(:has(.mail-list-panel.has-reader)) .mail-reader { display:none; }
+.mobile-app .mail-compose { width:min(calc(100vw - 20px),540px); max-height:calc(100dvh - 44px); overflow-y:auto; border-radius:16px; }
+.mobile-app .mail-account { min-width:0; max-width:100%; flex-wrap:wrap; gap:10px; }
+.mobile-app .mail-folders { overflow-x:auto; white-space:nowrap; scrollbar-width:none; }
+.mobile-app .mail-row { min-width:0; }
+}

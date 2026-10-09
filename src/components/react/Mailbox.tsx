@@ -1,6 +1,7 @@
 import { Capacitor } from '@capacitor/core';
 import React, { useEffect, useRef, useState } from 'react';
 import DOMPurify from 'dompurify';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { EMAIL_ASSET_ORIGIN, isBrandedMailbox, renderOutgoingEmail } from '../../lib/email-template';
 import { MAILBOX_CONFIGURED, mailboxService, outgoingFile, downloadMailFile, type MailboxService, type MailConfig, type MailDraft, type MailFolder, type MailMessage, type MailSummary } from '../../lib/mailbox';
 import '../../styles/mailbox.css';
@@ -36,6 +37,8 @@ function htmlDocument(html: string) {
 }
 
 export default function Mailbox({ service = mailboxService, configured = MAILBOX_CONFIGURED }: { service?: MailboxService; configured?: boolean }) {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [config, setConfig] = useState<MailConfig>();
   const [preview, setPreview] = useState(false);
   const [mailbox, setMailbox] = useState('');
@@ -115,13 +118,20 @@ export default function Mailbox({ service = mailboxService, configured = MAILBOX
   };
   useEffect(() => {
     if (!mailbox || deepLink.current) return;
-    const params = new URLSearchParams(Capacitor.isNativePlatform() ? window.location.hash.split('?')[1] || '' : window.location.search); const id = params.get('draft'); const address = params.get('mailbox');
+    const params = new URLSearchParams(location.search); const id = params.get('draft'); const address = params.get('mailbox');
     deepLink.current = true;
     if (id && (!address || config?.mailboxes.includes(address))) {
       service.get(address || mailbox, id).then(async (message) => { setMailbox(message.mailbox); setFolder('drafts'); await editDraft(message); }).catch((problem) => setError(errorText(problem)));
-      window.history.replaceState(null, '', Capacitor.isNativePlatform() ? window.location.pathname + '#/email' : window.location.pathname);
+      if (Capacitor.isNativePlatform()) navigate('/email', { replace: true });
+      else window.history.replaceState(null, '', window.location.pathname);
     }
-  }, [mailbox]);
+  }, [mailbox, location.search, navigate]);
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    const refresh = () => { if (mailbox) void load(); };
+    window.addEventListener('nalaro-push-received', refresh);
+    return () => window.removeEventListener('nalaro-push-received', refresh);
+  }, [mailbox, folder, query]);
   const closeCompose = () => {
     if (busy) return;
     if (dirty.current && !window.confirm('Perubahan belum disimpan. Tutup pesan ini?')) return;
