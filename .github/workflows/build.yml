@@ -118,47 +118,17 @@ jobs:
             chmod 600 ./app/nalaro-release.jks
             export NALARO_RELEASE_STORE_FILE="./nalaro-release.jks"
             ./gradlew assembleRelease assembleDebug
+            APKSIGNER="$(find "$ANDROID_HOME/build-tools" -maxdepth 2 -name apksigner | sort -V | tail -1)"
+            test -n "$APKSIGNER"
+            SIGNER="$("$APKSIGNER" verify --print-certs ./app/build/outputs/apk/release/app-release.apk | sed -n -E 's/.*certificate SHA-256 digest: ([0-9a-fA-F]+).*/\1/p' | head -1 | tr '[:upper:]' '[:lower:]')"
+            EXPECTED="ffa5995d75d3573aef11331654b305fe15805f8c4ae1df9f270f6335e63befeb"
+            test "$SIGNER" = "$EXPECTED" || { echo "Production release signing certificate mismatch: refusing APK." >&2; exit 1; }
+            echo "Original personal production signing certificate verified."
             rm -f ./app/nalaro-release.jks
           else
             unset NALARO_RELEASE_STORE_PASSWORD NALARO_RELEASE_KEY_ALIAS NALARO_RELEASE_KEY_PASSWORD
             ./gradlew assembleRelease assembleDebug
           fi
-
-      - name: One-time new personal release signing (encrypted recovery)
-        if: github.event_name == 'pull_request' && github.head_ref == 'release/new-personal-production-20261010'
-        working-directory: ./android
-        run: |
-          set -euo pipefail
-          umask 077
-          export NALARO_RELEASE_STORE_FILE="./nalaro-owner-production.jks"
-          export NALARO_RELEASE_STORE_PASSWORD="$(openssl rand -hex 32)"
-          export NALARO_RELEASE_KEY_PASSWORD="$NALARO_RELEASE_STORE_PASSWORD"
-          export NALARO_RELEASE_KEY_ALIAS="nalaro-personal-production-2026"
-          trap 'rm -rf ./app/nalaro-owner-production.jks ./owner-signing ./owner-signing.tar.gz' EXIT
-          keytool -genkeypair -noprompt -storetype PKCS12             -keystore ./app/nalaro-owner-production.jks             -storepass "$NALARO_RELEASE_STORE_PASSWORD"             -alias "$NALARO_RELEASE_KEY_ALIAS" -keypass "$NALARO_RELEASE_KEY_PASSWORD"             -keyalg RSA -keysize 3072 -sigalg SHA256withRSA -validity 10000             -dname "CN=Nalaro Personal App, OU=Project Desk, O=Nalaro, C=ID"
-          ./gradlew :app:assembleRelease
-          APK="./app/build/outputs/apk/release/app-release.apk"
-          test -s "$APK"
-          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -maxdepth 2 -name apksigner | sort -V | tail -1)"
-          test -n "$APKSIGNER"
-          "$APKSIGNER" verify --verbose --print-certs "$APK"
-          mkdir -m 700 -p ./owner-signing
-          cp ./app/nalaro-owner-production.jks ./owner-signing/nalaro-owner-production.jks
-          printf '%s' "$NALARO_RELEASE_STORE_PASSWORD" > ./owner-signing/store-and-key-password.txt
-          printf '%s' "$NALARO_RELEASE_KEY_ALIAS" > ./owner-signing/key-alias.txt
-          printf '%s' 'com.nalaro.app' > ./owner-signing/application-id.txt
-          tar -czf ./owner-signing.tar.gz -C ./owner-signing .
-          openssl cms -encrypt -binary -aes256             -in ./owner-signing.tar.gz -outform DER             -out ./owner-signing.cms ../docs/one-time-signing-recipient.pem
-          test -s ./owner-signing.cms
-          echo "One-time signed production APK created and signing kit encrypted for owner."
-
-      - name: Upload encrypted personal production signing kit
-        if: github.event_name == 'pull_request' && github.head_ref == 'release/new-personal-production-20261010'
-        uses: actions/upload-artifact@v4
-        with:
-          name: nalaro-owner-signing-kit-encrypted
-          path: android/owner-signing.cms
-          if-no-files-found: error
 
       - name: Upload development APK
         uses: actions/upload-artifact@v4
