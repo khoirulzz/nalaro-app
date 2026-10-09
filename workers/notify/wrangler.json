@@ -26,5 +26,16 @@
     "crons": [
       "*/1 * * * *"
     ]
+  },
+  "queues": {
+    "consumers": [
+      {
+        "queue": "nalaro-mail-events",
+        "max_batch_size": 1,
+        "max_batch_timeout": 1,
+        "max_retries": 3,
+        "retry_delay": 5
+      }
+    ]
   }
 }

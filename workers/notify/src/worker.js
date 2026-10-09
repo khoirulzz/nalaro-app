@@ -141,7 +141,39 @@ async function runCycle(env) {
   await env.NOTIFY_DB.prepare("INSERT INTO state(name,value) VALUES('last_error',?) ON CONFLICT(name) DO UPDATE SET value=excluded.value").bind(error).run();
   if(error)console.error('Notify poll',error);
 }
+async function consumeR2MailEvent(event, env) {
+  // R2 emits at-least-once notifications for all changes; trust only objects
+  // under the mailbox message namespace. Sender/body fields are read from R2,
+  // never from the unauthenticated queue payload.
+  const key=event?.object?.key;
+  if(event?.action!=='PutObject'||typeof key!=='string'||
+      !/^mail\/v1\/[^/]+\/messages\/[a-f0-9-]{24,64}\.json$/i.test(key)) return;
+  const object=await env.MAIL_BUCKET.get(key);
+  if(!object)return;
+  const record=await object.json();
+  if(record.status!=='received'||record.folder!=='inbox')return;
+  const mailbox=decodeURIComponent(key.split('/')[2]);
+  if(record.mailbox!==mailbox)return;
+  const allowed=String(env.MAILBOX_ADDRESSES||'').split(',').map(x=>x.trim().toLowerCase());
+  if(!allowed.includes(mailbox))return;
+  const fromMs=Date.parse(record.createdAt);
+  const enabled=await env.NOTIFY_DB.prepare("SELECT value FROM state WHERE name='enabled_from'").first();
+  if(!Number.isFinite(fromMs)||fromMs<Date.parse(enabled?.value||new Date().toISOString()))return;
+  const id=key.split('/').pop().slice(0,-5);
+  if(record.id!==id)return;
+  await notifyDevices(env,'mail:'+mailbox+':'+id,'mail','Email baru · '+mailbox,
+    (String(record.from||'Pengirim').slice(0,80))+' — '+String(record.subject||'Tanpa subjek').slice(0,100),
+    {mailbox,messageId:id});
+}
 export default {
+  async queue(batch,env) {
+    // Queue consumer runs as soon as an R2 object is stored. Retry transient
+    // problems rather than silently dropping the notification.
+    for(const item of batch.messages) {
+      try{await consumeR2MailEvent(item.body,env);item.ack();}
+      catch(error){console.error('R2 Mail push retry',String(error?.message||error).slice(0,180));item.retry();}
+    }
+  },
   async scheduled(_event,env,ctx){ctx.waitUntil(runCycle(env))},
   async fetch(request,env){
     const origin=request.headers.get('Origin');
