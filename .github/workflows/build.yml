@@ -51,6 +51,9 @@ jobs:
           npm run build:mailbox
           npm run test:mailbox
 
+      - name: Test Mailbox Image UI (Browser Sandbox)
+        run: npm run test:mailbox-ui
+
       - name: Type Check
         run: npm run check
 

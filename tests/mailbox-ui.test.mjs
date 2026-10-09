@@ -35,6 +35,10 @@ try {
     await page.getByRole('button', { name: /Penawaran website/ }).click(); await page.getByRole('heading', { name: /Penawaran website/ }).waitFor();
     await page.getByRole('button', { name: 'Tampilan HTML', exact: true }).click();
     await page.frameLocator('iframe').getByRole('heading', { name: 'Proposal Nalaro' }).waitFor();
+    await page.frameLocator('iframe').locator('img[alt="Logo inline"][src^="data:image/png;base64,"]').waitFor();
+    await page.getByRole('button', { name: 'Lihat gambar logo.png' }).click();
+    await page.getByRole('dialog', { name: 'Pratinjau logo.png' }).getByRole('img').waitFor();
+    await page.getByRole('button', { name: 'Tutup ×' }).click();
     assert.equal(await page.evaluate(() => window.pwned), undefined);
     assert.deepEqual(trackerRequests, []); assert.equal(await page.locator('iframe').getAttribute('sandbox'), '');
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, 'Reader overflow at ' + width);
