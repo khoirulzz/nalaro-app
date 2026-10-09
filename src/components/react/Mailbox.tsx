@@ -74,9 +74,9 @@ function htmlDocument(html: string, remoteImages = false, inlineImages: Record<s
       hr { border:0; border-top:1px solid #e8e8e2; margin:24px 0; }
       @media (max-width:540px) { body { padding:20px 16px; } table[width],td[width] { width:auto !important; } }
     `;
-    return '<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:${remoteImages ? " https:" : ""}; font-src \'none\'; form-action \'none\'; base-uri \'none\'"><style>'+css+'</style></head><body>'+cleaned+'</body></html>';
+    return '<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src '+(remoteImages ? 'data: https:' : 'data:')+'; font-src \'none\'; form-action \'none\'; base-uri \'none\'"><style>'+css+'</style></head><body>'+cleaned+'</body></html>';
   }
-  return '<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:${remoteImages ? " https:" : ""}; font-src \'none\'; form-action \'none\'; base-uri \'none\'"><style>body{font:14px/1.6 Arial,sans-serif;padding:16px;color:#232420;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{max-width:100%}pre{white-space:pre-wrap}</style></head><body>' + cleaned + '</body></html>';
+  return '<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src '+(remoteImages ? 'data: https:' : 'data:')+'; font-src \'none\'; form-action \'none\'; base-uri \'none\'"><style>body{font:14px/1.6 Arial,sans-serif;padding:16px;color:#232420;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{max-width:100%}pre{white-space:pre-wrap}</style></head><body>' + cleaned + '</body></html>';
 }
 
 export default function Mailbox({ service = mailboxService, configured = MAILBOX_CONFIGURED }: { service?: MailboxService; configured?: boolean }) {

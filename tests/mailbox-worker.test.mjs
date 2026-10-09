@@ -220,9 +220,12 @@ test('MIME inline images preserve Content-ID and remain private attachments', as
   assert.equal(image.contentId, 'logo.platform@example.com');
   assert.equal(image.contentType, 'image/png');
   assert.match(message.html, /cid:logo.platform@example.com/);
-  const file = await api('/messages/' + message.id + '/attachments/' + image.id);
-  assert.equal(file.response.status, 200);
-  assert.deepEqual(Buffer.from(file.data, 'utf8').subarray(0, 4), png.subarray(0, 4));
+  const file = await worker.fetch(new Request('https://mail.test/api/mail/messages/' + message.id +
+    '/attachments/' + image.id + '?mailbox=hello%40nalaro.digital', {
+      headers: { Authorization: 'Bearer ' + token, Origin: origin },
+    }), env);
+  assert.equal(file.status, 200);
+  assert.deepEqual(Buffer.from(await file.arrayBuffer()), png);
   const unauth = await api('/messages/' + message.id + '/attachments/' + image.id, { bearer: null });
   assert.equal(unauth.response.status, 401);
 });
