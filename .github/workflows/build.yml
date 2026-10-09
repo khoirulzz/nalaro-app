@@ -48,6 +48,27 @@ jobs:
             echo "No Android Firebase Messaging config. Push remains disabled."
           fi
 
+      - name: Generate Nalaro Android App Icons
+        run: |
+          python3 -m pip install --disable-pip-version-check --quiet Pillow==11.3.0
+          python3 scripts/generate_android_icons.py
+
+      - name: Validate Firebase Android package
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib
+          package = 'com.nalaro.app'
+          config = pathlib.Path('android/app/google-services.json')
+          if config.exists():
+              data = json.loads(config.read_text())
+              packages = [c['client_info']['android_client_info']['package_name'] for c in data['client']]
+              assert package in packages, f'Firebase Android app package must be {package}'
+              assert data['project_info']['project_id'] == 'nalaro', 'Firebase project must remain nalaro'
+              print('Firebase Android configuration validated (values not printed)')
+          else:
+              print('Firebase Android JSON not supplied; email/password Firebase Web SDK still works, FCM is disabled')
+          PY
+
       - name: Sync Capacitor
         run: npx cap sync android
 

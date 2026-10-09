@@ -1,5 +1,5 @@
 {
-  "appId": "nalaro.projectdesk",
+  "appId": "com.nalaro.app",
   "appName": "Nalaro",
   "webDir": "dist",
   "bundledWebRuntime": false,

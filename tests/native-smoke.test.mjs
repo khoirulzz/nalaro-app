@@ -8,3 +8,16 @@ assert.match(admin, /HashRouter/, 'Native internal paths must use a local router
 assert.match(admin, /runTransaction\(db, async \(transaction\)/, 'Finance operations must use transactions');
 assert.doesNotMatch(admin, /Date\.now\(\)\.toString\(\)\.slice/, 'Document numbering cannot use Date.now');
 console.log('PASS: native startup structure and financial transaction checks');
+
+const { readFileSync } = await import('node:fs');
+const login = readFileSync('src/components/react/Login.tsx', 'utf8');
+assert.match(login, /if \(Capacitor\.isNativePlatform\(\)\) return;/, 'Native must use only the NativeEntry auth observer');
+assert.doesNotMatch(login, /else await signOut\(auth\)/, 'Never sign out authorized native sessions on platform check');
+assert.match(login, /finally \{\s*setLoading\(false\)/, 'Login must always release verification state');
+const gradle = readFileSync('android/app/build.gradle', 'utf8');
+const capacitor = readFileSync('capacitor.config.json', 'utf8');
+assert.match(gradle, /applicationId "com\.nalaro\.app"/);
+assert.match(capacitor, /"appId": "com\.nalaro\.app"/);
+const workflow = readFileSync('.github/workflows/build.yml', 'utf8');
+assert.match(workflow, /generate_android_icons\.py/, 'Branded launcher icons must be generated for APK');
+console.log('PASS: native login regression, package identity and icon build integration');

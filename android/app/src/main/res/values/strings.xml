@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Nalaro</string>
+    <string name="app_name">Nalaro Desk</string>
     <string name="title_activity_main">Nalaro</string>
-    <string name="package_name">nalaro.projectdesk</string>
-    <string name="custom_url_scheme">nalaro.projectdesk</string>
+    <string name="package_name">com.nalaro.app</string>
+    <string name="custom_url_scheme">com.nalaro.app</string>
 </resources>
