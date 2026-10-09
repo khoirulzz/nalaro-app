@@ -14,5 +14,9 @@
         "alert"
       ]
     }
+  },
+  "server": {
+    "hostname": "localhost",
+    "androidScheme": "https"
   }
 }

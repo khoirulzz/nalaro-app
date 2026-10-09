@@ -10,6 +10,6 @@
     "ADMIN_EMAIL": "admin@nalaro.digital",
     "MAILBOX_ADDRESSES": "hello@nalaro.digital,admin@nalaro.digital,billing@nalaro.digital,business@nalaro.digital,khoirululum@nalaro.digital",
     "MAIL_FROM_NAME": "Nalaro",
-    "ALLOWED_ORIGINS": "https://order.nalaro.digital,https://nalaro-trans.pages.dev,http://localhost"
+    "ALLOWED_ORIGINS": "https://order.nalaro.digital,https://nalaro-trans.pages.dev,http://localhost,https://localhost,capacitor://localhost"
   }
 }
