@@ -63,11 +63,12 @@ async function oauthToken(env) {
 }
 async function notifyDevices(env, eventKey, type, title, body, data) {
   const prior=await env.NOTIFY_DB.prepare('SELECT 1 FROM delivered WHERE event_key=?').bind(eventKey).first();
-  if(prior)return 0;
+  if(prior)return { sent: 0, attempted: 0, status: 'duplicate', errors: [] };
   const rows=await env.NOTIFY_DB.prepare('SELECT id, token FROM devices WHERE active=1 LIMIT 20').all();
-  if(!rows.results?.length)return 0;
+  if(!rows.results?.length)return { sent: 0, attempted: 0, status: 'no_devices', errors: [] };
   const auth=await oauthToken(env);
   let delivered=0;
+  const errors=[];
   for(const row of rows.results){
     const response=await fetch('https://fcm.googleapis.com/v1/projects/'+encodeURIComponent(env.FIREBASE_PROJECT_ID)+'/messages:send',{
       method:'POST',headers:{Authorization:'Bearer '+auth,'Content-Type':'application/json'},
@@ -80,13 +81,23 @@ async function notifyDevices(env, eventKey, type, title, body, data) {
       const result=await response.json().catch(()=>({}));
       const status=String(result.error?.status||'');
       const fcmCode=result.error?.details?.find(x=>x['@type']?.includes('FcmError'))?.errorCode;
-      if(status==='NOT_FOUND'||status==='UNREGISTERED'||fcmCode==='UNREGISTERED')
+      const code=String(fcmCode||status||'UNKNOWN').slice(0,80);
+      const message=String(result.error?.message||'FCM menolak pengiriman.').slice(0,200);
+      errors.push({ http: response.status, code, message });
+      if(fcmCode==='UNREGISTERED' || status==='UNREGISTERED')
         await env.NOTIFY_DB.prepare('UPDATE devices SET active=0 WHERE id=?').bind(row.id).run();
-      else console.error('FCM delivery failed',response.status,status);
+      console.error('FCM delivery rejected',response.status,code);
     }
   }
   if(delivered)await env.NOTIFY_DB.prepare('INSERT OR IGNORE INTO delivered(event_key,created_at,type) VALUES (?,datetime(\'now\'),?)').bind(eventKey,type).run();
-  return delivered;
+  if(errors.length) {
+    const first=errors[0];
+    await env.NOTIFY_DB.prepare("INSERT INTO state(name,value) VALUES('last_push_error',?) ON CONFLICT(name) DO UPDATE SET value=excluded.value")
+      .bind(JSON.stringify({type,at:new Date().toISOString(),http:first.http,code:first.code,message:first.message})).run();
+  } else if(delivered) {
+    await env.NOTIFY_DB.prepare("INSERT INTO state(name,value) VALUES('last_push_error','') ON CONFLICT(name) DO UPDATE SET value=''").run();
+  }
+  return { sent: delivered, attempted: rows.results.length, status: delivered ? 'accepted' : 'rejected', errors };
 }
 async function pollMail(env) {
   if(!env.MAIL_BUCKET)return;
@@ -157,9 +168,17 @@ export default {
         return respond({ok:true},200,headers);
       }
       if(url.pathname==='/test' && request.method==='POST'){
-        const sent=await notifyDevices(env,'test:'+claims.sub+':'+Math.floor(Date.now()/60000),'test',
+        // A stable per-minute event key incorrectly made a second test look like FCM failure.
+        // Each request has a unique event ID; a short cooldown prevents accidental spamming.
+        const previous=await env.NOTIFY_DB.prepare(
+          "SELECT created_at FROM delivered WHERE type='test' AND event_key LIKE ? ORDER BY created_at DESC LIMIT 1"
+        ).bind('test:'+claims.sub+':%').first();
+        const previousMs=previous?.created_at ? Date.parse(String(previous.created_at).replace(' ','T')+'Z') : 0;
+        const wait=Math.max(0,15000-(Date.now()-previousMs));
+        if(wait>0) return respond({ok:true,status:'cooldown',sent:0,retryAfterSeconds:Math.ceil(wait/1000)},200,headers);
+        const result=await notifyDevices(env,'test:'+claims.sub+':'+crypto.randomUUID(),'test',
           'Nalaro · Notifikasi aktif','Pengiriman FCM dari Cloudflare berhasil.',{source:'manual'});
-        return respond({ok:sent>0,sent},200,headers);
+        return respond({ok:result.sent>0,...result},200,headers);
       }
       if(url.pathname==='/scan' && request.method==='POST'){
         await runCycle(env);
@@ -167,7 +186,7 @@ export default {
       }
       if(url.pathname==='/status' && request.method==='GET'){
         const devices=await env.NOTIFY_DB.prepare('SELECT COUNT(*) AS count FROM devices WHERE active=1 AND uid=?').bind(claims.sub).first();
-        const rows=await env.NOTIFY_DB.prepare("SELECT name,value FROM state WHERE name IN ('last_poll','last_error')").all();
+        const rows=await env.NOTIFY_DB.prepare("SELECT name,value FROM state WHERE name IN ('last_poll','last_error','last_push_error')").all();
         return respond({ok:true,devices:Number(devices?.count||0),state:Object.fromEntries((rows.results||[]).map(x=>[x.name,x.value]))},200,headers);
       }
       throw new ApiError(404,'Endpoint tidak tersedia.');

@@ -26,8 +26,9 @@ async function callNotify(path: string, method = 'GET', data?: object) {
   if (!response.ok) throw new Error(result.error || 'Notification API HTTP ' + response.status);
   return result;
 }
-export const getNotificationStatus = async () => callNotify('/status') as Promise<{devices:number;state?:{last_error?:string;last_poll?:string}}>;
-export const sendTestNotification = async () => callNotify('/test','POST') as Promise<{ok:boolean;sent:number}>;
+export type NotificationTestResult = { ok:boolean; sent:number; attempted?:number; status:'accepted'|'cooldown'|'no_devices'|'rejected'|'duplicate'; retryAfterSeconds?:number; errors?:{http:number;code:string;message:string}[] };
+export const getNotificationStatus = async () => callNotify('/status') as Promise<{devices:number;state?:{last_error?:string;last_poll?:string;last_push_error?:string}}>;
+export const sendTestNotification = async () => callNotify('/test','POST') as Promise<NotificationTestResult>;
 export const runNotificationScan = async () => callNotify('/scan','POST');
 export async function enableNotifications() {
   if (!Capacitor.isNativePlatform()) throw new Error('Hanya tersedia di Android.');
