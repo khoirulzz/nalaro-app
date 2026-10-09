@@ -37,3 +37,12 @@ for (const url of endpoints) {
 const health=await fetch('https://notify-api.nalaro.digital/health',{signal:AbortSignal.timeout(20000)});
 assert.equal(health.status,200);
 console.log('PASS: custom-domain Notify health');
+
+// Regression: each manual push must have a unique ID and cooldown is not a delivery failure.
+assert.match(notify, /crypto\.randomUUID\(\)/);
+assert.match(notify, /status:'cooldown'/);
+assert.match(notify, /last_push_error/);
+const nativeMore=await readFile('src/components/react/mobile/MobileViews.tsx','utf8');
+assert.match(nativeMore,/result\.status === 'cooldown'/);
+assert.match(nativeMore,/FCM HTTP/);
+console.log('PASS: FCM self-test dedupe, cooldown semantics and actionable delivery diagnostics');

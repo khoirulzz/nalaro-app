@@ -69,8 +69,18 @@ export function MobileMore({ logout }: { logout: () => void }) {
     setPushBusy(true); setError('');
     try {
       const result = await sendTestNotification();
-      if (!result.ok) throw new Error('FCM belum mengirim notifikasi. Periksa status perangkat dan izin service account.');
-      setPushStatus('Notifikasi uji dikirim ke '+result.sent+' perangkat');
+      if (result.status === 'cooldown') {
+        setPushStatus('Pengiriman sebelumnya sudah diterima FCM.');
+        setError('Tunggu '+(result.retryAfterSeconds || 15)+' detik sebelum mengirim notifikasi uji berikutnya.');
+        return;
+      }
+      if (result.status === 'no_devices') throw new Error('Tidak ada perangkat aktif. Buka Notifikasi native untuk mendaftarkan ulang HP.');
+      if (!result.ok) {
+        const detail=result.errors?.[0];
+        throw new Error(detail ? 'FCM HTTP '+detail.http+' · '+detail.code+': '+detail.message :
+          'FCM belum menerima notifikasi. Cek log Cloudflare Notify.');
+      }
+      setPushStatus('FCM menerima '+result.sent+' pengiriman. Periksa notifikasi di Android.');
     } catch (problem) { setError(problem instanceof Error ? problem.message : 'Notifikasi uji gagal.'); }
     finally { setPushBusy(false); }
   };
