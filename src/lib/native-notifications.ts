@@ -2,21 +2,26 @@ import { Capacitor } from '@capacitor/core';
 import { PushNotifications } from '@capacitor/push-notifications';
 import { auth } from './firebase';
 
-const endpoint = 'https://nalaro-notify.uniquefactuhl.workers.dev';
+const endpoint = 'https://notify-api.nalaro.digital';
 let deviceToken = '';
 let installed = false;
 type Listener = { remove(): Promise<void> };
 async function callNotify(path: string, method = 'GET', data?: object) {
   const user = auth.currentUser;
   if (!user) throw new Error('Login admin diperlukan.');
-  const response = await fetch(endpoint + path, {
+  let response: Response;
+  try { response = await fetch(endpoint + path, {
     method, cache: 'no-store', signal: AbortSignal.timeout(15000),
     headers: {
       Authorization: 'Bearer ' + await user.getIdToken(),
       ...(data ? { 'Content-Type': 'application/json' } : {}),
     },
     ...(data ? { body: JSON.stringify(data) } : {}),
-  });
+  }); } catch (error) {
+    const detail = error instanceof Error ? error.name + ': ' + error.message : 'unknown';
+    throw new Error('Tidak bisa terhubung ke Notify API (' + new URL(endpoint).host + ') dari ' +
+      window.location.origin + '. Periksa jaringan/CORS. ' + detail.slice(0,150));
+  }
   const result = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(result.error || 'Notification API HTTP ' + response.status);
   return result;
@@ -52,13 +57,17 @@ export async function attachNotifications(navigate: (path: string) => void) {
         deviceToken = value;
         window.dispatchEvent(new Event('nalaro-notification-registered'));
       }).catch(error => {
-        console.error('Pendaftaran FCM gagal', error);
-        window.dispatchEvent(new Event('nalaro-notification-failed'));
+        console.error('Pendaftaran token FCM ke Cloudflare gagal', error);
+        window.dispatchEvent(new CustomEvent('nalaro-notification-failed', {
+          detail: { stage: 'worker-register', message: error instanceof Error ? error.message : String(error) }
+        }));
       });
     }));
     handles.push(await PushNotifications.addListener('registrationError', error => {
       console.error('Android FCM error', error);
-      window.dispatchEvent(new Event('nalaro-notification-failed'));
+      window.dispatchEvent(new CustomEvent('nalaro-notification-failed', {
+        detail: { stage: 'firebase-native', message: String(error.error || JSON.stringify(error)).slice(0,220) }
+      }));
     }));
     handles.push(await PushNotifications.addListener('pushNotificationReceived', () => {
       window.dispatchEvent(new Event('nalaro-push-received'));

@@ -44,7 +44,13 @@ export function MobileMore({ logout }: { logout: () => void }) {
       if (mounted) setPushStatus(status.devices ? 'Terdaftar · '+status.devices+' perangkat' : 'Belum didaftarkan');
     }).catch(() => { if(mounted) setPushStatus('Layanan push belum terhubung'); });
     refresh();
-    const failed = () => { if (mounted) setPushStatus('Registrasi FCM gagal — periksa koneksi dan Firebase Android'); };
+    const failed = (event: Event) => {
+      const issue = (event as CustomEvent<{stage?: string; message?: string}>).detail;
+      if (mounted) {
+        setPushStatus('Registrasi belum berhasil (' + (issue?.stage || 'unknown') + ')');
+        setError('Notifikasi: ' + String(issue?.message || 'Error tidak diketahui').slice(0,250));
+      }
+    };
     window.addEventListener('nalaro-notification-registered', refresh);
     window.addEventListener('nalaro-notification-failed', failed);
     return () => {

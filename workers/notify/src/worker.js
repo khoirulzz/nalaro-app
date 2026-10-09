@@ -134,7 +134,7 @@ export default {
   async scheduled(_event,env,ctx){ctx.waitUntil(runCycle(env))},
   async fetch(request,env){
     const origin=request.headers.get('Origin');
-    const allowed=['http://localhost','capacitor://localhost'];
+    const allowed=['https://localhost','http://localhost','capacitor://localhost'];
     const headers={};
     if(origin && allowed.includes(origin))Object.assign(headers,{'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Headers':'Authorization, Content-Type','Access-Control-Allow-Methods':'GET, POST, DELETE, OPTIONS','Vary':'Origin'});
     if(request.method==='OPTIONS')return new Response(null,{status:origin && !allowed.includes(origin)?403:204,headers});

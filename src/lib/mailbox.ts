@@ -29,7 +29,7 @@ export interface MailboxService {
   file(mailbox: string, id: string, attachmentId?: string): Promise<Blob>;
 }
 
-const DEFAULT_MAILBOX_API_URL = 'https://nalaro-mailbox.uniquefactuhl.workers.dev';
+const DEFAULT_MAILBOX_API_URL = Capacitor.isNativePlatform() ? 'https://mail-api.nalaro.digital' : 'https://nalaro-mailbox.uniquefactuhl.workers.dev';
 const mailboxApiRoot = () => import.meta.env.PUBLIC_MAILBOX_API_URL?.trim() || DEFAULT_MAILBOX_API_URL;
 
 export const MAILBOX_CONFIGURED = !!mailboxApiRoot();
@@ -50,7 +50,15 @@ async function request(path: string, values: Record<string, string> = {}, method
   });
   let response: Response;
   try { response = await perform(false); if (response.status === 401) response = await perform(true); }
-  catch (error) { throw new Error(error instanceof DOMException && error.name === 'TimeoutError' ? 'Mailbox tidak merespons selama 20 detik. Coba lagi.' : 'Layanan email tidak terjangkau. Periksa koneksi dan konfigurasi mailbox.'); }
+  catch (error) {
+    if (error instanceof DOMException && (error.name === 'TimeoutError' || error.name === 'AbortError')) {
+      throw new Error('Mail Desk tidak merespons dalam 20 detik. Periksa koneksi internet.');
+    }
+    const detail = error instanceof Error ? (error.name + ': ' + error.message).slice(0,160) : 'Tidak diketahui';
+    const origin = typeof window === 'undefined' ? 'unknown' : window.location.origin;
+    throw new Error('Mail Desk tidak dapat diakses dari ' + origin + ' ke ' + apiUrl(path, values).hostname +
+      '. Kemungkinan gangguan jaringan atau CORS. Detail: ' + detail);
+  }
   if (!response.ok) { const result = await response.json().catch(() => ({})); throw new Error(result.error || 'Permintaan mailbox gagal.'); }
   return response;
 }
