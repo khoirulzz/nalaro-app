@@ -1,14 +1,15 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import Mailbox from '../src/components/react/Mailbox';
 import '../src/styles/tokens.css';
 import '../src/styles/admin.css';
 import type { MailMessage, MailboxService } from '../src/lib/mailbox';
 
 const messages: MailMessage[] = [
-  { id: '8999999999999-' + 'a'.repeat(32), mailbox: 'hello@nalaro.digital', folder: 'inbox', from: 'client@example.com', fromName: 'Client Nalaro', to: ['hello@nalaro.digital'], subject: 'Penawaran website untuk proyek Nalaro dengan judul yang cukup panjang', text: 'Halo Nalaro,\n\nMohon informasi penawaran website. Terima kasih.', preview: 'Halo Nalaro, mohon informasi penawaran website.', createdAt: '2026-10-07T10:00:00Z', updatedAt: '2026-10-07T10:00:00Z', status: 'received', read: false, starred: false, attachmentCount: 1,
-    attachments: [{ id: 'file1', filename: 'Kebutuhan-proyek-Nalaro-dokumen-lampiran.pdf', contentType: 'application/pdf', size: 12000 }], messageId: '<client@example.com>', hasRaw: true, replyTo: ['reply@example.com'],
-    html: '<h1>Proposal Nalaro</h1><script>window.parent.pwned=true</script><img src="https://tracker.invalid/pixel"><p onclick="window.parent.pwned=true">Isi email HTML aman</p><iframe src="https://tracker.invalid/frame"></iframe>' },
+  { id: '8999999999999-' + 'a'.repeat(32), mailbox: 'hello@nalaro.digital', folder: 'inbox', from: 'client@example.com', fromName: 'Client Nalaro', to: ['hello@nalaro.digital'], subject: 'Penawaran website untuk proyek Nalaro dengan judul yang cukup panjang', text: 'Halo Nalaro,\n\nMohon informasi penawaran website. Terima kasih.', preview: 'Halo Nalaro, mohon informasi penawaran website.', createdAt: '2026-10-07T10:00:00Z', updatedAt: '2026-10-07T10:00:00Z', status: 'received', read: false, starred: false, attachmentCount: 2,
+    attachments: [{ id: 'file1', filename: 'Kebutuhan-proyek-Nalaro-dokumen-lampiran.pdf', contentType: 'application/pdf', size: 12000 }, { id: 'image1', filename: 'logo.png', contentType: 'image/png', contentId: 'logo.platform@example.com', size: 70 }], messageId: '<client@example.com>', hasRaw: true, replyTo: ['reply@example.com'],
+    html: '<h1>Proposal Nalaro</h1><script>window.parent.pwned=true</script><img src="https://tracker.invalid/pixel"><img src="cid:logo.platform@example.com" alt="Logo inline"><p onclick="window.parent.pwned=true">Isi email HTML aman</p><iframe src="https://tracker.invalid/frame"></iframe>' },
   { id: '8999999999998-' + 'b'.repeat(32), mailbox: 'hello@nalaro.digital', folder: 'drafts', from: 'hello@nalaro.digital', to: ['client@example.com'], subject: 'Draft penawaran', text: 'Halo, berikut penawaran kami.', preview: 'Halo, berikut penawaran kami.', createdAt: '2026-10-07T09:00:00Z', updatedAt: '2026-10-07T09:00:00Z', status: 'draft', read: true, starred: false, attachments: [], attachmentCount: 0 },
 ];
 const copy = <T,>(value: T): T => JSON.parse(JSON.stringify(value));
@@ -27,6 +28,8 @@ const service: MailboxService = {
   send: async (mailbox, id) => { const value = find(mailbox, id); value.folder = 'sent'; value.status = 'accepted'; return copy(value); },
   patch: async (mailbox, id, fields) => { const value = find(mailbox, id); if (fields.folder === 'trash') value.originalFolder = value.folder; Object.assign(value, fields); return copy(value); },
   remove: async (mailbox, id) => { messages.splice(messages.indexOf(find(mailbox, id)), 1); },
-  file: async () => new Blob(['%PDF-test-fixture'], { type: 'application/pdf' }),
+  file: async (_mailbox, _id, attachmentId) => attachmentId === 'image1'
+    ? new Blob([Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg=='), (c) => c.charCodeAt(0))], { type: 'image/png' })
+    : new Blob(['%PDF-test-fixture'], { type: 'application/pdf' }),
 };
-createRoot(document.getElementById('root')!).render(<Mailbox service={service} configured={!window.location.search.includes('unconfigured')} />);
+createRoot(document.getElementById('root')!).render(<BrowserRouter><Mailbox service={service} configured={!window.location.search.includes('unconfigured')} /></BrowserRouter>);

@@ -1,10 +1,10 @@
 import { Capacitor } from '@capacitor/core';
-import { saveDocument } from '../platform/files';
+import { saveDocument, shareDocument } from '../platform/files';
 import { auth } from './firebase';
 import type { BillingEmailDetails } from './email-template';
 
 export type MailFolder = 'inbox' | 'sent' | 'drafts' | 'trash' | 'starred';
-export interface MailAttachment { id: string; filename: string; contentType: string; size: number; }
+export interface MailAttachment { id: string; filename: string; contentType: string; size: number; contentId?: string; }
 export interface OutgoingAttachment { filename: string; contentType: string; content: string; }
 export interface MailSummary {
   id: string; mailbox: string; folder: Exclude<MailFolder, 'starred'>; originalFolder?: Exclude<MailFolder, 'starred'>;
@@ -81,7 +81,7 @@ export async function outgoingFile(file: Blob, filename: string): Promise<Outgoi
   return { filename, contentType: file.type || 'application/octet-stream', content };
 }
 export async function downloadMailFile(blob: Blob, filename: string) {
-  if (Capacitor.isNativePlatform()) { await saveDocument(filename, blob); return; }
+  if (Capacitor.isNativePlatform()) { const uri = await saveDocument(filename, blob); await shareDocument(filename, uri); return; }
   const url = URL.createObjectURL(blob); const anchor = document.createElement('a');
   anchor.href = url; anchor.download = filename; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
