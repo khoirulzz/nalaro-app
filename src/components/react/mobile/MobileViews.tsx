@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect, useState } from 'react';
-import { enableNotifications, getNotificationStatus } from '../../../lib/native-notifications';
+import { enableNotifications, getNotificationStatus, sendTestNotification } from '../../../lib/native-notifications';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Capacitor } from '@capacitor/core';
 import { CapacitorBarcodeScanner, CapacitorBarcodeScannerTypeHint } from '@capacitor/barcode-scanner';
@@ -53,6 +53,15 @@ export function MobileMore({ logout }: { logout: () => void }) {
     catch (problem) { setError(problem instanceof Error ? problem.message : 'Gagal mengaktifkan push.'); }
     finally { setPushBusy(false); }
   };
+  const testPush = async () => {
+    setPushBusy(true); setError('');
+    try {
+      const result = await sendTestNotification();
+      if (!result.ok) throw new Error('FCM belum mengirim notifikasi. Periksa status perangkat dan izin service account.');
+      setPushStatus('Notifikasi uji dikirim ke '+result.sent+' perangkat');
+    } catch (problem) { setError(problem instanceof Error ? problem.message : 'Notifikasi uji gagal.'); }
+    finally { setPushBusy(false); }
+  };
   const scan = async () => {
     if (busy) return;
     if (!Capacitor.isNativePlatform()) { setError('Pemindai hanya tersedia pada aplikasi Android.'); return; }
@@ -77,6 +86,9 @@ export function MobileMore({ logout }: { logout: () => void }) {
         <button className="mobile-menu-item" disabled={pushBusy} onClick={allowPush}>
           <strong>{pushBusy ? 'Mengaktifkan notifikasi…' : 'Notifikasi native'}</strong>
           <span>{pushStatus} ↗</span>
+        </button>
+        <button className="mobile-menu-item" disabled={pushBusy} onClick={testPush}>
+          <strong>Uji notifikasi FCM</strong><span>Kirim notifikasi percobaan ke HP ↗</span>
         </button>
         <button className="mobile-menu-item" disabled={busy} onClick={scan}>
           <strong>{busy ? 'Membuka kamera…' : 'Pindai QR Verifikasi'}</strong><span>Periksa invoice atau receipt melalui kamera ↗</span>

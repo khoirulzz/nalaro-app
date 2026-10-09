@@ -156,6 +156,15 @@ export default {
         await env.NOTIFY_DB.prepare("DELETE FROM devices WHERE id=? AND uid=?").bind(await digest(body.token),claims.sub).run();
         return respond({ok:true},200,headers);
       }
+      if(url.pathname==='/test' && request.method==='POST'){
+        const sent=await notifyDevices(env,'test:'+claims.sub+':'+Math.floor(Date.now()/60000),'test',
+          'Nalaro · Notifikasi aktif','Pengiriman FCM dari Cloudflare berhasil.',{source:'manual'});
+        return respond({ok:sent>0,sent},200,headers);
+      }
+      if(url.pathname==='/scan' && request.method==='POST'){
+        await runCycle(env);
+        return respond({ok:true},200,headers);
+      }
       if(url.pathname==='/status' && request.method==='GET'){
         const devices=await env.NOTIFY_DB.prepare('SELECT COUNT(*) AS count FROM devices WHERE active=1 AND uid=?').bind(claims.sub).first();
         const rows=await env.NOTIFY_DB.prepare("SELECT name,value FROM state WHERE name IN ('last_poll','last_error')").all();

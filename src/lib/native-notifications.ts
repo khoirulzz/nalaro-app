@@ -22,6 +22,8 @@ async function callNotify(path: string, method = 'GET', data?: object) {
   return result;
 }
 export const getNotificationStatus = async () => callNotify('/status') as Promise<{devices:number;state?:{last_error?:string;last_poll?:string}}>;
+export const sendTestNotification = async () => callNotify('/test','POST') as Promise<{ok:boolean;sent:number}>;
+export const runNotificationScan = async () => callNotify('/scan','POST');
 export async function enableNotifications() {
   if (!Capacitor.isNativePlatform()) throw new Error('Hanya tersedia di Android.');
   let p = await PushNotifications.checkPermissions();
