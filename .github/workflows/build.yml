@@ -51,6 +51,12 @@ jobs:
           npm run build:mailbox
           npm run test:mailbox
 
+      - name: Package Mailbox Worker for Manual Deployment
+        uses: actions/upload-artifact@v4
+        with:
+          name: nalaro-mailbox-worker-dashboard
+          path: workers/mailbox/dashboard-worker.js
+
       - name: Test Mailbox Image UI (Browser Sandbox)
         run: npm run test:mailbox-ui
 
