@@ -1,11 +1,20 @@
-import { Capacitor } from '@capacitor/core';
+import { Capacitor, registerPlugin } from '@capacitor/core';
 import React, { useEffect, useRef, useState } from 'react';
 import DOMPurify from 'dompurify';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { EMAIL_ASSET_ORIGIN, isBrandedMailbox, renderOutgoingEmail } from '../../lib/email-template';
-import { MAILBOX_CONFIGURED, mailboxService, outgoingFile, downloadMailFile, type MailboxService, type MailConfig, type MailDraft, type MailFolder, type MailMessage, type MailSummary, type MailAttachment } from '../../lib/mailbox';
+import { MAILBOX_CONFIGURED, mailboxService, outgoingFile, downloadMailFile, type MailboxService, type MailConfig, type MailDraft, type MailFolder, type MailMessage, type MailSummary, type MailAttachment, UNIFIED_INBOX, listUnifiedInbox } from '../../lib/mailbox';
 import '../../styles/mailbox.css';
 
+const ExternalLinks = registerPlugin<{ open(options: { url: string }): Promise<void> }>('NalaroLinks');
+const LINK_BRIDGE = 'nalaro:mail:open-link';
+async function openMailLink(raw: string): Promise<void> {
+  const url = new URL(raw);
+  if (url.protocol !== 'https:' || !url.hostname || url.username || url.password)
+    throw new Error('Hanya tautan HTTPS yang dapat dibuka dari email.');
+  if (Capacitor.isNativePlatform()) await ExternalLinks.open({ url: url.href });
+  else window.open(url.href, '_blank', 'noopener,noreferrer');
+}
 const folders: [MailFolder, string, string][] = [['inbox', 'Inbox', '↓'], ['starred', 'Starred', '☆'], ['sent', 'Sent', '↗'], ['drafts', 'Drafts', '≡'], ['trash', 'Trash', '×']];
 const blank = (): MailDraft => ({ to: [], subject: '', text: '', attachments: [] });
 const errorText = (error: unknown) => error instanceof Error ? error.message : 'Permintaan gagal. Coba lagi.';
@@ -52,6 +61,21 @@ function htmlDocument(html: string, remoteImages = false, inlineImages: Record<s
   try {
     cleaned = DOMPurify.sanitize(resolved, { USE_PROFILES: { html: true }, FORBID_TAGS: ['form', 'input', 'button', 'iframe', 'object', 'embed', 'meta', 'link', 'style'] });
   } finally { allowExternalMailImages = false; }
+  // Only this trusted bridge script executes inside the isolated sandbox.
+  // Received scripts/handlers have already been removed by DOMPurify.
+  const clickBridge = `<script>
+    document.addEventListener('click', function(event) {
+      var t=event.target;
+      var link=t && t.closest && t.closest('a[href]');
+      if (!link) return;
+      event.preventDefault();
+      event.stopPropagation();
+      try {
+        var url=new URL(link.href);
+        if (url.protocol==='https:') parent.postMessage({type:'nalaro:mail:open-link',url:url.href}, '*');
+      } catch (_) {}
+    },true);
+  <\/script>`;
   // Native reader gets a refined, accessible document view. Do not load external
   // media, stylesheets or scripts from potentially untrusted incoming messages.
   if (Capacitor.isNativePlatform()) {
@@ -74,9 +98,9 @@ function htmlDocument(html: string, remoteImages = false, inlineImages: Record<s
       hr { border:0; border-top:1px solid #e8e8e2; margin:24px 0; }
       @media (max-width:540px) { body { padding:20px 16px; } table[width],td[width] { width:auto !important; } }
     `;
-    return '<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src '+(remoteImages ? 'data: https:' : 'data:')+'; font-src \'none\'; form-action \'none\'; base-uri \'none\'"><style>'+css+'</style></head><body>'+cleaned+'</body></html>';
+    return '<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; script-src \'unsafe-inline\'; img-src '+(remoteImages ? 'data: https:' : 'data:')+'; font-src \'none\'; form-action \'none\'; base-uri \'none\'"><style>'+css+'</style></head><body>'+cleaned+clickBridge+'</body></html>';
   }
-  return '<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src '+(remoteImages ? 'data: https:' : 'data:')+'; font-src \'none\'; form-action \'none\'; base-uri \'none\'"><style>body{font:14px/1.6 Arial,sans-serif;padding:16px;color:#232420;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{max-width:100%}pre{white-space:pre-wrap}</style></head><body>' + cleaned + '</body></html>';
+  return '<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; script-src \'unsafe-inline\'; img-src '+(remoteImages ? 'data: https:' : 'data:')+'; font-src \'none\'; form-action \'none\'; base-uri \'none\'"><style>body{font:14px/1.6 Arial,sans-serif;padding:16px;color:#232420;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{max-width:100%}pre{white-space:pre-wrap}</style></head><body>' + cleaned + clickBridge + '</body></html>';
 }
 
 export default function Mailbox({ service = mailboxService, configured = MAILBOX_CONFIGURED }: { service?: MailboxService; configured?: boolean }) {
@@ -86,6 +110,7 @@ export default function Mailbox({ service = mailboxService, configured = MAILBOX
   const [preview, setPreview] = useState(false);
   const [mailbox, setMailbox] = useState('');
   const [folder, setFolder] = useState<MailFolder>('inbox');
+  const htmlFrame = useRef<HTMLIFrameElement>(null);
   const [search, setSearch] = useState('');
   const [query, setQuery] = useState('');
   const [items, setItems] = useState<MailSummary[]>([]);
@@ -111,6 +136,15 @@ export default function Mailbox({ service = mailboxService, configured = MAILBOX
   const dirty = useRef(false);
   const composeRef = useRef<HTMLDialogElement>(null);
   const deepLink = useRef(false);
+  useEffect(() => {
+    const handler = (event: MessageEvent) => {
+      if (event.source !== htmlFrame.current?.contentWindow ||
+          event.data?.type !== LINK_BRIDGE || typeof event.data?.url !== 'string') return;
+      void openMailLink(event.data.url).catch(problem => setError(errorText(problem)));
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, []);
   useEffect(() => () => {
     if (imagePreview?.url) URL.revokeObjectURL(imagePreview.url);
   }, [imagePreview?.url]);
@@ -167,7 +201,9 @@ export default function Mailbox({ service = mailboxService, configured = MAILBOX
     if (!mailbox) return;
     const version = ++generation.current; setLoading(true); setError('');
     try {
-      const result = await service.list(mailbox, folder, query, more ? cursor || undefined : undefined);
+      const result = mailbox === UNIFIED_INBOX
+        ? await listUnifiedInbox(service, config?.mailboxes || [], query, more ? cursor || undefined : undefined)
+        : await service.list(mailbox, folder, query, more ? cursor || undefined : undefined);
       if (version !== generation.current) return;
       setItems((current) => more ? [...current, ...result.items.filter((item) => !current.some((row) => row.id === item.id))] : result.items);
       setCursor(result.cursor);
@@ -194,6 +230,7 @@ export default function Mailbox({ service = mailboxService, configured = MAILBOX
     document.addEventListener('click', guard, true); return () => document.removeEventListener('click', guard, true);
   }, []);
   const begin = (value = blank(), id?: string) => {
+    if (mailbox === UNIFIED_INBOX) setMailbox(config?.mailboxes[0] || '');
     setPreview(false); setDraft(value); setDraftId(id); setTo(value.to.join(', ')); dirty.current = false; setCompose(true); setError(''); setNotice('');
   };
   const editDraft = async (message: MailMessage) => {
@@ -233,24 +270,24 @@ export default function Mailbox({ service = mailboxService, configured = MAILBOX
     if (busy) return;
     const version = ++selectionGeneration.current; setReading(true); setError(''); setSelected(undefined); setHtml(false); setRemoteImages(false); closeImage();
     try {
-      let message = await service.get(mailbox, item.id);
-      if (!message.read && !['sending', 'uncertain'].includes(message.status)) message = await service.patch(mailbox, item.id, { read: true });
+      let message = await service.get(item.mailbox, item.id);
+      if (!message.read && !['sending', 'uncertain'].includes(message.status)) message = await service.patch(item.mailbox, item.id, { read: true });
       if (version !== selectionGeneration.current) return;
       setHtml(Capacitor.isNativePlatform() && Boolean(message.html));
-      setSelected(message); setItems((current) => current.map((row) => row.id === item.id ? { ...row, read: true } : row));
+      setSelected(message); setItems((current) => current.map((row) => row.id === item.id && row.mailbox === item.mailbox ? { ...row, read: true } : row));
     } catch (problem) { if (version === selectionGeneration.current) setError(errorText(problem)); }
     finally { if (version === selectionGeneration.current) setReading(false); }
   };
   const change = (patch: { read?: boolean; starred?: boolean; folder?: string }) => selected && run('update', async () => {
-    const result = await service.patch(mailbox, selected.id, patch); setSelected(result); await load(); if (patch.folder) setSelected(undefined);
+    const result = await service.patch(selected.mailbox, selected.id, patch); setSelected(result); await load(); if (patch.folder) setSelected(undefined);
   });
   const save = async (send: boolean) => {
     const recipients = to.split(/[,;\s]+/).map((item) => item.trim()).filter(Boolean);
     if (recipients.length > 10 || recipients.some((item) => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(item))) throw new Error('Isi alamat penerima yang valid, maksimal 10. Pisahkan dengan koma.');
     if (send && (!recipients.length || !draft.subject.trim() || !draft.text.trim())) throw new Error('Isi penerima, subjek, dan pesan.');
-    const saved = await service.save(mailbox, { ...draft, to: recipients }, draftId); setDraftId(saved.id); dirty.current = false;
+    const saved = await service.save(mailbox === UNIFIED_INBOX ? config!.mailboxes[0] : mailbox, { ...draft, to: recipients }, draftId); setDraftId(saved.id); dirty.current = false;
     if (send) {
-      const result = await service.send(mailbox, saved.id);
+      const result = await service.send(saved.mailbox, saved.id);
       setNotice(result.status === 'accepted' ? 'Email diterima Resend untuk dikirim.' : result.sendError || 'Pengiriman perlu diperiksa.');
       setFolder(result.folder); setSelected(result); setCompose(false); composeRef.current?.close();
     } else { setNotice('Draft tersimpan.'); setFolder('drafts'); setCompose(false); composeRef.current?.close(); }
@@ -277,29 +314,29 @@ export default function Mailbox({ service = mailboxService, configured = MAILBOX
     {error && !compose && <p className="document-error" role="alert">{error}</p>}
     {notice && !compose && <p className="mail-notice" role="status">{notice}</p>}
     {!config ? <div className="mail-setup panel"><span className="mail-empty-icon">@</span><h2>{configLoading ? 'Menghubungkan mailbox…' : 'Mailbox belum terhubung'}</h2><p>Email Nalaro akan tampil di sini setelah layanan email diaktifkan.</p>{configured && !configLoading && <button className="mail-button" onClick={connect}>Hubungkan ulang</button>}</div> : <>
-      <div className="mail-account"><div className="mail-account-identity"><MailboxAvatar address={mailbox} /><label><span>Mailbox</span><select aria-label="Pilih mailbox" value={mailbox} disabled={!!busy || compose} onChange={(event) => setMailbox(event.target.value)}>{config.mailboxes.map((item) => <option key={item}>{item}</option>)}</select></label></div><span className="mail-connection"><i className="signal-dot" />{config.sendingConfigured ? 'Siap menerima & mengirim' : 'Menerima · pengiriman belum aktif'}</span></div>
-      <nav className="mail-folders" aria-label="Folder email">{folders.map(([key, label, icon]) => <button key={key} aria-current={folder === key ? 'page' : undefined} className={folder === key ? 'is-active' : ''} disabled={!!busy} onClick={() => { setFolder(key); setNotice(''); }}><span aria-hidden="true">{icon}</span>{label}</button>)}</nav>
+      <div className="mail-account"><div className="mail-account-identity"><MailboxAvatar address={mailbox} /><label><span>Mailbox</span><select aria-label="Pilih mailbox" value={mailbox} disabled={!!busy || compose} onChange={(event) => { setMailbox(event.target.value); if (event.target.value === UNIFIED_INBOX) setFolder('inbox'); }}><option value={UNIFIED_INBOX}>Semua Inbox</option>{config.mailboxes.map((item) => <option key={item}>{item}</option>)}</select></label></div><span className="mail-connection"><i className="signal-dot" />{config.sendingConfigured ? 'Siap menerima & mengirim' : 'Menerima · pengiriman belum aktif'}</span></div>
+      <nav className="mail-folders" aria-label="Folder email">{folders.map(([key, label, icon]) => <button key={key} aria-current={folder === key ? 'page' : undefined} className={folder === key ? 'is-active' : ''} disabled={!!busy} onClick={() => { if (mailbox === UNIFIED_INBOX && key !== 'inbox') setMailbox(config.mailboxes[0]); setFolder(key); setNotice(''); }}><span aria-hidden="true">{icon}</span>{label}</button>)}</nav>
       <div className="mail-workspace">
         <section className={'mail-list-panel ' + (selected || reading ? 'has-reader' : '')} aria-label="Daftar email">
           <div className="mail-search"><label><span className="sr-only">Cari email</span><input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Cari subjek, alamat, pesan…" /></label><button aria-label="Muat ulang email" disabled={loading || !!busy} onClick={() => load()}>↻</button></div>
           <div className="mail-list-heading"><strong>{folders.find(([key]) => key === folder)?.[1]}</strong><span>{items.length} dimuat</span></div>
           <div className="mail-message-list">
             {loading && !items.length ? <p className="mail-empty" role="status">Memuat email…</p> : !items.length && <div className="mail-empty"><span>{query ? 'Tidak ada hasil pada bagian ini.' : 'Belum ada email di bagian ini.'}</span>{cursor && <small>Muat lebih banyak untuk melanjutkan pencarian.</small>}</div>}
-            {items.map((item) => <button key={item.id} className={'mail-row ' + (!item.read ? 'is-unread ' : '') + (selected?.id === item.id ? 'is-selected' : '')} onClick={() => openMessage(item)}><span className="mail-row-top"><strong>{folder === 'sent' || folder === 'drafts' ? item.to.join(', ') || 'Tanpa penerima' : item.from}</strong><time>{dateText(item.createdAt)}</time></span><span className="mail-row-subject">{item.starred && <i>★</i>}{item.subject || '(Tanpa subjek)'}</span><span className="mail-row-preview">{item.preview || '—'}</span><span className="mail-row-bottom">{['accepted', 'sending', 'uncertain', 'failed', 'draft'].includes(item.status) && <small>{statusText(item.status)}</small>}{item.attachmentCount > 0 && <small>{item.attachmentCount} lampiran</small>}{!item.read && <i className="mail-unread-dot" aria-label="Belum dibaca" />}</span></button>)}
+            {items.map((item) => <button key={item.id} className={'mail-row ' + (!item.read ? 'is-unread ' : '') + (selected?.id === item.id ? 'is-selected' : '')} onClick={() => openMessage(item)}><span className="mail-row-top"><strong>{folder === 'sent' || folder === 'drafts' ? item.to.join(', ') || 'Tanpa penerima' : item.from}</strong><time>{dateText(item.createdAt)}</time></span><span className="mail-row-subject">{item.starred && <i>★</i>}{item.subject || '(Tanpa subjek)'}</span><span className="mail-row-preview">{item.preview || '—'}</span><span className="mail-row-bottom">{['accepted', 'sending', 'uncertain', 'failed', 'draft'].includes(item.status) && <small>{statusText(item.status)}</small>}{mailbox === UNIFIED_INBOX && <small className="mail-origin">{item.mailbox}</small>}{item.attachmentCount > 0 && <small>{item.attachmentCount} lampiran</small>}{!item.read && <i className="mail-unread-dot" aria-label="Belum dibaca" />}</span></button>)}
           </div>
           {cursor && <button className="mail-load-more" disabled={loading} onClick={() => load(true)}>{loading ? 'Memuat…' : 'Muat lebih banyak'}</button>}
         </section>
         <article className="mail-reader" aria-label="Isi email">
-          {reading ? <div className="mail-reader-empty" role="status">Membuka email…</div> : !selected ? <div className="mail-reader-empty"><span className="mail-empty-icon">↗</span><h2>Ruang untuk percakapan.</h2><p>Pilih email untuk membaca, membalas, atau mengelola pesan.</p><small>{mailbox}</small></div> : <>
-            <div className="mail-reader-actions"><button className="mail-back mail-button" onClick={() => { selectionGeneration.current++; setSelected(undefined); }}>← Kembali</button><button className="mail-button" disabled={!!busy || ['sending', 'uncertain'].includes(selected.status)} onClick={() => change({ starred: !selected.starred })}>{selected.starred ? '★ Starred' : '☆ Star'}</button><button className="mail-button" disabled={!!busy || ['sending', 'uncertain'].includes(selected.status)} onClick={() => change({ read: !selected.read })}>{selected.read ? 'Tandai belum dibaca' : 'Tandai dibaca'}</button>{selected.folder !== 'trash' ? <button className="mail-button" disabled={!!busy || ['sending', 'uncertain'].includes(selected.status)} onClick={() => change({ folder: 'trash' })}>Trash</button> : <><button className="mail-button" disabled={!!busy} onClick={() => change({ folder: selected.originalFolder || 'inbox' })}>Pulihkan</button><button className="mail-button mail-danger" disabled={!!busy} onClick={() => { if (window.confirm('Hapus permanen email dan lampirannya?')) void run('delete', async () => { await service.remove(mailbox, selected.id); setSelected(undefined); await load(); }); }}>Hapus permanen</button></>}</div>
+          {reading ? <div className="mail-reader-empty" role="status">Membuka email…</div> : !selected ? <div className="mail-reader-empty"><span className="mail-empty-icon">↗</span><h2>Ruang untuk percakapan.</h2><p>Pilih email untuk membaca, membalas, atau mengelola pesan.</p><small>{mailbox === UNIFIED_INBOX ? 'Semua kotak masuk Nalaro' : mailbox}</small></div> : <>
+            <div className="mail-reader-actions"><button className="mail-back mail-button" onClick={() => { selectionGeneration.current++; setSelected(undefined); }}>← Kembali</button><button className="mail-button" disabled={!!busy || ['sending', 'uncertain'].includes(selected.status)} onClick={() => change({ starred: !selected.starred })}>{selected.starred ? '★ Starred' : '☆ Star'}</button><button className="mail-button" disabled={!!busy || ['sending', 'uncertain'].includes(selected.status)} onClick={() => change({ read: !selected.read })}>{selected.read ? 'Tandai belum dibaca' : 'Tandai dibaca'}</button>{selected.folder !== 'trash' ? <button className="mail-button" disabled={!!busy || ['sending', 'uncertain'].includes(selected.status)} onClick={() => change({ folder: 'trash' })}>Trash</button> : <><button className="mail-button" disabled={!!busy} onClick={() => change({ folder: selected.originalFolder || 'inbox' })}>Pulihkan</button><button className="mail-button mail-danger" disabled={!!busy} onClick={() => { if (window.confirm('Hapus permanen email dan lampirannya?')) void run('delete', async () => { await service.remove(selected.mailbox, selected.id); setSelected(undefined); await load(); }); }}>Hapus permanen</button></>}</div>
             <header className="mail-reader-header"><span className="mail-status">{statusText(selected.status)}</span><h2>{selected.subject || '(Tanpa subjek)'}</h2><dl><div><dt>From</dt><dd className="mail-address-with-avatar"><MailboxAvatar address={selected.from} size="sm" /><span>{selected.fromName && selected.fromName + ' · '}{selected.from}</span></dd></div><div><dt>To</dt><dd>{selected.to.join(', ') || '—'}</dd></div><div><dt>Date</dt><dd>{dateText(selected.sentAt || selected.createdAt)}</dd></div></dl></header>
             {selected.sendError && <p className="document-error">{selected.sendError}</p>}
             {selected.html && <div className="mail-body-toggle"><button aria-pressed={!html} onClick={() => setHtml(false)}>Teks</button><button aria-pressed={html} onClick={() => setHtml(true)}>{Capacitor.isNativePlatform() ? 'Lihat Desain' : 'Tampilan HTML'}</button>{remoteImagePresent(selected.html) && (Capacitor.isNativePlatform() ? <button type="button" aria-pressed={remoteImages} onClick={() => setRemoteImages(value => !value)}>{remoteImages ? 'Blokir gambar eksternal' : 'Tampilkan gambar eksternal'}</button> : <small>Gambar eksternal diblokir.</small>)}{Capacitor.isNativePlatform() && remoteImagePresent(selected.html) && <small>{remoteImages ? 'Gambar dimuat dari pengirim; alamat IP dapat terlihat.' : 'Gambar eksternal dinonaktifkan untuk privasi.'}</small>}</div>}
-            {html && selected.html ? <iframe className={'mail-html'+(Capacitor.isNativePlatform() ? ' mail-html-native' : '')} title="Konten HTML email" sandbox="" referrerPolicy="no-referrer" srcDoc={htmlDocument(selected.html, Capacitor.isNativePlatform() && remoteImages, inlineImages)} /> : <div className="mail-text">{selected.text || (selected.html ? 'Email ini hanya berisi HTML. Pilih Tampilan HTML untuk membacanya.' : '(Pesan kosong)')}</div>}
+            {html && selected.html ? <iframe ref={htmlFrame} className={'mail-html'+(Capacitor.isNativePlatform() ? ' mail-html-native' : '')} title="Konten HTML email" sandbox="allow-scripts" referrerPolicy="no-referrer" srcDoc={htmlDocument(selected.html, Capacitor.isNativePlatform() && remoteImages, inlineImages)} /> : <div className="mail-text">{selected.text || (selected.html ? 'Email ini hanya berisi HTML. Pilih Tampilan HTML untuk membacanya.' : '(Pesan kosong)')}</div>}
             {!!selected.attachments.length && <div className="mail-attachments"><h3>Attachments</h3>{selected.attachments.map((file) => <div key={file.id} className="mail-attachment-row"><div className="mail-attachment-info"><span aria-hidden="true">{safeImageType(file.contentType) ? '▧' : '▤'}</span><strong>{file.filename}</strong><small>{bytesText(file.size)}</small></div><div className="mail-attachment-actions">{safeImageType(file.contentType) && <button className="mail-button" aria-label={'Lihat gambar ' + file.filename} disabled={!!busy} onClick={() => run('preview-image', () => openImage(file))}>Lihat gambar</button>}<button className="mail-button" aria-label={(Capacitor.isNativePlatform() ? 'Simpan / bagikan ' : 'Unduh ') + file.filename} disabled={!!busy} onClick={() => run('download', async () => {
-                await downloadMailFile(await service.file(mailbox, selected.id, file.id), file.filename);
+                await downloadMailFile(await service.file(selected.mailbox, selected.id, file.id), file.filename);
               })}>{Capacitor.isNativePlatform() ? 'Simpan / bagikan' : 'Unduh'}</button></div></div>)}</div>}
-            <footer className="mail-reader-footer">{selected.folder === 'drafts' ? <button className="primary-button" disabled={!!busy} onClick={() => editDraft(selected)}>Lanjutkan draft ↗</button> : selected.folder !== 'trash' && selected.status === 'received' ? <button className="primary-button" disabled={!!busy} onClick={() => begin({ ...blank(), to: [selected.replyTo?.[0] || selected.from], subject: /^re:/i.test(selected.subject) ? selected.subject : 'Re: ' + selected.subject, text: '\n\n—\n' + selected.from + ' wrote:\n' + selected.text.split('\n').map((line) => '> ' + line).join('\n'), inReplyTo: selected.messageId, references: [selected.references, selected.messageId].filter(Boolean).join(' ').slice(-2000) })}>Balas email ↗</button> : null}{['sending', 'uncertain'].includes(selected.status) && <button className="mail-button" disabled={!!busy || !config.sendingConfigured} onClick={() => run('retry', async () => { const result = await service.send(mailbox, selected.id); setSelected(result); setNotice(result.status === 'accepted' ? 'Email diterima Resend.' : result.sendError || 'Periksa status pengiriman.'); await load(); })}>Periksa / coba ulang</button>}{selected.hasRaw && <button className="mail-button" disabled={!!busy} onClick={() => run('raw', async () => downloadMailFile(await service.file(mailbox, selected.id), 'email.eml'))}>Unduh email asli</button>}</footer>
+            <footer className="mail-reader-footer">{selected.folder === 'drafts' ? <button className="primary-button" disabled={!!busy} onClick={() => editDraft(selected)}>Lanjutkan draft ↗</button> : selected.folder !== 'trash' && selected.status === 'received' ? <button className="primary-button" disabled={!!busy} onClick={() => { if (mailbox === UNIFIED_INBOX) setMailbox(selected.mailbox); begin({ ...blank(), to: [selected.replyTo?.[0] || selected.from], subject: /^re:/i.test(selected.subject) ? selected.subject : 'Re: ' + selected.subject, text: '\n\n—\n' + selected.from + ' wrote:\n' + selected.text.split('\n').map((line) => '> ' + line).join('\n'), inReplyTo: selected.messageId, references: [selected.references, selected.messageId].filter(Boolean).join(' ').slice(-2000) }); }}>Balas email ↗</button> : null}{['sending', 'uncertain'].includes(selected.status) && <button className="mail-button" disabled={!!busy || !config.sendingConfigured} onClick={() => run('retry', async () => { const result = await service.send(selected.mailbox, selected.id); setSelected(result); setNotice(result.status === 'accepted' ? 'Email diterima Resend.' : result.sendError || 'Periksa status pengiriman.'); await load(); })}>Periksa / coba ulang</button>}{selected.hasRaw && <button className="mail-button" disabled={!!busy} onClick={() => run('raw', async () => downloadMailFile(await service.file(selected.mailbox, selected.id), 'email.eml'))}>Unduh email asli</button>}</footer>
           </>}
         </article>
       </div>

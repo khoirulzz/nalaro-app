@@ -50,3 +50,5 @@
 .mail-image-dialog header strong{font-size:12px;min-width:0;overflow-wrap:anywhere}
 .mail-image-dialog img{display:block;max-width:100%;height:auto;max-height:calc(100dvh - 108px);object-fit:contain;margin:auto}
 @media(max-width:640px){.mail-attachment-row{align-items:stretch;flex-direction:column}.mail-attachment-actions{width:100%;flex-wrap:wrap}.mail-attachment-actions button{flex:1;justify-content:center}.mail-image-overlay{padding:8px}.mail-image-dialog{max-height:calc(100dvh - 16px)}}
+
+.mail-row-bottom .mail-origin{color:#f6a07a;max-width:100%;overflow-wrap:anywhere;white-space:normal}
