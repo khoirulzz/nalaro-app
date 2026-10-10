@@ -72,7 +72,7 @@ try {
   await page.getByRole('button', { name: /Penawaran website/ }).waitFor();
   await page.getByRole('button', { name: /Billing dari klien lain/ }).click();
   await page.getByRole('heading', { name: 'Billing dari klien lain' }).waitFor();
-  await page.getByRole('button', { name: '← Kembali' }).click();
+  // Desktop keeps the list visible; the back control is mobile-only.
   await page.getByLabel('Pilih mailbox').selectOption('hello@nalaro.digital');
   await page.getByRole('button', { name: /Penawaran website/ }).click(); await page.getByRole('button', { name: '☆ Star', exact: true }).click();
   await page.getByRole('button', { name: 'Starred', exact: true }).click(); await page.getByRole('button', { name: /Penawaran website/ }).waitFor();
