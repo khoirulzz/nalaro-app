@@ -40,7 +40,14 @@ try {
     await page.getByRole('dialog', { name: 'Pratinjau logo.png' }).getByRole('img').waitFor();
     await page.getByRole('button', { name: 'Tutup ×' }).click();
     assert.equal(await page.evaluate(() => window.pwned), undefined);
-    assert.deepEqual(trackerRequests, []); assert.equal(await page.locator('iframe').getAttribute('sandbox'), '');
+    assert.deepEqual(trackerRequests, []); assert.equal(await page.locator('iframe').getAttribute('sandbox'), 'allow-scripts');
+    await page.evaluate(() => {
+      window.__openedMailLink = '';
+      window.open = (url) => { window.__openedMailLink = String(url); return null; };
+    });
+    await page.frameLocator('iframe').getByRole('link', { name: 'Open secure link' }).click();
+    await page.waitForFunction(() => window.__openedMailLink === 'https://example.org/nalaro-verification');
+    assert.equal(await page.frameLocator('iframe').locator('a[href^="javascript:"]').count(), 0, 'Unsafe links must be sanitized');
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, 'Reader overflow at ' + width);
     await page.screenshot({ path: `artifacts/mailbox-tests/reader-${width}.png`, fullPage: true });
     await page.getByRole('button', { name: 'Balas email' }).click();
@@ -60,6 +67,13 @@ try {
     await page.getByRole('button', { name: 'Tutup editor email' }).click();
   }
   await page.setViewportSize({ width: 1440, height: 1000 }); await page.goto(origin + '/mailbox.html');
+  await page.getByLabel('Pilih mailbox').selectOption('__all__');
+  await page.getByRole('button', { name: /Billing dari klien lain/ }).waitFor();
+  await page.getByRole('button', { name: /Penawaran website/ }).waitFor();
+  await page.getByRole('button', { name: /Billing dari klien lain/ }).click();
+  await page.getByRole('heading', { name: 'Billing dari klien lain' }).waitFor();
+  // Desktop keeps the list visible; the back control is mobile-only.
+  await page.getByLabel('Pilih mailbox').selectOption('hello@nalaro.digital');
   await page.getByRole('button', { name: /Penawaran website/ }).click(); await page.getByRole('button', { name: '☆ Star', exact: true }).click();
   await page.getByRole('button', { name: 'Starred', exact: true }).click(); await page.getByRole('button', { name: /Penawaran website/ }).waitFor();
   await page.getByRole('button', { name: /Penawaran website/ }).click();

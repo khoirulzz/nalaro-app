@@ -43,3 +43,15 @@ Never distribute the unsigned or debug APK as a production update. Record the si
 - Upgrading an older APK signed with another certificate requires uninstalling that APK after backing up device-local data. Firestore cloud data remains intact.
 
 To enable future production APK builds, add these GitHub repository Actions secrets: `NALARO_RELEASE_STORE_BASE64` (base64 of the recovered JKS), `NALARO_RELEASE_STORE_PASSWORD`, `NALARO_RELEASE_KEY_ALIAS`, `NALARO_RELEASE_KEY_PASSWORD`. Keep the JKS and password bundle offline and back it up securely.
+
+## Active personal release certificate — v1.1.2
+
+The owner selected a fresh signing identity for the personal Project Desk app. Production v1.1.2 (versionCode 8; applicationId `com.nalaro.app`) was signed successfully by the one-time GitHub Actions run **38070979918**. This signing identity supersedes earlier v1.1.1 signing keys.
+
+**Certificate SHA-256:** `8D:BE:88:80:CB:EA:96:71:9D:05:BE:49:D2:F8:FC:77:19:4C:E3:C6:85:8C:A6:6F:60:F6:02:EE:09:04:A4:AE`
+
+The matching keystore, store/key password, alias and instructions were recovered from the encrypted signing artifact, verified against the APK signer and provided to the owner separately. Neither the JKS nor private credentials may be committed or logged.
+
+The CI workflow no longer contains the one-time key-generation step or its transport certificate. Every future signing-enabled build verifies its production APK's signing certificate against this fingerprint; it fails before upload when a different certificate is configured.
+
+To produce subsequent updates, populate GitHub repository Actions secrets `NALARO_RELEASE_STORE_BASE64`, `NALARO_RELEASE_STORE_PASSWORD`, `NALARO_RELEASE_KEY_ALIAS`, and `NALARO_RELEASE_KEY_PASSWORD` from the owner's secure v1.1.2 backup. Increment versionCode beyond 8 and retain the same application ID. Earlier apps signed with another certificate require a one-time uninstall; this does not delete cloud records.

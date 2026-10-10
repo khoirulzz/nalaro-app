@@ -121,7 +121,7 @@ jobs:
             APKSIGNER="$(find "$ANDROID_HOME/build-tools" -maxdepth 2 -name apksigner | sort -V | tail -1)"
             test -n "$APKSIGNER"
             SIGNER="$("$APKSIGNER" verify --print-certs ./app/build/outputs/apk/release/app-release.apk | sed -n -E 's/.*certificate SHA-256 digest: ([0-9a-fA-F]+).*/\1/p' | head -1 | tr '[:upper:]' '[:lower:]')"
-            EXPECTED="ffa5995d75d3573aef11331654b305fe15805f8c4ae1df9f270f6335e63befeb"
+            EXPECTED="8dbe8880cbea96719d05be49d2f8fc77194ce3c6858ca66f60f602ee0904a4ae"
             test "$SIGNER" = "$EXPECTED" || { echo "Production release signing certificate mismatch: refusing APK." >&2; exit 1; }
             echo "Original personal production signing certificate verified."
             rm -f ./app/nalaro-release.jks

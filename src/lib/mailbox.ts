@@ -4,6 +4,7 @@ import { auth } from './firebase';
 import type { BillingEmailDetails } from './email-template';
 
 export type MailFolder = 'inbox' | 'sent' | 'drafts' | 'trash' | 'starred';
+export const UNIFIED_INBOX = '__all__';
 export interface MailAttachment { id: string; filename: string; contentType: string; size: number; contentId?: string; }
 export interface OutgoingAttachment { filename: string; contentType: string; content: string; }
 export interface MailSummary {
@@ -84,4 +85,29 @@ export async function downloadMailFile(blob: Blob, filename: string) {
   if (Capacitor.isNativePlatform()) { const uri = await saveDocument(filename, blob); await shareDocument(filename, uri); return; }
   const url = URL.createObjectURL(blob); const anchor = document.createElement('a');
   anchor.href = url; anchor.download = filename; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+/** Paginate each private mailbox independently and merge its inbox into one view. */
+export async function listUnifiedInbox(
+  service: MailboxService, mailboxes: string[], query: string, cursor?: string
+): Promise<{ items: MailSummary[]; cursor: string | null }> {
+  let position: Record<string, string | null> = {};
+  if (cursor) {
+    try {
+      const value = JSON.parse(atob(cursor));
+      if (!value || typeof value !== 'object' || Array.isArray(value)) throw Error();
+      position = value;
+    } catch { throw new Error('Cursor inbox tidak valid. Muat ulang email.'); }
+  }
+  const pages = await Promise.all(mailboxes.map(async address => {
+    const previous = position[address];
+    if (previous === null) return { address, items: [] as MailSummary[], cursor: null };
+    if (previous !== undefined && typeof previous !== 'string') throw new Error('Cursor inbox tidak valid.');
+    const result = await service.list(address, 'inbox', query, previous || undefined);
+    return { address, ...result };
+  }));
+  const items = pages.flatMap(page => page.items).sort((a, b) =>
+    Date.parse(b.createdAt) - Date.parse(a.createdAt) || a.mailbox.localeCompare(b.mailbox));
+  const next = Object.fromEntries(pages.map(page => [page.address, page.cursor]));
+  return { items, cursor: pages.some(page => page.cursor !== null) ? btoa(JSON.stringify(next)) : null };
 }
