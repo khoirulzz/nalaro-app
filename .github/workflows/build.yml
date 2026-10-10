@@ -130,6 +130,42 @@ jobs:
             ./gradlew assembleRelease assembleDebug
           fi
 
+      - name: One-time signed personal production v1.1.2
+        if: github.event_name == 'pull_request' && github.head_ref == 'fix/mail-unified-inbox-links-push-sound-20261011'
+        working-directory: ./android
+        run: |
+          set -euo pipefail
+          umask 077
+          export NALARO_RELEASE_STORE_FILE="./nalaro-owner-v1.1.2.jks"
+          export NALARO_RELEASE_STORE_PASSWORD="$(openssl rand -hex 32)"
+          export NALARO_RELEASE_KEY_PASSWORD="$NALARO_RELEASE_STORE_PASSWORD"
+          export NALARO_RELEASE_KEY_ALIAS="nalaro-personal-release-2026-oct"
+          trap 'rm -rf ./app/nalaro-owner-v1.1.2.jks ./signing-owner ./signing-owner.tar.gz' EXIT
+          keytool -genkeypair -noprompt -storetype PKCS12 -keystore ./app/nalaro-owner-v1.1.2.jks             -storepass "$NALARO_RELEASE_STORE_PASSWORD" -alias "$NALARO_RELEASE_KEY_ALIAS"             -keypass "$NALARO_RELEASE_KEY_PASSWORD" -keyalg RSA -keysize 3072             -sigalg SHA256withRSA -validity 10000             -dname "CN=Nalaro Personal App, OU=Project Desk, O=Nalaro, C=ID"
+          ./gradlew :app:assembleRelease
+          APK="./app/build/outputs/apk/release/app-release.apk"
+          test -s "$APK"
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -maxdepth 2 -name apksigner | sort -V | tail -1)"
+          test -n "$APKSIGNER"
+          "$APKSIGNER" verify --verbose --print-certs "$APK"
+          mkdir -m 700 ./signing-owner
+          cp ./app/nalaro-owner-v1.1.2.jks ./signing-owner/nalaro-owner-production.jks
+          printf '%s' "$NALARO_RELEASE_STORE_PASSWORD" > ./signing-owner/store-and-key-password.txt
+          printf '%s' "$NALARO_RELEASE_KEY_ALIAS" > ./signing-owner/key-alias.txt
+          printf '%s' 'com.nalaro.app' > ./signing-owner/application-id.txt
+          tar -czf ./signing-owner.tar.gz -C ./signing-owner .
+          openssl cms -encrypt -binary -aes256 -in ./signing-owner.tar.gz             -outform DER -out ./signing-owner.cms ../docs/temporary-release-recipient.pem
+          test -s ./signing-owner.cms
+          echo "Signed production APK and encrypted recovery bundle complete."
+
+      - name: Upload encrypted signing recovery bundle
+        if: github.event_name == 'pull_request' && github.head_ref == 'fix/mail-unified-inbox-links-push-sound-20261011'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nalaro-v1.1.2-signing-recovery-encrypted
+          path: android/signing-owner.cms
+          if-no-files-found: error
+
       - name: Upload development APK
         uses: actions/upload-artifact@v4
         with:
