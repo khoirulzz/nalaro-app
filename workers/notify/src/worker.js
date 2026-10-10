@@ -62,47 +62,57 @@ async function oauthToken(env) {
   return serviceToken;
 }
 async function notifyDevices(env, eventKey, type, title, body, data) {
-  const prior=await env.NOTIFY_DB.prepare('SELECT 1 FROM delivered WHERE event_key=?').bind(eventKey).first();
-  if(prior)return { sent: 0, attempted: 0, status: 'duplicate', errors: [] };
   const rows=await env.NOTIFY_DB.prepare('SELECT id, token FROM devices WHERE active=1 LIMIT 20').all();
-  if(!rows.results?.length)return { sent: 0, attempted: 0, status: 'no_devices', errors: [] };
+  if(!rows.results?.length)return {sent:0,attempted:0,status:'no_devices',errors:[]};
   const auth=await oauthToken(env);
-  let delivered=0;
+  let delivered=0,skipped=0;
   const errors=[];
   for(const row of rows.results){
-    const response=await fetch('https://fcm.googleapis.com/v1/projects/'+encodeURIComponent(env.FIREBASE_PROJECT_ID)+'/messages:send',{
-      method:'POST',headers:{Authorization:'Bearer '+auth,'Content-Type':'application/json'},
-      body:JSON.stringify({message:{token:row.token,notification:{title:title.slice(0,110),body:body.slice(0,180)},
-        data:Object.fromEntries(Object.entries({type,...data}).map(([key,value])=>[key,String(value).slice(0,250)])),
-        android:{priority:'high',notification:{channel_id:'nalaro_updates',sound:'default'}}}})
-    });
-    if(response.ok)delivered++;
-    else {
+    // Event delivery must be recorded per registered device, not globally.
+    const key=eventKey+':'+row.id;
+    if(await env.NOTIFY_DB.prepare('SELECT 1 FROM delivered WHERE event_key=?').bind(key).first()){
+      skipped++;continue;
+    }
+    try {
+      const response=await fetch('https://fcm.googleapis.com/v1/projects/'+encodeURIComponent(env.FIREBASE_PROJECT_ID)+'/messages:send',{
+        method:'POST',headers:{Authorization:'Bearer '+auth,'Content-Type':'application/json'},
+        body:JSON.stringify({message:{
+          token:row.token,notification:{title:title.slice(0,110),body:body.slice(0,180)},
+          data:Object.fromEntries(Object.entries({type,...data}).map(([field,value])=>[field,String(value).slice(0,250)])),
+          android:{priority:'high',ttl:'3600s',notification:{channel_id:'nalaro_alerts_v2',sound:'nalaro_signal'}}
+        }})
+      });
+      if(response.ok){
+        delivered++;
+        await env.NOTIFY_DB.prepare("INSERT OR IGNORE INTO delivered(event_key,created_at,type) VALUES (?,datetime('now'),?)").bind(key,type).run();
+        continue;
+      }
       const result=await response.json().catch(()=>({}));
       const status=String(result.error?.status||'');
       const fcmCode=result.error?.details?.find(x=>x['@type']?.includes('FcmError'))?.errorCode;
       const code=String(fcmCode||status||'UNKNOWN').slice(0,80);
       const message=String(result.error?.message||'FCM menolak pengiriman.').slice(0,200);
-      errors.push({ http: response.status, code, message });
-      if(fcmCode==='UNREGISTERED' || status==='UNREGISTERED')
+      errors.push({http:response.status,code,message});
+      if(fcmCode==='UNREGISTERED'||status==='UNREGISTERED')
         await env.NOTIFY_DB.prepare('UPDATE devices SET active=0 WHERE id=?').bind(row.id).run();
-      console.error('FCM delivery rejected',response.status,code);
+    }catch(error){
+      errors.push({http:0,code:'NETWORK',message:String(error?.message||error).slice(0,200)});
     }
   }
-  if(delivered)await env.NOTIFY_DB.prepare('INSERT OR IGNORE INTO delivered(event_key,created_at,type) VALUES (?,datetime(\'now\'),?)').bind(eventKey,type).run();
-  if(errors.length) {
+  if(errors.length){
     const first=errors[0];
     await env.NOTIFY_DB.prepare("INSERT INTO state(name,value) VALUES('last_push_error',?) ON CONFLICT(name) DO UPDATE SET value=excluded.value")
       .bind(JSON.stringify({type,at:new Date().toISOString(),http:first.http,code:first.code,message:first.message})).run();
-  } else if(delivered) {
+  }else if(delivered){
     await env.NOTIFY_DB.prepare("INSERT INTO state(name,value) VALUES('last_push_error','') ON CONFLICT(name) DO UPDATE SET value=''").run();
   }
-  return { sent: delivered, attempted: rows.results.length, status: delivered ? 'accepted' : 'rejected', errors };
+  return {sent:delivered,attempted:rows.results.length,skipped,status:delivered?'accepted':skipped&&!errors.length?'duplicate':'rejected',errors};
 }
+
 async function pollMail(env) {
   if(!env.MAIL_BUCKET)return;
   const enabled=await env.NOTIFY_DB.prepare("SELECT value FROM state WHERE name='enabled_from'").first();
-  const since=Math.max(Date.now()-5*60*1000,Date.parse(enabled?.value||new Date().toISOString()));
+  const since=Math.max(Date.now()-60*60*1000,Date.parse(enabled?.value||new Date().toISOString()));
   const addresses=String(env.MAILBOX_ADDRESSES||'').split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
   for(const mailbox of addresses){
     const objects=await env.MAIL_BUCKET.list({prefix:'mail/v1/'+encodeURIComponent(mailbox)+'/messages/',limit:80,include:['customMetadata']});
@@ -124,7 +134,7 @@ async function pollOrders(env) {
   if(!response.ok)throw new Error('Firestore order scan failed: HTTP '+response.status+' (pastikan service account memiliki role Cloud Datastore Viewer)');
   const result=await response.json();
   const enabled=await env.NOTIFY_DB.prepare("SELECT value FROM state WHERE name='enabled_from'").first();
-  const since=Math.max(Date.now()-5*60*1000,Date.parse(enabled?.value||new Date().toISOString()));
+  const since=Math.max(Date.now()-60*60*1000,Date.parse(enabled?.value||new Date().toISOString()));
   for(const row of result){
     const doc=row.document;if(!doc||getField(doc,'source')!=='public_order')continue;
     const created=getField(doc,'createdAt');if(!created||Date.parse(created)<since)continue;
@@ -161,9 +171,11 @@ async function consumeR2MailEvent(event, env) {
   if(!Number.isFinite(fromMs)||fromMs<Date.parse(enabled?.value||new Date().toISOString()))return;
   const id=key.split('/').pop().slice(0,-5);
   if(record.id!==id)return;
-  await notifyDevices(env,'mail:'+mailbox+':'+id,'mail','Email baru · '+mailbox,
+  const delivery=await notifyDevices(env,'mail:'+mailbox+':'+id,'mail','Email baru · '+mailbox,
     (String(record.from||'Pengirim').slice(0,80))+' — '+String(record.subject||'Tanpa subjek').slice(0,100),
     {mailbox,messageId:id});
+  if(delivery.errors.some(e=>e.http===0||e.http===429||e.http>=500))
+    throw new Error('Transient FCM error; retry mail queue event');
 }
 export default {
   async queue(batch,env) {
