@@ -7,3 +7,5 @@ Security: queue input is never trusted as email content or a push target. The ob
 Latency: Queue delivery is typically faster than the 1-minute Cron, though not guaranteed instantaneous. FCM acceptance is not the same as phone display; background/battery policies still apply.
 
 Queues on Cloudflare Workers Free offers 10,000 combined operations/day; monitor quota. Order notifications still use one-minute Firestore polling because the website's direct atomic Firestore batch should remain unchanged.
+
+New FCM dedup keys include device ID; retries for one failed phone do not resend to a phone that already received the event.

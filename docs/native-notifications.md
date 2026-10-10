@@ -36,3 +36,9 @@ Mailbox authentication and Firebase Firestore rules stay unchanged. The notifica
 
 ## Operational considerations
 The Android APK is currently debug-signed; configure permanent release signing before public distribution. Cron polling scans the most recent 80 email objects per mailbox and 100 Firestore projects per minute. Under extraordinary spikes, earlier items may be missed. If a stronger guaranteed event bus is required in future, add authenticated event submission from Nalaro's existing order/mail Workers rather than opening unrestricted push endpoints.
+
+## v1.1.2 notifications
+
+New `nalaro_alerts_v2` Android channel provides a soft Nalaro-branded two-note custom sound. Devices must open v1.1.2 at least once for the new channel to be created. After opening, use **More → Notifikasi native** and **Uji notifikasi FCM**. Some OEM background/battery limits still affect arrival.
+
+Worker source now deduplicates FCM accepted sends **per device** and R2 queue retries transient failures. A completed GitHub build does not deploy a Cloudflare Worker automatically; deploy `workers/notify/src/worker.js` separately with existing secrets/bindings. One-minute order scanning remains the fallback, so do not promise zero latency.
